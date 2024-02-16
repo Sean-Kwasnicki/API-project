@@ -12,15 +12,15 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await ReviewImage.bulkCreate([
       {
-        reviewId: 1, // Adjust to match an actual review ID from your Reviews table
+        reviewId: 4, // Adjust to match an actual review ID from your Reviews table
         url: 'http://example.com/review1/image1.jpg',
       },
       {
-        reviewId: 2, // Ensure this review exists
+        reviewId: 4, // Ensure this review exists
         url: 'http://example.com/review2/image1.jpg',
       },
       {
-        reviewId: 3, // Adjust based on your Reviews seed data
+        reviewId: 4, // Adjust based on your Reviews seed data
         url: 'http://example.com/review3/image1.jpg',
       }
       // Add more images as needed
