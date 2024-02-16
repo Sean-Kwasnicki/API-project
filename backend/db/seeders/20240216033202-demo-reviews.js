@@ -12,20 +12,20 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await Review.bulkCreate([
       {
-        userId: 7, // Adjust to match an actual user ID from your Users table
-        spotId: 4, // Adjust to match an actual spot ID from your Spots table
+        userId: 1, // Adjust to match an actual user ID from your Users table
+        spotId: 1, // Adjust to match an actual spot ID from your Spots table
         review: 'Fantastic place! Highly recommend to anyone looking for a cozy stay.',
         stars: 5,
       },
       {
-        userId: 8, // Ensure this user exists
-        spotId: 5, // Ensure this spot exists
+        userId: 2, // Ensure this user exists
+        spotId: 2, // Ensure this spot exists
         review: 'Great location, but a bit noisy at night. Overall, pretty good.',
         stars: 4,
       },
       {
-        userId: 9, // This user ID should exist in your Users table
-        spotId: 6, // This spot ID should exist in your Spots table
+        userId: 3, // This user ID should exist in your Users table
+        spotId: 3, // This spot ID should exist in your Spots table
         review: 'Not as clean as I expected, but the host was very helpful.',
         stars: 3,
       }

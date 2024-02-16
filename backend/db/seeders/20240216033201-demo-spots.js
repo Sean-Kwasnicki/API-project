@@ -12,7 +12,7 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await Spot.bulkCreate([
       {
-        ownerId: 7, // Make sure this matches an actual user's ID
+        ownerId: 1, // Make sure this matches an actual user's ID
         address: "12345 Disney Lane",
         city: "San Francisco",
         state: "California",
@@ -24,7 +24,7 @@ module.exports = {
         price: 250.00,
       },
       {
-        ownerId: 8,
+        ownerId: 2,
         address: "456 Pixar Road",
         city: "Emeryville",
         state: "California",
@@ -36,7 +36,7 @@ module.exports = {
         price: 300.00,
       },
       {
-        ownerId: 9, // Adjust based on your user seeds
+        ownerId: 3, // Adjust based on your user seeds
         address: "789 Marvel Ave",
         city: "Los Angeles",
         state: "California",
@@ -54,7 +54,7 @@ module.exports = {
     options.tableName = 'Spots';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
-      ownerId: { [Op.in]: [4, 5, 6] }
+      ownerId: { [Op.in]: [1, 2, 3] }
     }, {});
   }
 };
