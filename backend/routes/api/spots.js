@@ -1,4 +1,4 @@
-// Import necessary modules from express and your Sequelize models.
+
 const express = require('express');
 const { Spot, Review, SpotImage, User, sequelize } = require('../../db/models');
 const bcrypt = require('bcryptjs');
@@ -40,7 +40,7 @@ router.get('/', async (req, res, next) => {
           const previewImage = spotJSON.SpotImages.find(image => image.preview) || null;
           spotJSON.previewImage = previewImage ? previewImage.url : 'No preview image';
 
-          // Optional: Remove SpotImages and Reviews from the response if not needed
+          // Remove SpotImages and Reviews from the response as needed
           delete spotJSON.SpotImages;
           delete spotJSON.Reviews;
 
@@ -61,7 +61,7 @@ router.get('/', async (req, res, next) => {
 
 router.get('/current', requireAuth, async (req, res) => {
   try {
-      const ownerId = req.user.id; // User ID from authenticated user
+      const ownerId = req.user.id;
 
       // Fetch all spots owned by the current user
       const spots = await Spot.findAll({
@@ -120,17 +120,17 @@ router.get('/:spotId', async (req, res) => {
       include: [
         {
           model: SpotImage,
-          as: 'SpotImages', // Ensure this matches your association alias
+          as: 'SpotImages',
           attributes: ['id', 'url', 'preview']
         },
         {
           model: User,
-          as: 'Owner', // Ensure this matches your association alias
+          as: 'Owner',
           attributes: ['id', 'firstName', 'lastName']
         },
         {
           model: Review,
-          as: 'Reviews', // This is only used for calculating avgStarRating and numReviews
+          as: 'Reviews',
           attributes: ['stars']
         }
       ]
