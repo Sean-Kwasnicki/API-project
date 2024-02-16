@@ -13,19 +13,19 @@ module.exports = {
     await Review.bulkCreate([
       {
         userId: 1, // Adjust to match an actual user ID from your Users table
-        spotId: 1, // Adjust to match an actual spot ID from your Spots table
+        spotId: 4, // Adjust to match an actual spot ID from your Spots table
         review: 'Fantastic place! Highly recommend to anyone looking for a cozy stay.',
         stars: 5,
       },
       {
         userId: 2, // Ensure this user exists
-        spotId: 2, // Ensure this spot exists
+        spotId: 4, // Ensure this spot exists
         review: 'Great location, but a bit noisy at night. Overall, pretty good.',
         stars: 4,
       },
       {
         userId: 3, // This user ID should exist in your Users table
-        spotId: 3, // This spot ID should exist in your Spots table
+        spotId: 4, // This spot ID should exist in your Spots table
         review: 'Not as clean as I expected, but the host was very helpful.',
         stars: 3,
       }
