@@ -14,38 +14,38 @@ const router = express.Router();
 // Get all Spots -- Return all the spots
 router.get('/', async (req, res, next) => {
   try {
-      // Step 1: Fetch all spots including associated SpotImages and Reviews
-      const spots = await Spot.findAll({
-          include: [
-              {
-                  model: SpotImage,
-                  as: 'SpotImages',
-              },
-              {
-                  model: Review,
-                  as: 'Reviews',
-              }
-          ]
+    // Step 1: Fetch all spots including associated SpotImages and Reviews
+    const spots = await Spot.findAll({
+      include: [
+        {
+          model: SpotImage,
+          as: 'SpotImages',
+        },
+        {
+          model: Review,
+          as: 'Reviews',
+        }
+      ]
       });
 
       // Step 2: Process each spot to calculate avgRating and find previewImage
       const processedSpots = spots.map(spot => {
-          const spotJSON = spot.toJSON();
+      const spotJSON = spot.toJSON();
 
-          // Calculate average rating
-          const avgRating = spotJSON.Reviews.reduce((acc, review) => acc + review.stars, 0) / spotJSON.Reviews.length || null;
-          spotJSON.avgRating = avgRating ? parseFloat(avgRating.toFixed(1)) : 'No ratings yet';
+      // Calculate average rating
+      const avgRating = spotJSON.Reviews.reduce((acc, review) => acc + review.stars, 0) / spotJSON.Reviews.length || null;
+      spotJSON.avgRating = avgRating ? parseFloat(avgRating.toFixed(1)) : 'No ratings yet';
 
-          // Find preview image URL
-          const previewImage = spotJSON.SpotImages.find(image => image.preview) || null;
-          spotJSON.previewImage = previewImage ? previewImage.url : 'No preview image';
+      // Find preview image URL
+      const previewImage = spotJSON.SpotImages.find(image => image.preview) || null;
+      spotJSON.previewImage = previewImage ? previewImage.url : 'No preview image';
 
-          // Remove SpotImages and Reviews from the response as needed
-          delete spotJSON.SpotImages;
-          delete spotJSON.Reviews;
+      // Remove SpotImages and Reviews from the response as needed
+      delete spotJSON.SpotImages;
+      delete spotJSON.Reviews;
 
-          return spotJSON;
-      });
+      return spotJSON;
+    });
 
       res.status(200).json({ Spots: processedSpots });
   } catch (error) {
@@ -61,46 +61,46 @@ router.get('/', async (req, res, next) => {
 
 router.get('/current', requireAuth, async (req, res) => {
   try {
-      const ownerId = req.user.id;
+    const ownerId = req.user.id;
 
-      // Fetch all spots owned by the current user
-      const spots = await Spot.findAll({
-          where: { ownerId: ownerId },
-          include: [
-              {
-                  model: SpotImage,
-                  as: 'SpotImages',
-                  where: { preview: true },
-                  required: false
-              },
-              {
-                  model: Review,
-                  as: 'Reviews'
-              }
-          ]
-      });
+    // Fetch all spots owned by the current user
+    const spots = await Spot.findAll({
+      where: { ownerId: ownerId },
+      include: [
+        {
+          model: SpotImage,
+          as: 'SpotImages',
+          where: { preview: true },
+          required: false
+        },
+        {
+          model: Review,
+          as: 'Reviews'
+        }
+      ]
+    });
 
-      // Process each spot to calculate average rating and attach preview image URL
-      const processedSpots = spots.map(spot => {
-          const spotJSON = spot.toJSON();
+    // Process each spot to calculate average rating and attach preview image URL
+    const processedSpots = spots.map(spot => {
+    const spotJSON = spot.toJSON();
 
-          // Calculate average rating
-          let avgRating = 0;
-          if (spotJSON.Reviews.length) {
-              const totalRating = spotJSON.Reviews.reduce((total, review) => total + review.stars, 0);
-              avgRating = (totalRating / spotJSON.Reviews.length).toFixed(2);
-          }
+    // Calculate average rating
+    let avgRating = 0;
+    if (spotJSON.Reviews.length) {
+      const totalRating = spotJSON.Reviews.reduce((total, review) => total + review.stars, 0);
+      avgRating = (totalRating / spotJSON.Reviews.length).toFixed(2);
+    }
 
-          // Find preview image URL
-          const previewImage = spotJSON.SpotImages.length ? spotJSON.SpotImages[0].url : 'No preview image available';
+    // Find preview image URL
+    const previewImage = spotJSON.SpotImages.length ? spotJSON.SpotImages[0].url : 'No preview image available';
 
-          // Simplify the spot object
-          return {
-              ...spotJSON,
-              avgRating: avgRating,
-              previewImage: previewImage
-          };
-      });
+
+    return {
+      ...spotJSON,
+      avgRating: avgRating,
+      previewImage: previewImage
+      };
+    });
 
       res.status(200).json({ Spots: processedSpots });
   } catch (error) {
