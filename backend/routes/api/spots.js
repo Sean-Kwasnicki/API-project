@@ -9,6 +9,20 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
+
+// Validation middleware
+const validateSpot = [
+  check('address').notEmpty().withMessage('Street address is required'),
+  check('city').notEmpty().withMessage('City is required'),
+  check('state').notEmpty().withMessage('State is required'),
+  check('country').notEmpty().withMessage('Country is required'),
+  check('lat').isFloat({ min: -90, max: 90 }).withMessage('Latitude must be within -90 and 90'),
+  check('lng').isFloat({ min: -180, max: 180 }).withMessage('Longitude must be within -180 and 180'),
+  check('name').isLength({ max: 50 }).withMessage('Name must be less than 50 characters'),
+  check('description').notEmpty().withMessage('Description is required'),
+  check('price').isFloat({ min: 0 }).withMessage('Price per day must be a positive number'),
+];
+
 ///////////////////////////////////////////////////////////////
 
 // Get all Spots -- Return all the spots
@@ -179,19 +193,6 @@ router.get('/:spotId', async (req, res) => {
 // Create a Spot Route
 // Creates and returns a new spot.
 
-// Validation middleware
-const validateSpot = [
-  check('address').notEmpty().withMessage('Street address is required'),
-  check('city').notEmpty().withMessage('City is required'),
-  check('state').notEmpty().withMessage('State is required'),
-  check('country').notEmpty().withMessage('Country is required'),
-  check('lat').isFloat({ min: -90, max: 90 }).withMessage('Latitude must be within -90 and 90'),
-  check('lng').isFloat({ min: -180, max: 180 }).withMessage('Longitude must be within -180 and 180'),
-  check('name').isLength({ max: 50 }).withMessage('Name must be less than 50 characters'),
-  check('description').notEmpty().withMessage('Description is required'),
-  check('price').isFloat({ min: 0 }).withMessage('Price per day must be a positive number'),
-];
-
 router.post('/', requireAuth, validateSpot, async (req, res) => {
   const validationErrors = validationResult(req);
   if (!validationErrors.isEmpty()) {
@@ -261,9 +262,10 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
   }
 });
 
+//////////////////////////////////////////////////////
+
 // Edit a Spot
 // Updates and returns an existing spot.
-
 
 // PUT /api/spots/:spotId - Update a spot
 router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
