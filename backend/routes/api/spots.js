@@ -176,7 +176,7 @@ router.get('/:spotId', async (req, res) => {
 
 /////////////////////////////////////////////////////////////
 
-// Create a Spot Route
+// Create a Spot
 // Creates and returns a new spot.
 
 // Validation middleware
@@ -222,6 +222,44 @@ router.post('/', requireAuth, validateSpot, async (req, res) => {
   }
 });
 
+///////////////////////////////////////////////////////
+
+// Add an Image to a Spot based on the Spot's id
+// Create and return a new image for a spot specified by id.
+// Add an image to a Spot based on the Spot's id
+router.post('/:spotId/images', requireAuth, async (req, res, next) => {
+  const { spotId } = req.params;
+  const { url, preview } = req.body;
+  const userId = req.user.id; 
+
+  try {
+    // Verify the spot exists and belongs to the current user
+    const spot = await Spot.findByPk(spotId);
+    if (!spot) {
+      return res.status(404).json({ message: "Spot couldn't be found" });
+    }
+    if (spot.ownerId !== userId) {
+      return res.status(403).json({ message: "Forbidden. You do not have permission to add an image to this spot." });
+    }
+
+    // Create the SpotImage
+    const newImage = await SpotImage.create({
+      spotId,
+      url,
+      preview
+    });
+
+    // Send the successful response
+    res.status(200).json({
+      id: newImage.id,
+      url: newImage.url,
+      preview: newImage.preview
+    });
+  } catch (error) {
+    console.error('Failed to add image to spot:', error);
+    next(error); // Pass errors to the error handler
+  }
+});
 //////////////////////////////////////////////////////////////
 
 // Edit a Spot
