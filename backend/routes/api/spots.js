@@ -22,10 +22,10 @@ const validateSpot = [
     .notEmpty()
     .withMessage('Country is required'),
   check('lat')
-    .isFloat({ min: -90, max: 90 })
+    .isDecimal({ min: -90, max: 90 })
     .withMessage('Latitude must be within -90 and 90'),
   check('lng')
-    .isFloat({ min: -180, max: 180 })
+    .isDecimal({ min: -180, max: 180 })
     .withMessage('Longitude must be within -180 and 180'),
   check('name')
     .isLength({ max: 50 })
@@ -34,7 +34,7 @@ const validateSpot = [
     .notEmpty()
     .withMessage('Description is required'),
   check('price')
-    .isFloat({ min: 0 })
+    .isDecimal({ min: 0 })
     .withMessage('Price per day must be a positive number'),
   handleValidationErrors
 ];
