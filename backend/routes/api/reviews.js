@@ -29,6 +29,17 @@ router.get('/current', requireAuth, async (req, res) => {
           attributes: ['id', 'firstName', 'lastName']
         },
         {
+          model: Spot,
+          attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
+          include: [{
+            // Need the SpotsImage to be previewImage and have the image url need to sue teh helper function I built in spots 
+            model: SpotImage,
+            attributes: ['url'],
+            where: { preview: true },
+            required: false
+          }]
+        },
+        {
           model: ReviewImage,
           as: 'ReviewImages',
           attributes: ['id', 'url']
