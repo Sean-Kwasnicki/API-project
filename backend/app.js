@@ -24,14 +24,14 @@ if (!isProduction) {
     // enable cors only in development
     app.use(cors());
   }
-  
+
   // helmet helps set a variety of headers to better secure your app
   app.use(
     helmet.crossOriginResourcePolicy({
       policy: "cross-origin"
     })
   );
-  
+
   // Set the _csrf token and create req.csrfToken method
   app.use(
     csurf({
@@ -43,8 +43,8 @@ if (!isProduction) {
     })
   );
 
- 
-  
+
+
   // After all middlewares
   app.use(routes); // Connect all the routes
 
@@ -80,7 +80,7 @@ app.use((err, _req, _res, next) => {
 });
 
 // backend/app.js
-// ...
+// NEEDS TO BE CHANGED TO MATCH THE PRODUCTION OUTPUT
 // Error formatter
 app.use((err, _req, res, _next) => {
     res.status(err.status || 500);
