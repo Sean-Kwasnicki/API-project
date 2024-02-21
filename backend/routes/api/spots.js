@@ -17,15 +17,15 @@ const validateSpot = [
     .withMessage('City is required'),
   check('state')
     .notEmpty()
-      .withMessage('State is required'),
+    .withMessage('State is required'),
   check('country')
     .notEmpty()
     .withMessage('Country is required'),
   check('lat')
-    .isDecimal({ min: -90, max: 90 })
+    .isFloat({ min: -90, max: 90 })
     .withMessage('Latitude must be within -90 and 90'),
   check('lng')
-    .isDecimal({ min: -180, max: 180 })
+    .isFloat({ min: -180, max: 180 })
     .withMessage('Longitude must be within -180 and 180'),
   check('name')
     .isLength({ max: 50 })
@@ -34,7 +34,7 @@ const validateSpot = [
     .notEmpty()
     .withMessage('Description is required'),
   check('price')
-    .isDecimal({ min: 0 })
+    .isFloat({ min: 0 })
     .withMessage('Price per day must be a positive number'),
   handleValidationErrors
 ];
@@ -84,8 +84,8 @@ function findPreviewImage(spotImages) {
 }
 
 
-// Function to process each spot, calculate the average rating, and find preview images
-function processSpots(spots) {
+// Function to format each spot to match the api docs, calculate the average rating, and find preview images
+function formatSpots(spots) {
   let processedSpots = [];
 
   for (const spot of spots) {
@@ -122,7 +122,7 @@ router.get('/', async (req, res) => {
         }
       ]
     });
-    const processedSpots = processSpots(spots);
+    const processedSpots = formatSpots(spots);
     res.status(200).json({ Spots: processedSpots });
   }
 
@@ -152,7 +152,7 @@ router.get('/current', requireAuth, async (req, res) => {
         }
       ]
     });
-    const processedSpots = processSpots(spots);
+    const processedSpots = formatSpots(spots);
     res.status(200).json({ Spots: processedSpots });
   } catch (error) {
     console.error('Error fetching spots for current user:', error);
