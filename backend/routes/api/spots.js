@@ -1,6 +1,7 @@
 
+
 const express = require('express');
-const { Spot, Review, SpotImage, User, sequelize } = require('../../db/models');
+const { Spot, Review, SpotImage, User, ReviewImage, sequelize } = require('../../db/models');
 const bcrypt = require('bcryptjs');
 
 const { requireAuth } = require('../../utils/auth');
@@ -9,18 +10,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
-// Validation middleware
-const validateSpot = [
-  check('address').notEmpty().withMessage('Street address is required'),
-  check('city').notEmpty().withMessage('City is required'),
-  check('state').notEmpty().withMessage('State is required'),
-  check('country').notEmpty().withMessage('Country is required'),
-  check('lat').isFloat({ min: -90, max: 90 }).withMessage('Latitude must be within -90 and 90'),
-  check('lng').isFloat({ min: -180, max: 180 }).withMessage('Longitude must be within -180 and 180'),
-  check('name').isLength({ max: 50 }).withMessage('Name must be less than 50 characters'),
-  check('description').notEmpty().withMessage('Description is required'),
-  check('price').isFloat({ min: 0 }).withMessage('Price per day must be a positive number'),
-];
+///////////////////////////////////////////////////////////////
 
 // Helper function to calculate average rating
 function calculateAvgRating(reviews) {
@@ -137,13 +127,27 @@ router.get('/:spotId', async (req, res) => {
   }
 });
 
+
+
+/////////////////////////////////////////////////////////////
+
 // Create a Spot Route
 // Creates and returns a new spot.
+
+// Validation middleware
+const validateSpot = [
+  check('address').notEmpty().withMessage('Street address is required'),
+  check('city').notEmpty().withMessage('City is required'),
+  check('state').notEmpty().withMessage('State is required'),
+  check('country').notEmpty().withMessage('Country is required'),
+  check('lat').isFloat({ min: -90, max: 90 }).withMessage('Latitude must be within -90 and 90'),
+  check('lng').isFloat({ min: -180, max: 180 }).withMessage('Longitude must be within -180 and 180'),
+  check('name').isLength({ max: 50 }).withMessage('Name must be less than 50 characters'),
+  check('description').notEmpty().withMessage('Description is required'),
+  check('price').isFloat({ min: 0 }).withMessage('Price per day must be a positive number'),
+];
+
 router.post('/', requireAuth, validateSpot, async (req, res) => {
-  const validationErrors = validationResult(req);
-  if (!validationErrors.isEmpty()) {
-    return res.status(400).json({ message: "Bad Request", errors: validationErrors.array().map(error => error.msg) });
-  }
 
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
   const ownerId = req.user.id;
@@ -168,6 +172,8 @@ router.post('/', requireAuth, validateSpot, async (req, res) => {
     res.status(500).json({ message: 'An error occurred while creating the spot.' });
   }
 });
+
+//////////////////////////////////////////////////////////////
 
 // Add an Image to a Spot based on the Spot's id
 // Create and return a new image for a spot specified by id.
@@ -212,12 +218,6 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
   const userId = req.user.id;
 
-  // Check for validation errors
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array().map((error) => error.msg) });
-  }
-
   try {
     const spot = await Spot.findByPk(spotId);
 
@@ -251,8 +251,8 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   }
 });
 
-// Delete a Spot
-// Delete an existing spot.
+/////////////////////////////////////////////////////
+
 router.delete('/:spotId', requireAuth, async (req, res, next) => {
   const { spotId } = req.params;
   const userId = req.user.id;
@@ -279,6 +279,8 @@ router.delete('/:spotId', requireAuth, async (req, res, next) => {
     next(error);
   }
 });
+
+//////////////////////////////////////////////////////////
 
 
 module.exports = router;
