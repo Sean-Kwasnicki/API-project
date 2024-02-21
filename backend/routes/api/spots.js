@@ -9,7 +9,6 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
-
 // Validation middleware
 const validateSpot = [
   check('address').notEmpty().withMessage('Street address is required'),
