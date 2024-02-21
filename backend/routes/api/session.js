@@ -1,7 +1,7 @@
 // backend/routes/api/session.js
 const express = require('express');
 const { Op } = require('sequelize');
-const bcrypt = require('bcryptjs');
+
 
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
 const { User } = require('../../db/models');
@@ -73,7 +73,7 @@ router.delete(
 
 // Restore session user
 router.get(
-  '/',
+  '/', restoreUser, 
   (req, res) => {
     const { user } = req;
     if (user) {
