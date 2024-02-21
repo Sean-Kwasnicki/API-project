@@ -1,7 +1,6 @@
 const express = require('express');
 const { Review, Spot, User, ReviewImage, SpotImage } = require('../../db/models');
 
-
 const { requireAuth } = require('../../utils/auth');
 const { check} = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -11,7 +10,7 @@ const router = express.Router();
 // Validation middleware for Valid Review
 const validateReview = [
   check('review')
-    .notEmpty()
+    .exists({ checkFalsy: true })
     .withMessage('Review text is required'),
   check('stars')
     .isInt({ min: 1, max: 5 })
@@ -26,15 +25,19 @@ router.get('/current', requireAuth, async (req, res) => {
     const reviews = await Review.findAll({
       where: { userId: userId },
       include: [
+        { model: User, attributes: ['id', 'firstName', 'lastName'] },
         {
-          model: User,
-          attributes: ['id', 'firstName', 'lastName']
+          model: Spot,
+          attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
+          include: [{
+            // Need the SpotsImage to be previewImage and have the image url
+            model: SpotImage,
+            attributes: ['url'],
+            where: { preview: true },
+            required: false
+          }]
         },
-        {
-          model: ReviewImage,
-          as: 'ReviewImages',
-          attributes: ['id', 'url']
-        }
+        { model: ReviewImage, as: 'ReviewImages', attributes: ['id', 'url'] }
       ]
     });
     res.json({ Reviews: reviews });
@@ -45,9 +48,10 @@ router.get('/current', requireAuth, async (req, res) => {
 });
 
 // Add an image to the reivews ID
+// POST /api/reviews/:reviewId/images
 router.post('/:reviewId/images', requireAuth, async (req, res) => {
   const { reviewId } = req.params;
-  const { url } = req.body;
+  const { url, preview } = req.body;
   const userId = req.user.id;
 
   try {
@@ -60,7 +64,7 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
       return res.status(403).json({ message: "Forbidden. You do not own this review." });
     }
 
-    // Check for maximum number of 10 images
+    // Check for maximum number of images
     const imagesCount = await ReviewImage.count({ where: { reviewId } });
     if (imagesCount >= 10) {
       return res.status(403).json({ message: "Maximum number of images for this resource was reached" });
@@ -70,6 +74,7 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
     const newImage = await ReviewImage.create({
       reviewId,
       url,
+      preview,
     });
 
     // Respond with only the 'id' and 'url' of the new image
@@ -84,7 +89,7 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
 });
 
 // Route to edit a review
-router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
+router.put('/:reviewId', requireAuth, async (req, res) => {
   const { reviewId } = req.params;
   const { review, stars } = req.body;
   const userId = req.user.id;
@@ -119,6 +124,15 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
       updatedAt: updatedReview.updatedAt
     });
   } catch (error) {
+    console.error('Error updating review:', error);
+    if (error.name === 'SequelizeValidationError') {
+      // Handle validation errors
+      let errors = {};
+      error.errors.forEach((e) => {
+        errors[e.path] = e.message;
+      });
+      return res.status(400).json({ message: "Bad Request", errors });
+    }
     return res.status(500).json({ message: 'An unexpected error occurred' });
   }
 });
@@ -129,6 +143,7 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
   const userId = req.user.id;
 
   try {
+    // Find the review by ID to ensure it exists and belongs to the current user
     const review = await Review.findByPk(reviewId);
 
     if (!review) {
@@ -136,6 +151,7 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
     }
 
     if (review.userId !== userId) {
+      // The review does not belong to the current user
       return res.status(403).json({ message: "Forbidden. You do not own this review." });
     }
 
@@ -149,5 +165,6 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
     res.status(500).json({ message: 'An unexpected error occurred' });
   }
 });
+
 
 module.exports = router;
