@@ -43,7 +43,6 @@ router.get('/current', requireAuth, async (req, res) => {
 });
 
 // Add an image to the reivews ID
-// POST /api/reviews/:reviewId/images
 router.post('/:reviewId/images', requireAuth, async (req, res) => {
   const { reviewId } = req.params;
   const { url, preview } = req.body;
@@ -129,7 +128,6 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
   const userId = req.user.id;
 
   try {
-    // Find the review by ID to ensure it exists and belongs to the current user
     const review = await Review.findByPk(reviewId);
 
     if (!review) {
@@ -137,7 +135,6 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
     }
 
     if (review.userId !== userId) {
-      // The review does not belong to the current user
       return res.status(403).json({ message: "Forbidden. You do not own this review." });
     }
 
