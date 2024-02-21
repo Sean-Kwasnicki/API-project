@@ -43,9 +43,10 @@ router.get('/current', requireAuth, async (req, res) => {
 });
 
 // Add an image to the reivews ID
+// POST /api/reviews/:reviewId/images
 router.post('/:reviewId/images', requireAuth, async (req, res) => {
   const { reviewId } = req.params;
-  const { url } = req.body;
+  const { url, preview } = req.body;
   const userId = req.user.id;
 
   try {
@@ -58,7 +59,7 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
       return res.status(403).json({ message: "Forbidden. You do not own this review." });
     }
 
-    // Check for maximum number of 10 images
+    // Check for maximum number of images
     const imagesCount = await ReviewImage.count({ where: { reviewId } });
     if (imagesCount >= 10) {
       return res.status(403).json({ message: "Maximum number of images for this resource was reached" });
@@ -68,6 +69,7 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
     const newImage = await ReviewImage.create({
       reviewId,
       url,
+      preview,
     });
 
     // Respond with only the 'id' and 'url' of the new image
@@ -127,6 +129,7 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
   const userId = req.user.id;
 
   try {
+    // Find the review by ID to ensure it exists and belongs to the current user
     const review = await Review.findByPk(reviewId);
 
     if (!review) {
@@ -134,6 +137,7 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
     }
 
     if (review.userId !== userId) {
+      // The review does not belong to the current user
       return res.status(403).json({ message: "Forbidden. You do not own this review." });
     }
 
@@ -147,5 +151,6 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
     res.status(500).json({ message: 'An unexpected error occurred' });
   }
 });
+
 
 module.exports = router;
