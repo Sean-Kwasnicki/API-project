@@ -87,7 +87,7 @@ router.get('/current', requireAuth, async (req, res) => {
   }
 });
 
-// // Route to get details of a Spot by its ID
+// Route to get details of a Spot by its ID
 router.get('/:spotId', async (req, res) => {
   const { spotId } = req.params;
   try {
@@ -139,7 +139,6 @@ router.get('/:spotId', async (req, res) => {
 
 // Create a Spot Route
 // Creates and returns a new spot.
-
 router.post('/', requireAuth, validateSpot, async (req, res) => {
   const validationErrors = validationResult(req);
   if (!validationErrors.isEmpty()) {
