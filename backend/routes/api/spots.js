@@ -40,7 +40,7 @@ const validateSpot = [
   handleValidationErrors
 ];
 
-// Middleware to validate review fields
+// Validation middleware for Valid Review
 const validateReview = [
   check('review')
     .exists({ checkFalsy: true })
@@ -53,10 +53,18 @@ const validateReview = [
 
 // Helper function to calculate average rating
 function calculateAvgRating(reviews) {
-  if (reviews.length === 0) return 'No ratings yet';
+  // Check if there are no reviews
+  if (reviews.length === 0) {
+    return 'No ratings yet';
+  }
+
+  // Calculate the total rating by summing up all the stars
   const totalRating = reviews.reduce((acc, review) => acc + review.stars, 0);
-  return parseFloat((totalRating / reviews.length).toFixed(1));
+
+  // Calculate and return the average rating
+  return (totalRating / reviews.length).toFixed(1);
 }
+
 
 // Helper function to find a preview image
 function findPreviewImage(spotImages) {
@@ -340,8 +348,6 @@ router.get('/:spotId/reviews', async (req, res) => {
 
 
 // Create a Review for a Spot based on the Spot's id
-// Create and return a new review for a spot specified by id.
-// POST /api/spots/:spotId/reviews - Create a review for a spot
 router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res) => {
   const { spotId } = req.params;
   const { review, stars } = req.body;
