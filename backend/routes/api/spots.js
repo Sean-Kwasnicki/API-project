@@ -1,6 +1,5 @@
 const express = require('express');
 const { Spot, Review, SpotImage, User, ReviewImage} = require('../../db/models');
-const bcrypt = require('bcryptjs');
 
 const { requireAuth } = require('../../utils/auth');
 const { check} = require('express-validator');
@@ -43,7 +42,7 @@ const validateSpot = [
 // Validation middleware for Valid Review
 const validateReview = [
   check('review')
-    .exists({ checkFalsy: true })
+    .notEmpty()
     .withMessage('Review text is required'),
   check('stars')
     .isInt({ min: 1, max: 5 })
@@ -76,6 +75,7 @@ function calculateAvgRating(reviews) {
 // Helper function to find a preview image
 function findPreviewImage(spotImages) {
   for (const image of spotImages) {
+    // Should only return on photo that is true
     if (image.preview === true) {
       return image.url;
     }
