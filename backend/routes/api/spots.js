@@ -114,7 +114,7 @@ router.get('/:spotId', async (req, res) => {
     // Convert sequelize model instance to JSON
     const spotData = spot.toJSON();
 
-    // Construct response Ill try and make this better but only way I could figure out hwo ot match the output
+    // Construct response Ill try and make this better but only way I could figure out how to match the output
     const response = {
       id: spotData.id,
       ownerId: spotData.Owner.id,
@@ -142,9 +142,6 @@ router.get('/:spotId', async (req, res) => {
   }
 });
 
-
-
-/////////////////////////////////////////////////////////////
 
 // Create a Spot Route
 // Creates and returns a new spot.
@@ -183,7 +180,6 @@ router.post('/', requireAuth, validateSpot, async (req, res) => {
 
 // Add an Image to a Spot based on the Spot's id
 // Create and return a new image for a spot specified by id.
-// Add an image to a Spot based on the Spot's id
 router.post('/:spotId/images', requireAuth, async (req, res, next) => {
   const { spotId } = req.params;
   const { url, preview } = req.body;
@@ -214,7 +210,7 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
     });
   } catch (error) {
     console.error('Failed to add image to spot:', error);
-    next(error); // Pass errors to the error handler
+    next(error);
   }
 });
 
@@ -223,7 +219,6 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
 // Edit a Spot
 // Updates and returns an existing spot.
 
-// PUT /api/spots/:spotId - Update a spot
 router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
@@ -268,8 +263,9 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   }
 });
 
-/////////////////////////////////////////////////////
 
+// Delete a Spot
+// Delete an existing spot.
 router.delete('/:spotId', requireAuth, async (req, res, next) => {
   const { spotId } = req.params;
   const userId = req.user.id;
@@ -297,8 +293,5 @@ router.delete('/:spotId', requireAuth, async (req, res, next) => {
   }
 });
 
-//////////////////////////////////////////////////////////
 
-
-// Export the router to use it in your main server file (app.js or index.js).
 module.exports = router;
