@@ -22,10 +22,10 @@ const validateSpot = [
     .notEmpty()
     .withMessage('Country is required'),
   check('lat')
-    .isFloat({ min: -90, max: 90 })
+    .isDecimal({ min: -90, max: 90 })
     .withMessage('Latitude must be within -90 and 90'),
   check('lng')
-    .isFloat({ min: -180, max: 180 })
+    .isDecimal({ min: -180, max: 180 })
     .withMessage('Longitude must be within -180 and 180'),
   check('name')
     .isLength({ max: 50 })
@@ -34,7 +34,7 @@ const validateSpot = [
     .notEmpty()
     .withMessage('Description is required'),
   check('price')
-    .isFloat({ min: 0 })
+    .isDecimal({ min: 0 })
     .withMessage('Price per day must be a positive number'),
   handleValidationErrors
 ];
@@ -194,7 +194,7 @@ router.get('/:spotId', async (req, res) => {
     // Convert sequelize model instance to JSON
     const spotData = spot.toJSON();
 
-    // Construct response Ill try and make this better but only way I could figure out hwo ot match the output
+    // Construct response Ill try and make this better but only way I could figure out how to match the output
     const response = {
       id: spotData.id,
       ownerId: spotData.Owner.id,
@@ -298,7 +298,6 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
 
 // Edit a Spot
 // Updates and returns an existing spot.
-
 router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
