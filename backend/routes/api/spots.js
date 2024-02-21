@@ -194,7 +194,7 @@ router.get('/:spotId', async (req, res) => {
     // Convert sequelize model instance to JSON
     const spotData = spot.toJSON();
 
-    // Construct response Ill try and make this better but only way I could figure out hwo ot match the output
+    // Construct response Ill try and make this better but only way I could figure out how to match the output
     const response = {
       id: spotData.id,
       ownerId: spotData.Owner.id,
@@ -298,7 +298,6 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
 
 // Edit a Spot
 // Updates and returns an existing spot.
-
 router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
