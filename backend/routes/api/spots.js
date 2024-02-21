@@ -23,7 +23,6 @@ const validateSpot = [
   check('price').isFloat({ min: 0 }).withMessage('Price per day must be a positive number'),
 ];
 
-///////////////////////////////////////////////////////////////
 
 // Helper function to calculate average rating
 function calculateAvgRating(reviews) {
@@ -49,7 +48,6 @@ function processSpots(spots) {
     return spotJSON;
   });
 }
-
 
 // Get all Spots
 // Return all the spots
@@ -90,7 +88,6 @@ router.get('/current', requireAuth, async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching spots.' });
   }
 });
-
 
 // // Route to get details of a Spot by its ID
 router.get('/:spotId', async (req, res) => {
@@ -142,7 +139,6 @@ router.get('/:spotId', async (req, res) => {
   }
 });
 
-
 // Create a Spot Route
 // Creates and returns a new spot.
 
@@ -175,8 +171,6 @@ router.post('/', requireAuth, validateSpot, async (req, res) => {
     res.status(500).json({ message: 'An error occurred while creating the spot.' });
   }
 });
-
-//////////////////////////////////////////////////////////////
 
 // Add an Image to a Spot based on the Spot's id
 // Create and return a new image for a spot specified by id.
@@ -213,8 +207,6 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
     next(error);
   }
 });
-
-//////////////////////////////////////////////////////
 
 // Edit a Spot
 // Updates and returns an existing spot.
@@ -262,7 +254,6 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
 
 // Delete a Spot
 // Delete an existing spot.
