@@ -11,128 +11,82 @@ const router = express.Router();
 
 ///////////////////////////////////////////////////////////////
 
-// Get all Spots -- Return all the spots
-router.get('/', async (req, res, next) => {
+// Helper function to calculate average rating
+function calculateAvgRating(reviews) {
+  if (reviews.length === 0) return 'No ratings yet';
+  const totalRating = reviews.reduce((acc, review) => acc + review.stars, 0);
+  return parseFloat((totalRating / reviews.length).toFixed(1));
+}
+
+// Helper function to find a preview image
+function findPreviewImage(spotImages) {
+  const previewImage = spotImages.find(image => image.preview) || null;
+  return previewImage ? previewImage.url : 'No preview image';
+}
+
+// Function to process spots
+function processSpots(spots) {
+  return spots.map(spot => {
+    const spotJSON = spot.toJSON();
+    spotJSON.avgRating = calculateAvgRating(spotJSON.Reviews);
+    spotJSON.previewImage = findPreviewImage(spotJSON.SpotImages);
+    delete spotJSON.SpotImages;
+    delete spotJSON.Reviews;
+    return spotJSON;
+  });
+}
+
+
+// Get all Spots
+// Return all the spots
+router.get('/', async (req, res) => {
   try {
-    // Step 1: Fetch all spots including associated SpotImages and Reviews
     const spots = await Spot.findAll({
       include: [
-        {
-          model: SpotImage,
-          as: 'SpotImages',
-        },
-        {
-          model: Review,
-          as: 'Reviews',
-        }
+        { model: SpotImage, as: 'SpotImages' },
+        { model: Review, as: 'Reviews' }
       ]
-      });
-
-      // Step 2: Process each spot to calculate avgRating and find previewImage
-      const processedSpots = spots.map(spot => {
-      const spotJSON = spot.toJSON();
-
-      // Calculate average rating
-      const avgRating = spotJSON.Reviews.reduce((acc, review) => acc + review.stars, 0) / spotJSON.Reviews.length || null;
-      spotJSON.avgRating = avgRating ? parseFloat(avgRating.toFixed(1)) : 'No ratings yet';
-
-      // Find preview image URL
-      const previewImage = spotJSON.SpotImages.find(image => image.preview) || null;
-      spotJSON.previewImage = previewImage ? previewImage.url : 'No preview image';
-
-      // Remove SpotImages and Reviews from the response as needed
-      delete spotJSON.SpotImages;
-      delete spotJSON.Reviews;
-
-      return spotJSON;
     });
+    const processedSpots = processSpots(spots);
+    res.status(200).json({ Spots: processedSpots });
+  }
 
-      res.status(200).json({ Spots: processedSpots });
-  } catch (error) {
-      console.error('Error fetching spots:', error);
-      res.status(500).send({ error: 'An error occurred while fetching spots.' });
+  catch (error) {
+    console.error('Error fetching spots:', error);
+    res.status(500).send({ error: 'An error occurred while fetching spots.' });
   }
 });
-
-//////////////////////////////////////////////////////////////
 
 //Get all Spots owned by the Current User
 //Returns all the spots owned (created) by the current user.
-
 router.get('/current', requireAuth, async (req, res) => {
   try {
     const ownerId = req.user.id;
-
-    // Fetch all spots owned by the current user
     const spots = await Spot.findAll({
       where: { ownerId: ownerId },
       include: [
-        {
-          model: SpotImage,
-          as: 'SpotImages',
-          where: { preview: true },
-          required: false
-        },
-        {
-          model: Review,
-          as: 'Reviews'
-        }
+        { model: SpotImage, as: 'SpotImages', where: { preview: true }, required: false },
+        { model: Review, as: 'Reviews' }
       ]
     });
-
-    // Process each spot to calculate average rating and attach preview image URL
-    const processedSpots = spots.map(spot => {
-    const spotJSON = spot.toJSON();
-
-    // Calculate average rating
-    let avgRating = 0;
-    if (spotJSON.Reviews.length) {
-      const totalRating = spotJSON.Reviews.reduce((total, review) => total + review.stars, 0);
-      avgRating = (totalRating / spotJSON.Reviews.length).toFixed(2);
-    }
-
-    // Find preview image URL
-    const previewImage = spotJSON.SpotImages.length ? spotJSON.SpotImages[0].url : 'No preview image available';
-
-
-    return {
-      ...spotJSON,
-      avgRating: avgRating,
-      previewImage: previewImage
-      };
-    });
-
-      res.status(200).json({ Spots: processedSpots });
+    const processedSpots = processSpots(spots);
+    res.status(200).json({ Spots: processedSpots });
   } catch (error) {
-      console.error('Error fetching spots for current user:', error);
-      res.status(500).json({ error: 'An error occurred while fetching spots.' });
+    console.error('Error fetching spots for current user:', error);
+    res.status(500).json({ error: 'An error occurred while fetching spots.' });
   }
 });
 
-/////////////////////////////////////////////////////////////////
 
-// Route to get details of a Spot by its ID
+// // Route to get details of a Spot by its ID
 router.get('/:spotId', async (req, res) => {
   const { spotId } = req.params;
-
   try {
     const spot = await Spot.findByPk(spotId, {
       include: [
-        {
-          model: SpotImage,
-          as: 'SpotImages',
-          attributes: ['id', 'url', 'preview']
-        },
-        {
-          model: User,
-          as: 'Owner',
-          attributes: ['id', 'firstName', 'lastName']
-        },
-        {
-          model: Review,
-          as: 'Reviews',
-          attributes: ['stars']
-        }
+        { model: SpotImage, as: 'SpotImages', attributes: ['id', 'url', 'preview'] },
+        { model: User, as: 'Owner', attributes: ['id', 'firstName', 'lastName'] },
+        { model: Review, as: 'Reviews', attributes: ['stars'] }
       ]
     });
 
@@ -140,29 +94,29 @@ router.get('/:spotId', async (req, res) => {
       return res.status(404).json({ message: "Spot couldn't be found" });
     }
 
-    // Calculate numReviews and avgStarRating
-    const numReviews = spot.Reviews.length;
-    const avgStarRating = numReviews > 0
-      ? parseFloat((spot.Reviews.reduce((acc, curr) => acc + curr.stars, 0) / numReviews).toFixed(1))
-      : 0;
+    // Calculate avgStarRating
+    const avgStarRating = calculateAvgRating(spot.Reviews);
 
-    // Constructing the response to match the specified format
+    // Convert sequelize model instance to JSON
+    const spotData = spot.toJSON();
+
+    // Construct response Ill try and make this better but only way I could figure out hwo ot match the output
     const response = {
-      id: spot.id,
-      ownerId: spot.ownerId,
-      address: spot.address,
-      city: spot.city,
-      state: spot.state,
-      country: spot.country,
-      lat: spot.lat,
-      lng: spot.lng,
-      name: spot.name,
-      description: spot.description,
-      price: spot.price,
-      createdAt: spot.createdAt,
-      updatedAt: spot.updatedAt,
-      numReviews,
-      avgStarRating,
+      id: spotData.id,
+      ownerId: spotData.Owner.id,
+      address: spotData.address,
+      city: spotData.city,
+      state: spotData.state,
+      country: spotData.country,
+      lat: spotData.lat,
+      lng: spotData.lng,
+      name: spotData.name,
+      description: spotData.description,
+      price: spotData.price,
+      createdAt: spotData.createdAt,
+      updatedAt: spotData.updatedAt,
+      numReviews: spotData.Reviews.length,
+      avgStarRating: avgStarRating,
       SpotImages: spot.SpotImages,
       Owner: spot.Owner
     };
@@ -173,6 +127,8 @@ router.get('/:spotId', async (req, res) => {
     res.status(500).json({ message: 'An error occurred while fetching spot details.' });
   }
 });
+
+
 
 /////////////////////////////////////////////////////////////
 
