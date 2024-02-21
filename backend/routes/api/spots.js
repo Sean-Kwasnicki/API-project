@@ -1,6 +1,7 @@
 
+
 const express = require('express');
-const { Spot, Review, SpotImage, User, sequelize } = require('../../db/models');
+const { Spot, Review, SpotImage, User, ReviewImage, sequelize } = require('../../db/models');
 const bcrypt = require('bcryptjs');
 
 const { requireAuth } = require('../../utils/auth');
@@ -9,19 +10,48 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
-// Validation middleware
+// Validation middleware for Valid Spot
 const validateSpot = [
-  check('address').notEmpty().withMessage('Street address is required'),
-  check('city').notEmpty().withMessage('City is required'),
-  check('state').notEmpty().withMessage('State is required'),
-  check('country').notEmpty().withMessage('Country is required'),
-  check('lat').isFloat({ min: -90, max: 90 }).withMessage('Latitude must be within -90 and 90'),
-  check('lng').isFloat({ min: -180, max: 180 }).withMessage('Longitude must be within -180 and 180'),
-  check('name').isLength({ max: 50 }).withMessage('Name must be less than 50 characters'),
-  check('description').notEmpty().withMessage('Description is required'),
-  check('price').isFloat({ min: 0 }).withMessage('Price per day must be a positive number'),
+  check('address')
+    .notEmpty()
+    .withMessage('Street address is required'),
+  check('city')
+    .notEmpty()
+    .withMessage('City is required'),
+  check('state')
+    .notEmpty()
+      .withMessage('State is required'),
+  check('country')
+    .notEmpty()
+    .withMessage('Country is required'),
+  check('lat')
+    .isFloat({ min: -90, max: 90 })
+    .withMessage('Latitude must be within -90 and 90'),
+  check('lng')
+    .isFloat({ min: -180, max: 180 })
+    .withMessage('Longitude must be within -180 and 180'),
+  check('name')
+    .isLength({ max: 50 })
+    .withMessage('Name must be less than 50 characters'),
+  check('description')
+    .notEmpty()
+    .withMessage('Description is required'),
+  check('price')
+    .isFloat({ min: 0 })
+    .withMessage('Price per day must be a positive number'),
+  handleValidationErrors
 ];
 
+// Middleware to validate review fields
+const validateReview = [
+  check('review')
+    .exists({ checkFalsy: true })
+    .withMessage('Review text is required'),
+  check('stars')
+    .isInt({ min: 1, max: 5 })
+    .withMessage('Stars must be an integer from 1 to 5'),
+  handleValidationErrors
+];
 
 // Helper function to calculate average rating
 function calculateAvgRating(reviews) {
@@ -89,6 +119,7 @@ router.get('/current', requireAuth, async (req, res) => {
   }
 });
 
+
 // // Route to get details of a Spot by its ID
 router.get('/:spotId', async (req, res) => {
   const { spotId } = req.params;
@@ -142,11 +173,8 @@ router.get('/:spotId', async (req, res) => {
 
 // Create a Spot Route
 // Creates and returns a new spot.
+
 router.post('/', requireAuth, validateSpot, async (req, res) => {
-  const validationErrors = validationResult(req);
-  if (!validationErrors.isEmpty()) {
-    return res.status(400).json({ message: "Bad Request", errors: validationErrors.array().map(error => error.msg) });
-  }
 
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
   const ownerId = req.user.id;
@@ -171,6 +199,7 @@ router.post('/', requireAuth, validateSpot, async (req, res) => {
     res.status(500).json({ message: 'An error occurred while creating the spot.' });
   }
 });
+
 
 // Add an Image to a Spot based on the Spot's id
 // Create and return a new image for a spot specified by id.
@@ -211,16 +240,12 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
 // Edit a Spot
 // Updates and returns an existing spot.
 
+
+// PUT /api/spots/:spotId - Update a spot
 router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
   const userId = req.user.id;
-
-  // Check for validation errors
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array().map((error) => error.msg) });
-  }
 
   try {
     const spot = await Spot.findByPk(spotId);
@@ -255,8 +280,6 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   }
 });
 
-// Delete Spot by ID
-
 router.delete('/:spotId', requireAuth, async (req, res, next) => {
   const { spotId } = req.params;
   const userId = req.user.id;
@@ -284,5 +307,77 @@ router.delete('/:spotId', requireAuth, async (req, res, next) => {
   }
 });
 
+// Get all reviews by a spot's ID
+router.get('/:spotId/reviews', async (req, res) => {
+  const { spotId } = req.params;
 
+  try {
+    // Check if the spot exists
+    const spotExists = await Spot.findByPk(spotId);
+    if (!spotExists) {
+      return res.status(404).json({ message: "Spot couldn't be found" });
+    }
+
+    // Fetch the reviews for the spot
+    const reviews = await Review.findAll({
+      where: { spotId },
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'firstName', 'lastName'],
+        },
+        {
+          model: ReviewImage,
+          attributes: ['id', 'url'],
+        },
+      ],
+    });
+
+    res.status(200).json({ Reviews: reviews });
+  } catch (error) {
+    console.error('Error fetching reviews for spot:', error);
+    res.status(500).json({ message: 'An error occurred while fetching reviews.' });
+  }
+});
+
+
+// Create a Review for a Spot based on the Spot's id
+// Create and return a new review for a spot specified by id.
+// POST /api/spots/:spotId/reviews - Create a review for a spot
+router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res) => {
+  const { spotId } = req.params;
+  const { review, stars } = req.body;
+  const userId = req.user.id;
+
+  // Validate request body
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array().map((error) => error.msg) });
+  }
+
+  // Check for existing review by this user for the spot
+  const existingReview = await Review.findOne({
+    where: {
+      userId,
+      spotId,
+    },
+  });
+
+  if (existingReview) {
+    return res.status(403).json({ message: 'User already has a review for this spot' });
+  }
+
+  // Create new review
+  const newReview = await Review.create({
+    userId,
+    spotId,
+    review,
+    stars,
+  });
+
+  // Return newly created review data
+  res.status(201).json(newReview);
+});
+
+// Export the router to use it in your main server file (app.js or index.js).
 module.exports = router;
