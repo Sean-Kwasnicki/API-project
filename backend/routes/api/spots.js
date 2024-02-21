@@ -9,7 +9,19 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
-///////////////////////////////////////////////////////////////
+// Validation middleware
+const validateSpot = [
+  check('address').notEmpty().withMessage('Street address is required'),
+  check('city').notEmpty().withMessage('City is required'),
+  check('state').notEmpty().withMessage('State is required'),
+  check('country').notEmpty().withMessage('Country is required'),
+  check('lat').isFloat({ min: -90, max: 90 }).withMessage('Latitude must be within -90 and 90'),
+  check('lng').isFloat({ min: -180, max: 180 }).withMessage('Longitude must be within -180 and 180'),
+  check('name').isLength({ max: 50 }).withMessage('Name must be less than 50 characters'),
+  check('description').notEmpty().withMessage('Description is required'),
+  check('price').isFloat({ min: 0 }).withMessage('Price per day must be a positive number'),
+];
+
 
 // Helper function to calculate average rating
 function calculateAvgRating(reviews) {
@@ -77,7 +89,6 @@ router.get('/current', requireAuth, async (req, res) => {
   }
 });
 
-
 // // Route to get details of a Spot by its ID
 router.get('/:spotId', async (req, res) => {
   const { spotId } = req.params;
@@ -129,25 +140,8 @@ router.get('/:spotId', async (req, res) => {
 });
 
 
-
-/////////////////////////////////////////////////////////////
-
 // Create a Spot Route
 // Creates and returns a new spot.
-
-// Validation middleware
-const validateSpot = [
-  check('address').notEmpty().withMessage('Street address is required'),
-  check('city').notEmpty().withMessage('City is required'),
-  check('state').notEmpty().withMessage('State is required'),
-  check('country').notEmpty().withMessage('Country is required'),
-  check('lat').isFloat({ min: -90, max: 90 }).withMessage('Latitude must be within -90 and 90'),
-  check('lng').isFloat({ min: -180, max: 180 }).withMessage('Longitude must be within -180 and 180'),
-  check('name').isLength({ max: 50 }).withMessage('Name must be less than 50 characters'),
-  check('description').notEmpty().withMessage('Description is required'),
-  check('price').isFloat({ min: 0 }).withMessage('Price per day must be a positive number'),
-];
-
 router.post('/', requireAuth, validateSpot, async (req, res) => {
   const validationErrors = validationResult(req);
   if (!validationErrors.isEmpty()) {
@@ -178,11 +172,8 @@ router.post('/', requireAuth, validateSpot, async (req, res) => {
   }
 });
 
-//////////////////////////////////////////////////////////////
-
 // Add an Image to a Spot based on the Spot's id
 // Create and return a new image for a spot specified by id.
-// Add an image to a Spot based on the Spot's id
 router.post('/:spotId/images', requireAuth, async (req, res, next) => {
   const { spotId } = req.params;
   const { url, preview } = req.body;
@@ -220,8 +211,6 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
 // Edit a Spot
 // Updates and returns an existing spot.
 
-
-// PUT /api/spots/:spotId - Update a spot
 router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
@@ -266,7 +255,7 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   }
 });
 
-/////////////////////////////////////////////////////
+// Delete Spot by ID
 
 router.delete('/:spotId', requireAuth, async (req, res, next) => {
   const { spotId } = req.params;
@@ -295,8 +284,5 @@ router.delete('/:spotId', requireAuth, async (req, res, next) => {
   }
 });
 
-//////////////////////////////////////////////////////////
 
-
-// Export the router to use it in your main server file (app.js or index.js).
 module.exports = router;
