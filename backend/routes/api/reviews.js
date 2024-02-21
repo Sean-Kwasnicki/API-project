@@ -1,6 +1,5 @@
 const express = require('express');
 const { Review, Spot, User, ReviewImage, SpotImage } = require('../../db/models');
-
 const { requireAuth } = require('../../utils/auth');
 const { check} = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -101,7 +100,7 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
     // Update the review
     await Review.update(
       { review, stars },
-      { where: { id: reviewId, userId } } 
+      { where: { id: reviewId, userId } }
     );
 
     // Fetch the updated review to return
