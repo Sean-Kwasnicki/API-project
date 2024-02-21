@@ -9,7 +9,7 @@ const router = express.Router();
 // Validation middleware for Valid Review
 const validateReview = [
   check('review')
-    .exists({ checkFalsy: true })
+    .notEmpty()
     .withMessage('Review text is required'),
   check('stars')
     .isInt({ min: 1, max: 5 })
@@ -88,7 +88,7 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
 });
 
 // Route to edit a review
-router.put('/:reviewId', requireAuth, async (req, res) => {
+router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
   const { reviewId } = req.params;
   const { review, stars } = req.body;
   const userId = req.user.id;
