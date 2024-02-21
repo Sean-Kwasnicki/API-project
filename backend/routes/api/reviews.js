@@ -119,15 +119,6 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
       updatedAt: updatedReview.updatedAt
     });
   } catch (error) {
-    console.error('Error updating review:', error);
-    if (error.name === 'SequelizeValidationError') {
-      // Handle validation errors
-      let errors = {};
-      error.errors.forEach((e) => {
-        errors[e.path] = e.message;
-      });
-      return res.status(400).json({ message: "Bad Request", errors });
-    }
     return res.status(500).json({ message: 'An unexpected error occurred' });
   }
 });
