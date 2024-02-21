@@ -1,9 +1,9 @@
 const express = require('express');
-const { Spot, Review, SpotImage, User, ReviewImage, sequelize } = require('../../db/models');
+const { Spot, Review, SpotImage, User, ReviewImage} = require('../../db/models');
 const bcrypt = require('bcryptjs');
 
 const { requireAuth } = require('../../utils/auth');
-const { check, validationResult } = require('express-validator');
+const { check} = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
@@ -51,37 +51,59 @@ const validateReview = [
   handleValidationErrors
 ];
 
-// Helper function to calculate average rating
+// Helper function to find average star rating
 function calculateAvgRating(reviews) {
   // Check if there are no reviews
   if (reviews.length === 0) {
     return 'No ratings yet';
   }
 
-  // Calculate the total rating by summing up all the stars
-  const totalRating = reviews.reduce((acc, review) => acc + review.stars, 0);
+  // Initialize totalRating to 0
+  let totalRating = 0;
 
-  // Calculate and return the average rating
-  return (totalRating / reviews.length).toFixed(1);
+  // Loop through each review and add its stars to totalRating
+  for (const review of reviews) {
+    totalRating += review.stars;
+  }
+
+  // Calculate the average rating
+  const averageRating = totalRating / reviews.length;
+
+  // Return the average rating formatted to one decimal place to match API Docs
+  return averageRating.toFixed(1);
 }
-
 
 // Helper function to find a preview image
 function findPreviewImage(spotImages) {
-  const previewImage = spotImages.find(image => image.preview) || null;
-  return previewImage ? previewImage.url : 'No preview image';
+  for (const image of spotImages) {
+    if (image.preview === true) {
+      return image.url;
+    }
+  }
+  return 'No preview image';
 }
 
-// Function to process spots
+
+// Function to process each spot, calculate the average rating, and find preview images
 function processSpots(spots) {
-  return spots.map(spot => {
-    const spotJSON = spot.toJSON();
+  let processedSpots = [];
+
+  for (const spot of spots) {
+    let spotJSON = spot.toJSON();
+
+    // Calculate average rating using helper function
     spotJSON.avgRating = calculateAvgRating(spotJSON.Reviews);
-    spotJSON.previewImage = findPreviewImage(spotJSON.SpotImages);
+
+    // Find preview images using helper function
+    spotJSON.previewImages = findPreviewImage(spotJSON.SpotImages);
+
     delete spotJSON.SpotImages;
     delete spotJSON.Reviews;
-    return spotJSON;
-  });
+
+    processedSpots.push(spotJSON);
+  }
+
+  return processedSpots;
 }
 
 // Get all Spots
@@ -90,8 +112,14 @@ router.get('/', async (req, res) => {
   try {
     const spots = await Spot.findAll({
       include: [
-        { model: SpotImage, as: 'SpotImages' },
-        { model: Review, as: 'Reviews' }
+        {
+          model: SpotImage,
+          as: 'SpotImages'
+        },
+        {
+          model: Review,
+          as: 'Reviews'
+        }
       ]
     });
     const processedSpots = processSpots(spots);
@@ -104,16 +132,24 @@ router.get('/', async (req, res) => {
   }
 });
 
-//Get all Spots owned by the Current User
-//Returns all the spots owned (created) by the current user.
+// Get all Spots owned by the Current User
+// Returns all the spots owned (created) by the current user.
 router.get('/current', requireAuth, async (req, res) => {
   try {
     const ownerId = req.user.id;
     const spots = await Spot.findAll({
       where: { ownerId: ownerId },
       include: [
-        { model: SpotImage, as: 'SpotImages', where: { preview: true }, required: false },
-        { model: Review, as: 'Reviews' }
+        {
+          model: SpotImage,
+          as: 'SpotImages',
+          where: { preview: true },
+          required: false
+      },
+        {
+          model: Review,
+          as: 'Reviews'
+        }
       ]
     });
     const processedSpots = processSpots(spots);
@@ -131,9 +167,20 @@ router.get('/:spotId', async (req, res) => {
   try {
     const spot = await Spot.findByPk(spotId, {
       include: [
-        { model: SpotImage, as: 'SpotImages', attributes: ['id', 'url', 'preview'] },
-        { model: User, as: 'Owner', attributes: ['id', 'firstName', 'lastName'] },
-        { model: Review, as: 'Reviews', attributes: ['stars'] }
+        {
+          model: SpotImage,
+          as: 'SpotImages',
+          attributes: ['id', 'url', 'preview']
+      },
+        {
+          model: User,
+          as: 'Owner',
+          attributes: ['id', 'firstName', 'lastName']
+      },
+        {
+          model: Review,
+          as: 'Reviews',
+          attributes: ['stars'] }
       ]
     });
 
@@ -222,6 +269,14 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
       return res.status(403).json({ message: "Forbidden. You do not have permission to add an image to this spot." });
     }
 
+   // If the new image is marked as preview: true, set all existing images' preview: false
+   if (preview) {
+    await SpotImage.update(
+      { preview: false },
+      { where: { spotId, preview: true } }
+    );
+  }
+
     // Create the SpotImage
     const newImage = await SpotImage.create({
       spotId,
@@ -237,15 +292,13 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
     });
   } catch (error) {
     console.error('Failed to add image to spot:', error);
-    next(error); // Pass errors to the error handler
+    next(error);
   }
 });
 
 // Edit a Spot
 // Updates and returns an existing spot.
 
-
-// PUT /api/spots/:spotId - Update a spot
 router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
@@ -345,7 +398,6 @@ router.get('/:spotId/reviews', async (req, res) => {
     res.status(500).json({ message: 'An error occurred while fetching reviews.' });
   }
 });
-
 
 // Create a Review for a Spot based on the Spot's id
 router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res) => {
