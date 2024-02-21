@@ -22,7 +22,6 @@ const validateSpot = [
   check('price').isFloat({ min: 0 }).withMessage('Price per day must be a positive number'),
 ];
 
-
 // Helper function to calculate average rating
 function calculateAvgRating(reviews) {
   if (reviews.length === 0) return 'No ratings yet';
@@ -88,7 +87,7 @@ router.get('/current', requireAuth, async (req, res) => {
   }
 });
 
-// // Route to get details of a Spot by its ID
+// Route to get details of a Spot by its ID
 router.get('/:spotId', async (req, res) => {
   const { spotId } = req.params;
   try {
@@ -140,7 +139,6 @@ router.get('/:spotId', async (req, res) => {
 
 // Create a Spot Route
 // Creates and returns a new spot.
-
 router.post('/', requireAuth, validateSpot, async (req, res) => {
   const validationErrors = validationResult(req);
   if (!validationErrors.isEmpty()) {
@@ -209,7 +207,6 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
 
 // Edit a Spot
 // Updates and returns an existing spot.
-
 router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
