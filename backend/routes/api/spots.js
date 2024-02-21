@@ -84,8 +84,8 @@ function findPreviewImage(spotImages) {
 }
 
 
-// Function to process each spot, calculate the average rating, and find preview images
-function processSpots(spots) {
+// Function to format each spot to match the api docs, calculate the average rating, and find preview images
+function formatSpots(spots) {
   let processedSpots = [];
 
   for (const spot of spots) {
@@ -122,7 +122,7 @@ router.get('/', async (req, res) => {
         }
       ]
     });
-    const processedSpots = processSpots(spots);
+    const processedSpots = formatSpots(spots);
     res.status(200).json({ Spots: processedSpots });
   }
 
@@ -152,7 +152,7 @@ router.get('/current', requireAuth, async (req, res) => {
         }
       ]
     });
-    const processedSpots = processSpots(spots);
+    const processedSpots = formatSpots(spots);
     res.status(200).json({ Spots: processedSpots });
   } catch (error) {
     console.error('Error fetching spots for current user:', error);

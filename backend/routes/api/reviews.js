@@ -101,7 +101,7 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
     // Update the review
     await Review.update(
       { review, stars },
-      { where: { id: reviewId, userId } } // Ensure the review belongs to the current user
+      { where: { id: reviewId, userId } } 
     );
 
     // Fetch the updated review to return
