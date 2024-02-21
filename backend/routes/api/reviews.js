@@ -24,19 +24,15 @@ router.get('/current', requireAuth, async (req, res) => {
     const reviews = await Review.findAll({
       where: { userId: userId },
       include: [
-        { model: User, attributes: ['id', 'firstName', 'lastName'] },
         {
-          model: Spot,
-          attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
-          include: [{
-            // Need the SpotsImage to be previewImage and have the image url
-            model: SpotImage,
-            attributes: ['url'],
-            where: { preview: true },
-            required: false
-          }]
+          model: User,
+          attributes: ['id', 'firstName', 'lastName']
         },
-        { model: ReviewImage, as: 'ReviewImages', attributes: ['id', 'url'] }
+        {
+          model: ReviewImage,
+          as: 'ReviewImages',
+          attributes: ['id', 'url']
+        }
       ]
     });
     res.json({ Reviews: reviews });
