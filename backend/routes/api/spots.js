@@ -9,7 +9,6 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
-
 // Validation middleware
 const validateSpot = [
   check('address').notEmpty().withMessage('Street address is required'),
@@ -22,7 +21,6 @@ const validateSpot = [
   check('description').notEmpty().withMessage('Description is required'),
   check('price').isFloat({ min: 0 }).withMessage('Price per day must be a positive number'),
 ];
-
 
 // Helper function to calculate average rating
 function calculateAvgRating(reviews) {
@@ -172,11 +170,8 @@ router.post('/', requireAuth, validateSpot, async (req, res) => {
   }
 });
 
-///////////////////////////////////////////////////////
-
 // Add an Image to a Spot based on the Spot's id
 // Create and return a new image for a spot specified by id.
-// Add an image to a Spot based on the Spot's id
 router.post('/:spotId/images', requireAuth, async (req, res, next) => {
   const { spotId } = req.params;
   const { url, preview } = req.body;
@@ -211,10 +206,8 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
   }
 });
 
-
 // Edit a Spot
 // Updates and returns an existing spot.
-
 router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
