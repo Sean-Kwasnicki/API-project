@@ -3,6 +3,23 @@ const { Model, Validator } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
+
+    toJSON() {
+      let attributes = Object.assign({}, this.get());
+      // Check if createdAt and updatedAt exist before formatting
+      if (attributes.createdAt) {
+        attributes.createdAt = attributes.createdAt.toISOString()
+          .replace('T', ' ')
+          .slice(0, 19);
+      }
+      if (attributes.updatedAt) {
+        attributes.updatedAt = attributes.updatedAt.toISOString()
+          .replace('T', ' ')
+          .slice(0, 19);
+      }
+      return attributes;
+    }
+
     static associate(models) {
       // define association here
       User.hasMany(models.Spot, { foreignKey: 'ownerId' });
