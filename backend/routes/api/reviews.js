@@ -17,6 +17,19 @@ const validateReview = [
   handleValidationErrors
 ];
 
+// Helper function to find a preview image
+function findPreviewImage(spotImages) {
+  for (const image of spotImages) {
+    // Should only return on photo that is true
+    if (image.preview === true) {
+      return image.url;
+    }
+  }
+  return 'No preview image';
+}
+
+
+
 // Get the reivew of the current user
 router.get('/current', requireAuth, async (req, res) => {
   const userId = req.user.id;
@@ -31,12 +44,10 @@ router.get('/current', requireAuth, async (req, res) => {
         {
           model: Spot,
           attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
-          include: [{
-            // Need the SpotsImage to be previewImage and have the image url need to sue teh helper function I built in spots 
+          include: [{ // Include spot images here to find the preview image later
             model: SpotImage,
-            attributes: ['url'],
-            where: { preview: true },
-            required: false
+            as: 'SpotImages',
+            attributes: ['url', 'preview']
           }]
         },
         {
@@ -46,7 +57,19 @@ router.get('/current', requireAuth, async (req, res) => {
         }
       ]
     });
-    res.json({ Reviews: reviews });
+
+    // Process each review to include formatted spot data with previewImage
+    let formatReviews = [];
+    for (const review of reviews) {
+      const reviewJSON = review.toJSON();
+      if (reviewJSON.Spot && reviewJSON.Spot.SpotImages) {
+        reviewJSON.Spot.previewImage = findPreviewImage(reviewJSON.Spot.SpotImages);
+        delete reviewJSON.Spot.SpotImages; // Remove SpotImages after finding previewImage
+      }
+      formatReviews.push(reviewJSON);
+    }
+
+    res.json({ Reviews: formatReviews });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
