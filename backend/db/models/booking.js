@@ -10,27 +10,22 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
 
-      // Override the toJSON method to customize the JSON output
-      toJSON() {
+    toJSON() {
       let attributes = Object.assign({}, this.get());
-
-      // Format createdAt and updatedAt using toLocaleString
-        if (attributes.createdAt) {
-          attributes.createdAt = new Date(attributes.createdAt)
-            .toLocaleString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
-            .replace(',', '') // Remove the comma between date and time
-            .replace(/\//g, '-'); // Replace slashes with dashes
-          }
-
-        if (attributes.updatedAt) {
-          attributes.updatedAt = new Date(attributes.updatedAt)
-            .toLocaleString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
-            .replace(',', '') // Remove the comma between date and time
-            .replace(/\//g, '-'); // Replace slashes with dashes
-          }
-        return attributes;
+      // Check if createdAt and updatedAt exist before formatting
+      if (attributes.createdAt) {
+        attributes.createdAt = attributes.createdAt.toISOString()
+          .replace('T', ' ')
+          .slice(0, 19);
       }
-      
+      if (attributes.updatedAt) {
+        attributes.updatedAt = attributes.updatedAt.toISOString()
+          .replace('T', ' ')
+          .slice(0, 19);
+      }
+      return attributes;
+    }
+
     static associate(models) {
       // define association here
       Booking.belongsTo(models.User, { foreignKey: 'userId', as: 'Guest' });
