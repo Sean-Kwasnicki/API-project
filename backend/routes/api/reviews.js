@@ -38,7 +38,6 @@ function formatSpots(spots) {
     // Find preview image using helper function
     spotJSON.previewImage = findPreviewImage(spotJSON.SpotImages);
 
-    // Optionally, remove the SpotImages and Reviews from the response if not needed
     delete spotJSON.SpotImages;
     delete spotJSON.Reviews;
 
@@ -50,7 +49,6 @@ function formatSpots(spots) {
 
 router.get('/current', requireAuth, async (req, res) => {
   try {
-    // Fetch all reviews by the current user, including associated models
     const reviews = await Review.findAll({
       where: { userId: req.user.id },
       include: [
@@ -90,61 +88,6 @@ router.get('/current', requireAuth, async (req, res) => {
     res.json({ Reviews: formattedReviews });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-
-
-// Get the review of the current user
-router.get('/current', requireAuth, async (req, res) => {
-  const userId = req.user.id;
-  try {
-    const reviews = await Review.findAll({
-      where: { userId: userId },
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'firstName', 'lastName']
-        },
-        {
-          model: Spot,
-          attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
-          include: [{
-            model: SpotImage,
-            as: 'SpotImages',
-            attributes: [],
-            where: { preview: true },
-            required: false
-          }]
-        },
-        {
-          model: ReviewImage,
-          as: 'ReviewImages',
-          attributes: ['id', 'url']
-        }
-      ]
-    });
-
-    // Process each review to include formatted spot data with previewImage
-    let formattedReviews = reviews.map(review => {
-      const reviewJSON = review.toJSON();
-
-      // Extract preview image URL and assign it to the spot's previewImage
-      if (reviewJSON.Spot && reviewJSON.Spot.SpotImages && reviewJSON.Spot.SpotImages.length > 0) {
-        reviewJSON.Spot.previewImage = reviewJSON.Spot.SpotImages[0].url;
-      } else {
-        reviewJSON.Spot.previewImage = 'No preview image';
-      }
-      // Clean up by deleting the now unnecessary SpotImages array
-      delete reviewJSON.Spot.SpotImages;
-
-      return reviewJSON;
-    });
-
-    res.json({ Reviews: formattedReviews });
-  } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
