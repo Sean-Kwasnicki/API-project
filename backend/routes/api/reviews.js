@@ -17,7 +17,6 @@ const validateReview = [
   handleValidationErrors
 ];
 
-
 // Helper function to find a preview image
 function findPreviewImage(spotImages) {
   for (const image of spotImages) {
@@ -72,18 +71,17 @@ router.get('/current', requireAuth, async (req, res) => {
       ]
     });
 
-    let formattedReviews = [];
-    for (const review of reviews) {
-      let reviewJSON = review.toJSON();
+     // Process each review to include formatted spot data with previewImage
+     let formattedReviews = reviews.map(review => {
+      const reviewJSON = review.toJSON();
 
-      // Format the associated spot for each review
+      // Format each spot associated with the review using the helper function
       if (reviewJSON.Spot) {
-        let formattedSpot = formatSpots([reviewJSON.Spot])[0]; // Since formatSpots expects an array
-        reviewJSON.Spot = formattedSpot; // Assign the formatted spot back to the review
+        reviewJSON.Spot = formatSpots([reviewJSON.Spot]);
       }
 
-      formattedReviews.push(reviewJSON); // Add the formatted review to the array
-    }
+      return reviewJSON;
+    });
 
     res.json({ Reviews: formattedReviews });
   } catch (error) {
