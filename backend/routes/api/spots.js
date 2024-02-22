@@ -69,7 +69,7 @@ function calculateAvgRating(reviews) {
   const averageRating = totalRating / reviews.length;
 
   // Return the average rating formatted to one decimal place to match API Docs
-  return averageRating.toFixed(1);
+  return parseFloat(averageRating.toFixed(1));
 }
 
 // Helper function to find a preview image
@@ -95,7 +95,7 @@ function formatSpots(spots) {
     spotJSON.avgRating = calculateAvgRating(spotJSON.Reviews);
 
     // Find preview images using helper function
-    spotJSON.previewImages = findPreviewImage(spotJSON.SpotImages);
+    spotJSON.previewImage = findPreviewImage(spotJSON.SpotImages);
 
     delete spotJSON.SpotImages;
     delete spotJSON.Reviews;
@@ -266,7 +266,7 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
       return res.status(404).json({ message: "Spot couldn't be found" });
     }
     if (spot.ownerId !== userId) {
-      return res.status(403).json({ message: "Forbidden. You do not have permission to add an image to this spot." });
+      return res.status(403).json({ message: "Forbidden"});
     }
 
    // If the new image is marked as preview: true, set all existing images' preview: false
@@ -403,6 +403,12 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res) =>
   const { spotId } = req.params;
   const { review, stars } = req.body;
   const userId = req.user.id;
+
+    // Check if the spot exists
+    const spotExists = await Spot.findByPk(spotId);
+    if (!spotExists) {
+      return res.status(404).json({ message: "Spot couldn't be found" });
+    }
 
   // Check for existing review by this user for the spot
   const existingReview = await Review.findOne({

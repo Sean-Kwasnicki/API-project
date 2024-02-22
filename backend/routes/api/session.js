@@ -1,7 +1,7 @@
 // backend/routes/api/session.js
 const express = require('express');
 const { Op } = require('sequelize');
-
+const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
 const { User } = require('../../db/models');
@@ -38,11 +38,12 @@ router.post(
       }
     });
 
+    // Need to remove stack and title still to the error //
     if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
-      const err = new Error('Login failed');
+      const err = new Error('Invalid credentials');
       err.status = 401;
-      err.title = 'Login failed';
-      err.errors = { credential: 'The provided credentials were invalid.' };
+      // err.title = 'Login failed';
+      // err.errors = { message: 'Invalid credentials' };
       return next(err);
     }
 
@@ -73,7 +74,7 @@ router.delete(
 
 // Restore session user
 router.get(
-  '/', restoreUser, 
+  '/', restoreUser,
   (req, res) => {
     const { user } = req;
     if (user) {
