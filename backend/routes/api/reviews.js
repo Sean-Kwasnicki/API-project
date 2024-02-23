@@ -6,7 +6,6 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
-// Validation middleware for Valid Review
 const validateReview = [
   check('review')
     .notEmpty()
@@ -17,7 +16,6 @@ const validateReview = [
   handleValidationErrors
 ];
 
-// Helper function to find a preview image
 function findPreviewImage(spotImages) {
   for (const image of spotImages) {
     if (image.preview === true) {
@@ -27,14 +25,12 @@ function findPreviewImage(spotImages) {
   return 'No preview image';
 }
 
-// Function to format each spot to match the API docs
 function formatSpots(spots) {
   let processedSpots = [];
 
   for (const spot of spots) {
     let spotJSON = spot.toJSON();
 
-    // Find preview image using helper function
     spotJSON.previewImage = findPreviewImage(spotJSON.SpotImages);
 
     delete spotJSON.SpotImages;
@@ -71,11 +67,9 @@ router.get('/current', requireAuth, async (req, res) => {
       ]
     });
 
-     // Process each review to include formatted spot data with previewImage
      let formattedReviews = reviews.map(review => {
       const reviewJSON = review.toJSON();
 
-      // Format each spot associated with the review using the helper function
       if (reviewJSON.Spot) {
         reviewJSON.Spot = formatSpots([reviewJSON.Spot]);
       }
@@ -90,15 +84,12 @@ router.get('/current', requireAuth, async (req, res) => {
   }
 });
 
-
-// Add an image to the reivews ID
 router.post('/:reviewId/images', requireAuth, async (req, res) => {
   const { reviewId } = req.params;
   const { url, preview } = req.body;
   const userId = req.user.id;
 
   try {
-    // Validate the review belongs to the current user
     const review = await Review.findByPk(reviewId);
     if (!review) {
       return res.status(404).json({ message: "Review couldn't be found" });
@@ -107,20 +98,17 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
       return res.status(403).json({ message: "Forbidden. You do not own this review." });
     }
 
-    // Check for maximum number of images
     const imagesCount = await ReviewImage.count({ where: { reviewId } });
     if (imagesCount >= 10) {
       return res.status(403).json({ message: "Maximum number of images for this resource was reached" });
     }
 
-    // Add the image to the review
     const newImage = await ReviewImage.create({
       reviewId,
       url,
       preview,
     });
 
-    // Respond with only the 'id' and 'url' of the new image
     return res.status(200).json({
       id: newImage.id,
       url: newImage.url
@@ -131,14 +119,12 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
   }
 });
 
-// Route to edit a review
 router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
   const { reviewId } = req.params;
   const { review, stars } = req.body;
   const userId = req.user.id;
 
   try {
-    // Find the review by ID and make sure it belongs to the current user
     const existingReview = await Review.findByPk(reviewId);
     if (!existingReview) {
       return res.status(404).json({ message: "Review couldn't be found" });
@@ -147,16 +133,14 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
       return res.status(403).json({ message: "Forbidden. You do not own this review." });
     }
 
-    // Update the review
+
     await Review.update(
       { review, stars },
       { where: { id: reviewId, userId } }
     );
 
-    // Fetch the updated review to return
     const updatedReview = await Review.findByPk(reviewId);
 
-    // Return the updated review
     return res.json({
       id: updatedReview.id,
       userId: updatedReview.userId,
@@ -171,7 +155,6 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
   }
 });
 
-// Route to delete a review
 router.delete('/:reviewId', requireAuth, async (req, res) => {
   const { reviewId } = req.params;
   const userId = req.user.id;
@@ -187,10 +170,8 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
       return res.status(403).json({ message: "Forbidden. You do not own this review." });
     }
 
-    // Delete the review
     await review.destroy();
 
-    // Return success message
     res.json({ message: "Successfully deleted" });
   } catch (error) {
     console.error('Error deleting review:', error);
