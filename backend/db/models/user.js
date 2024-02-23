@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
 
     toJSON() {
       let attributes = Object.assign({}, this.get());
-      // Check if createdAt and updatedAt exist before formatting
       if (attributes.createdAt) {
         attributes.createdAt = attributes.createdAt.toISOString()
           .replace('T', ' ')

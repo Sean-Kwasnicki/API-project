@@ -12,10 +12,7 @@ module.exports = (sequelize, DataTypes) => {
      */
 
     toJSON() {
-      // Creates a shallow copy of the object returned by this.get() and assigns it to the variable attributes
       let attributes = Object.assign({}, this.get());
-      // Check if createdAt and updatedAt exist before formatting
-      // Use .toISOString on the createdAt/updatedAt to get this format of the date YYYY-MM-DDTHH:mm:ss.sssZ use .replace to manipualte to match API docs
       if (attributes.createdAt) {
         attributes.createdAt = attributes.createdAt.toISOString()
           .replace('T', ' ')

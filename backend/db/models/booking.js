@@ -11,9 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
 
     toJSON() {
-      // Creates a shallow copy of the object returned by this.get() and assigns it to the variable attributes
       let attributes = Object.assign({}, this.get());
-      // Check if createdAt and updatedAt exist before formatting
       if (attributes.createdAt) {
         attributes.createdAt = attributes.createdAt.toISOString()
           .replace('T', ' ')
