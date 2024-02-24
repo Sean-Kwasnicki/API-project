@@ -38,7 +38,6 @@ router.post(
       }
     });
 
-    // Need to remove stack and title still to the error //
     if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
       const err = new Error('Invalid credentials');
       err.status = 401;
