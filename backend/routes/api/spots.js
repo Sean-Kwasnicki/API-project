@@ -7,6 +7,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
+
 const validateSpot = [
   check('address')
     .notEmpty()
@@ -53,7 +54,15 @@ const validateBooking = [
     .notEmpty()
     .withMessage('startDate is required')
     .isISO8601()
-    .withMessage('startDate must be a valid date'),
+    .withMessage('startDate must be a valid date')
+    .custom((value) => {
+      const startDate = new Date(value);
+      const now = new Date();
+      if (startDate < now) {
+        throw new Error('startDate cannot be in the past');
+      }
+      return true;
+    }),
   check('endDate')
     .notEmpty()
     .withMessage('endDate is required')
@@ -450,7 +459,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
       return res.status(403).json({ message: "You cannot book your own spot" });
     }
 
-    const existingBookings = await Booking.findAll({
+    const conflictingBookings = await Booking.findAll({
       where: {
         spotId,
         [Op.or]: [
@@ -468,7 +477,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
       },
     });
 
-    if (existingBookings.length > 0) {
+    if (conflictingBookings.length > 0) {
       return res.status(403).json({
         message: "Sorry, this spot is already booked for the specified dates",
         errors: {
