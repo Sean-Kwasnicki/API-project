@@ -12,18 +12,13 @@ router.delete('/:imageId', requireAuth, async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const spotImage = await SpotImage.findByPk(imageId, {
-      include: {
-        model: Spot,
-        as: 'Spot'
-      }
-    });
+    const spotImage = await SpotImage.findByPk(imageId);
 
     if (!spotImage) {
       return res.status(404).json({ message: "Spot Image couldn't be found" });
     }
-
-    if (spotImage.Spot.ownerId !== userId) {
+    const spot = await Spot.findByPk(spotImage.spotId);
+    if (spot.ownerId !== userId) {
       return res.status(403).json({ message: "Forbidden. You do not have permission to delete this image." });
     }
 
