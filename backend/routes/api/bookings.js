@@ -28,7 +28,7 @@ const validateBooking = [
     .isISO8601()
     .withMessage('endDate must be a valid date')
     .custom((value, { req }) => {
-      if (new Date(req.body.endDate) <= new Date(req.body.startDate)) {
+      if (new Date(value) <= new Date(req.body.startDate)) {
         throw new Error('endDate cannot be on or before startDate');
       }
       return true;

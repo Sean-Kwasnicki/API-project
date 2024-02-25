@@ -87,15 +87,15 @@ const checkForSpot = async (req, res, next) => {
   }
 };
 
-const checkAuthenSpot = async (req, res, next) => {
+const checkAuthed = async (req, res, next) => {
   const { spotId } = req.params;
   const userId = req.user.id
 
   try {
     const spot = await Spot.findByPk(spotId);
-    if(!spot) {
-      return res.status(404).json({message: "Spot couldn't be found"})
-    }
+    // if(!spot) {
+    //   return res.status(404).json({message: "Spot couldn't be found"})
+    // }
     if(spot.ownerId !== userId){
       return res.status(403).json({message: "Forbidden"});
     }
@@ -153,4 +153,4 @@ const checkBooking = async (req, res, next) => {
   }
 };
 
-module.exports = { setTokenCookie, restoreUser, requireAuth, checkAuthenSpot, checkReview, checkBooking, checkForSpot};
+module.exports = { setTokenCookie, restoreUser, requireAuth, checkAuthed, checkReview, checkBooking, checkForSpot};

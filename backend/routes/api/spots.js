@@ -1,7 +1,7 @@
 const express = require('express');
 const { Spot, Review, SpotImage, User, ReviewImage, Booking } = require('../../db/models');
 const { Op } = require('sequelize');
-const { requireAuth, checkForSpot, checkAuthenSpot } = require('../../utils/auth');
+const { requireAuth, checkForSpot, checkAuthed } = require('../../utils/auth');
 const { check} = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
@@ -254,7 +254,7 @@ router.post('/', requireAuth, validateSpot, async (req, res) => {
   }
 });
 
-router.post('/:spotId/images', requireAuth, checkAuthenSpot, async (req, res, next) => {
+router.post('/:spotId/images', requireAuth, checkForSpot, checkAuthed, async (req, res, next) => {
   const { spotId } = req.params;
   const { url, preview } = req.body;
   const userId = req.user.id;
@@ -291,7 +291,7 @@ router.post('/:spotId/images', requireAuth, checkAuthenSpot, async (req, res, ne
   }
 });
 
-router.put('/:spotId', requireAuth, validateSpot, checkAuthenSpot, async (req, res) => {
+router.put('/:spotId', requireAuth, validateSpot, checkForSpot, checkAuthed, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
   const userId = req.user.id;
@@ -324,7 +324,7 @@ router.put('/:spotId', requireAuth, validateSpot, checkAuthenSpot, async (req, r
   }
 });
 
-router.delete('/:spotId', requireAuth, checkAuthenSpot, async (req, res, next) => {
+router.delete('/:spotId', requireAuth, checkForSpot, checkAuthed, async (req, res, next) => {
   const { spotId } = req.params;
   const userId = req.user.id;
 
