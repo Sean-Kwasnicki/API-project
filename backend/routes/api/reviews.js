@@ -95,7 +95,7 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
       return res.status(404).json({ message: "Review couldn't be found" });
     }
     if (review.userId !== userId) {
-      return res.status(403).json({ message: "Forbidden. You do not own this review." });
+      return res.status(403).json({ message: "Forbidden" });
     }
 
     const imagesCount = await ReviewImage.count({ where: { reviewId } });
@@ -130,7 +130,7 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
       return res.status(404).json({ message: "Review couldn't be found" });
     }
     if (existingReview.userId !== userId) {
-      return res.status(403).json({ message: "Forbidden. You do not own this review." });
+      return res.status(403).json({ message: "Forbidden" });
     }
 
 
@@ -167,7 +167,7 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
     }
 
     if (review.userId !== userId) {
-      return res.status(403).json({ message: "Forbidden. You do not own this review." });
+      return res.status(403).json({ message: "Forbidden" });
     }
 
     await review.destroy();

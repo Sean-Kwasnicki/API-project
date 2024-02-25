@@ -347,7 +347,7 @@ router.delete('/:spotId', requireAuth, async (req, res, next) => {
 });
 
 router.get('/:spotId/reviews', async (req, res) => {
-  const { spotId } = req.params;
+  const spotId = parseInt(req.params.spotId);
 
   try {
     const spotExists = await Spot.findByPk(spotId);
@@ -376,7 +376,7 @@ router.get('/:spotId/reviews', async (req, res) => {
 });
 
 router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res) => {
-  const { spotId } = req.params;
+  const spotId = parseInt(req.params.spotId);
   const { review, stars } = req.body;
   const userId = req.user.id;
 
@@ -409,7 +409,7 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res) =>
 
 router.get('/:spotId/bookings', requireAuth, async (req, res) => {
   try {
-    const { spotId } = req.params;
+    const spotId = parseInt(req.params.spotId);
     const userId = req.user.id;
 
     const spot = await Spot.findByPk(spotId);
@@ -417,10 +417,9 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
       return res.status(404).json({ message: "Spot couldn't be found" });
     }
 
-    const isOwner = spot.ownerId === userId;
-
     let bookings;
-    if (isOwner) {
+
+    if(spot.ownerId === userId) {;
       bookings = await Booking.findAll({
         where: { spotId },
         include: {
@@ -435,7 +434,24 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
       });
     }
 
-    const formattedBookings = bookings.map(booking => booking.toJSON());
+    let formattedBookings = bookings.map(booking => {
+      const bookingJSON = booking.toJSON();
+      if(spot.ownerId === userId) {
+        return {
+          User: bookingJSON.User,
+          id: bookingJSON.id,
+          spotId: bookingJSON.spotId,
+          userId: bookingJSON.userId,
+          startDate: bookingJSON.startDate,
+          endDate: bookingJSON.endDate,
+          createdAt: bookingJSON.createdAt,
+          updatedAt: bookingJSON.updatedAt
+        };
+      } else {
+        return bookingJSON
+      }
+    })
+
 
     res.status(200).json({ Bookings: formattedBookings });
   } catch (error) {

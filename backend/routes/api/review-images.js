@@ -23,7 +23,7 @@ router.delete('/:imageId', requireAuth, async (req, res) => {
     const review = await Review.findByPk(reviewImage.reviewId);
 
     if (review.userId !== userId) {
-      return res.status(403).json({ message: "Forbidden. You don't have permission to delete this image." });
+      return res.status(403).json({ message: "Forbidden" });
     }
 
     await reviewImage.destroy();
@@ -36,4 +36,3 @@ router.delete('/:imageId', requireAuth, async (req, res) => {
 });
 
 module.exports = router;
-
