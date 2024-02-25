@@ -79,7 +79,7 @@ const validateBooking = [
 
 function calculateAvgRating(reviews) {
   if (reviews.length === 0) {
-    return 'No ratings yet';
+    return 'Be the first to Review this Spot';
   }
 
   let totalRating = 0;
@@ -99,7 +99,7 @@ function findPreviewImage(spotImages) {
       return image.url;
     }
   }
-  return 'No preview image';
+  return 'Currently no preview Image';
 }
 
 function formatSpots(spots) {
@@ -302,7 +302,7 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
       return res.status(404).json({ message: "Spot couldn't be found" });
     }
     if (spot.ownerId !== userId) {
-      return res.status(403).json({ message: "User is not authorized to edit this spot" });
+      return res.status(403).json({ message: "Forbidden" });
     }
 
     await spot.update({
@@ -334,7 +334,7 @@ router.delete('/:spotId', requireAuth, async (req, res, next) => {
       return res.status(404).json({ message: "Spot couldn't be found" });
     }
     if (spot.ownerId !== userId) {
-      return res.status(403).json({ message: "User is not authorized to delete this spot" });
+      return res.status(403).json({ message: "Forbidden" });
     }
 
     await spot.destroy();
@@ -379,6 +379,8 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res) =>
   const { spotId } = req.params;
   const { review, stars } = req.body;
   const userId = req.user.id;
+
+  const spotId = parseInt(spotId)
 
     const spotExists = await Spot.findByPk(spotId);
     if (!spotExists) {
