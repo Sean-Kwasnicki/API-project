@@ -22,7 +22,7 @@ function findPreviewImage(spotImages) {
       return image.url;
     }
   }
-  return 'No preview image';
+  return 'Currently no preview Image';
 }
 
 function formatSpots(spots) {
