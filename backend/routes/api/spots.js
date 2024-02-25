@@ -92,21 +92,6 @@ function calculateAvgRating(reviews) {
   return Number(averageRating.toFixed(1))
 }
 
-// function calculateAvgRating(reviews) {
-//   if (reviews.length === 0) {
-//     return 'Be the first to Review this Spot';
-//   }
-
-//   let totalRating = 0;
-
-//   for (const review of reviews) {
-//     totalRating += review.stars;
-//   }
-
-//   const averageRating = totalRating / reviews.length;
-
-//   return parseFloat(averageRating.toFixed(1));
-// }
 
 function findPreviewImage(spotImages) {
   for (const image of spotImages) {
