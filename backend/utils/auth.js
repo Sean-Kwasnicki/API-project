@@ -1,12 +1,10 @@
 // backend/utils/auth.js
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User } = require('../db/models');
+const { User, Spot, Review, Booking } = require('../db/models');
 
 const { secret, expiresIn } = jwtConfig;
 
-// backend/utils/auth.js
-// ...
 // Sends a JWT Cookie
 const setTokenCookie = (res, user) => {
     // Create the token.
@@ -33,8 +31,6 @@ const setTokenCookie = (res, user) => {
 
     return token;
   };
-  // backend/utils/auth.js
-// ...
 
 const restoreUser = (req, res, next) => {
     // token parsed from cookies
@@ -64,9 +60,6 @@ const restoreUser = (req, res, next) => {
     });
   };
 
-  // backend/utils/auth.js
-// ...
-
 // If there is no current user, return an error
 // To be able to match API Docs needed to comment out errors message
 const requireAuth = function (req, _res, next) {
@@ -77,11 +70,87 @@ const requireAuth = function (req, _res, next) {
     //err.errors = { message: 'Authentication required' };
     err.status = 401;
     return next(err);
+};
+
+const checkForSpot = async (req, res, next) => {
+  const { spotId } = req.params;
+
+  try {
+    const spot = await Spot.findByPk(spotId);
+    if(!spot) {
+      return res.status(404).json({message: "Spot couldn't be found"})
+    }
+    req.spot = spot;
+    next();
+  } catch (error) {
+    res.status(500).json({message: "Internal server error"})
   }
+};
 
-  
+const checkAuthenSpot = async (req, res, next) => {
+  const { spotId } = req.params;
+  const userId = req.user.id
 
-  // backend/utils/auth.js
-// ...
+  try {
+    const spot = await Spot.findByPk(spotId);
+    if(!spot) {
+      return res.status(404).json({message: "Spot couldn't be found"})
+    }
+    if(spot.ownerId !== userId){
+      return res.status(403).json({message: "Forbidden"});
+    }
+    req.spot = spot;
+    next();
+  } catch (error) {
+    res.status(500).json({message: "Internal server error"})
+  }
+};
 
-module.exports = { setTokenCookie, restoreUser, requireAuth };
+const checkReview = async (req, res, next) => {
+  const { reviewId } = req.params
+  const userId = req.user.id
+  try {
+    const review = await Review.findByPk(reviewId);
+    if(!review){
+      return res.status(404).json({ message: "Review couldn't be found" });
+    }
+    if (review.userId !== userId) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+    req.review = review;
+    next();
+  } catch (error) {
+    console.error('Error in checkReview middleware:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const checkBooking = async (req, res, next) => {
+  const { bookingId } = req.params;
+  const userId = req.user.id;
+  const now = new Date();
+
+  try {
+    const booking = await Booking.findByPk(bookingId);
+    if (!booking) {
+      return res.status(404).json({ message: "Booking couldn't be found" });
+    }
+
+    if (booking.userId !== userId) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    if (new Date(booking.startDate) < now) {
+      return res.status(403).json({ message: "Past bookings can't be modified" });
+    }
+
+    // If all checks pass, add booking to the request object and call next middleware
+    req.booking = booking;
+    next();
+  } catch (error) {
+    console.error('Error in checkBooking middleware:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports = { setTokenCookie, restoreUser, requireAuth, checkAuthenSpot, checkReview, checkBooking, checkForSpot};

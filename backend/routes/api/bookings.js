@@ -1,7 +1,7 @@
 const express = require('express');
 const { Booking, Review, Spot, User, ReviewImage, SpotImage } = require('../../db/models');
 const { Op } = require('sequelize');
-const { requireAuth } = require('../../utils/auth');
+const { requireAuth, checkBooking } = require('../../utils/auth');
 const { check} = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
@@ -21,13 +21,14 @@ const validateBooking = [
       }
       return true;
     }),
+
   check('endDate')
     .notEmpty()
     .withMessage('endDate is required')
     .isISO8601()
     .withMessage('endDate must be a valid date')
     .custom((value, { req }) => {
-      if (new Date(value) <= new Date(req.body.startDate)) {
+      if (new Date(req.body.endDate) <= new Date(req.body.startDate)) {
         throw new Error('endDate cannot be on or before startDate');
       }
       return true;
@@ -102,34 +103,31 @@ router.get('/current', requireAuth, async (req, res) => {
   }
 });
 
-router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
+router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req, res) => {
   const userId = req.user.id;
   const { bookingId } = req.params;
   const { startDate, endDate } = req.body;
-  const now = new Date();
+  //const now = new Date();
   try {
     const booking = await Booking.findByPk(bookingId);
-    if (!booking) {
-      return res.status(404).json({ message: "Booking couldn't be found" });
-    }
-    if (new Date(booking.endDate) < now) {
-      return res.status(403).json({ message: "Past bookings can't be modified" });
-    }
-    if (booking.userId !== userId) {
-      return res.status(403).json({ message: "You don't have permission to edit this booking" });
-    }
+    // if (!booking) {
+    //   return res.status(404).json({ message: "Booking couldn't be found" });
+    // }
+    // if (new Date(booking.endDate) < now) {
+    //   return res.status(403).json({ message: "Past bookings can't be modified" });
+    // }
+    // if (booking.userId !== userId) {
+    //   return res.status(403).json({ message: "You don't have permission to edit this booking" });
+    // }
+
 
     const conflictingBookings = await Booking.findAll({
       where: {
         id: { [Op.ne]: bookingId },
         spotId: booking.spotId,
         [Op.or]: [
-          {
-            startDate: { [Op.between]: [startDate, endDate] },
-          },
-          {
-            endDate: { [Op.between]: [startDate, endDate] },
-          },
+          { startDate: { [Op.lte]: endDate } },
+          { endDate: { [Op.gte]: startDate } },
         ],
       },
     });
@@ -160,24 +158,24 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
   }
 });
 
-router.delete('/:bookingId', requireAuth, async (req, res) => {
+router.delete('/:bookingId', requireAuth, checkBooking, async (req, res) => {
   const { bookingId } = req.params;
   const userId = req.user.id;
   const { startDate, endDate } = req.body;
 
-  const now = new Date();
+  //const now = new Date();
   try {
     const booking = await Booking.findByPk(bookingId);
 
-    if (!booking) {
-      return res.status(404).json({ message: "Booking couldn't be found" });
-    }
-    if (booking.userId !== userId) {
-      return res.status(403).json({ message: "You do not have permission to delete this booking." });
-    }
-    if (new Date(booking.startDate) < now) {
-      return res.status(403).json({ message: "Past bookings can't be modified" });
-    }
+    // if (!booking) {
+    //   return res.status(404).json({ message: "Booking couldn't be found" });
+    // }
+    // if (booking.userId !== userId) {
+    //   return res.status(403).json({ message: "You do not have permission to delete this booking." });
+    // }
+    // if (new Date(booking.startDate) < now) {
+    //   return res.status(403).json({ message: "Past bookings can't be modified" });
+    // }
 
     await booking.destroy();
 

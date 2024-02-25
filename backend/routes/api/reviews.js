@@ -1,6 +1,6 @@
 const express = require('express');
 const { Review, Spot, User, ReviewImage, SpotImage } = require('../../db/models');
-const { requireAuth } = require('../../utils/auth');
+const { requireAuth, checkReview } = require('../../utils/auth');
 const { check} = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
@@ -84,19 +84,19 @@ router.get('/current', requireAuth, async (req, res) => {
   }
 });
 
-router.post('/:reviewId/images', requireAuth, async (req, res) => {
+router.post('/:reviewId/images', requireAuth, checkReview, async (req, res) => {
   const { reviewId } = req.params;
   const { url, preview } = req.body;
   const userId = req.user.id;
 
   try {
-    const review = await Review.findByPk(reviewId);
-    if (!review) {
-      return res.status(404).json({ message: "Review couldn't be found" });
-    }
-    if (review.userId !== userId) {
-      return res.status(403).json({ message: "Forbidden" });
-    }
+    // const review = await Review.findByPk(reviewId);
+    // if (!review) {
+    //   return res.status(404).json({ message: "Review couldn't be found" });
+    // }
+    // if (review.userId !== userId) {
+    //   return res.status(403).json({ message: "Forbidden" });
+    // }
 
     const imagesCount = await ReviewImage.count({ where: { reviewId } });
     if (imagesCount >= 10) {
@@ -119,19 +119,19 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
   }
 });
 
-router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
+router.put('/:reviewId', requireAuth, validateReview, checkReview, async (req, res) => {
   const { reviewId } = req.params;
   const { review, stars } = req.body;
   const userId = req.user.id;
 
   try {
-    const existingReview = await Review.findByPk(reviewId);
-    if (!existingReview) {
-      return res.status(404).json({ message: "Review couldn't be found" });
-    }
-    if (existingReview.userId !== userId) {
-      return res.status(403).json({ message: "Forbidden" });
-    }
+    // const existingReview = await Review.findByPk(reviewId);
+    // if (!existingReview) {
+    //   return res.status(404).json({ message: "Review couldn't be found" });
+    // }
+    // if (existingReview.userId !== userId) {
+    //   return res.status(403).json({ message: "Forbidden" });
+    // }
 
 
     await Review.update(
@@ -155,20 +155,20 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
   }
 });
 
-router.delete('/:reviewId', requireAuth, async (req, res) => {
+router.delete('/:reviewId', requireAuth, checkReview, async (req, res) => {
   const { reviewId } = req.params;
   const userId = req.user.id;
 
   try {
     const review = await Review.findByPk(reviewId);
 
-    if (!review) {
-      return res.status(404).json({ message: "Review couldn't be found" });
-    }
+    // if (!review) {
+    //   return res.status(404).json({ message: "Review couldn't be found" });
+    // }
 
-    if (review.userId !== userId) {
-      return res.status(403).json({ message: "Forbidden" });
-    }
+    // if (review.userId !== userId) {
+    //   return res.status(403).json({ message: "Forbidden" });
+    // }
 
     await review.destroy();
 
