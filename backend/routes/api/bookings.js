@@ -142,14 +142,12 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
       });
     }
 
-    await Booking.update(
+    const updatedBooking = await Booking.update(
       { startDate,
         endDate },
       { where: { id: bookingId } }
     );
 
-    const updatedBooking = await Booking.findByPk(bookingId, {
-    });
 
     res.json(updatedBooking);
   } catch (error) {
