@@ -21,7 +21,6 @@ const validateBooking = [
       }
       return true;
     }),
-
   check('endDate')
     .notEmpty()
     .withMessage('endDate is required')
@@ -42,7 +41,7 @@ function findPreviewImage(spotImages) {
       return image.url;
     }
   }
-  return 'Currently no preview image';
+  return 'No preview image';
 }
 
 function formatSpots(spots) {
@@ -119,7 +118,6 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
     // if (booking.userId !== userId) {
     //   return res.status(403).json({ message: "You don't have permission to edit this booking" });
     // }
-
 
     const conflictingBookings = await Booking.findAll({
       where: {

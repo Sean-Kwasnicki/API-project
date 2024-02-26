@@ -479,16 +479,8 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, checkForSpot, asy
       where: {
         spotId,
         [Op.or]: [
-          {
-            startDate: {
-              [Op.between]: [startDate, endDate],
-            },
-          },
-          {
-            endDate: {
-              [Op.between]: [startDate, endDate],
-            },
-          },
+          { startDate: {[Op.lte]: endDate} },
+          { endDate: { [Op.gte]: startDate } },
         ],
       },
     });
