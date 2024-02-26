@@ -481,12 +481,12 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, checkForSpot, asy
         [Op.or]: [
           {
             startDate: {
-              [Op.between]: [startDate, endDate],
+              [Op.lte]: endDate,
             },
           },
           {
             endDate: {
-              [Op.between]: [startDate, endDate],
+              [Op.lte]: startDate,
             },
           },
         ],
