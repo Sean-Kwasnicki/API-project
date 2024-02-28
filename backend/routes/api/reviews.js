@@ -134,21 +134,14 @@ router.put('/:reviewId', requireAuth, validateReview, checkReview, async (req, r
     // }
 
 
-    await Review.update(
+   const updatedReview = await Review.update(
       { review, stars },
       { where: { id: reviewId, userId } }
     );
 
-    const updatedReview = await Review.findByPk(reviewId);
 
     return res.json({
-      id: updatedReview.id,
-      userId: updatedReview.userId,
-      spotId: updatedReview.spotId,
-      review: updatedReview.review,
-      stars: updatedReview.stars,
-      createdAt: updatedReview.createdAt,
-      updatedAt: updatedReview.updatedAt
+      updatedReview
     });
   } catch (error) {
     return res.status(500).json({ message: 'An unexpected error occurred' });
