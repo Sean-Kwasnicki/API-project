@@ -142,11 +142,6 @@ router.put('/:reviewId', requireAuth, validateReview, checkReview, async (req, r
     const updatedReview = await Review.findByPk(reviewId);
 
     return res.json(
-      // id: updatedReview.id,
-      // userId: updatedReview.userId,
-      // spotId: updatedReview.spotId,
-      // review: updatedReview.review,
-      // stars: updatedReview.stars,
         updatedReview.toJSON()
     );
   } catch (error) {
