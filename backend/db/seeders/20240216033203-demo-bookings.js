@@ -14,21 +14,21 @@ module.exports = {
     await Booking.bulkCreate([
       {
         userId: 1,
-        spotId: 4,
+        spotId: 1,
         startDate: new Date(),
         endDate: new Date(new Date().setDate(new Date().getDate() + 7)),
 
       },
       {
         userId: 2, // Adjust as necessary
-        spotId: 4, // This and other spotIds should match actual spots
+        spotId: 2, // This and other spotIds should match actual spots
         startDate: new Date(new Date().setDate(new Date().getDate() + 10)),
         endDate: new Date(new Date().setDate(new Date().getDate() + 14)),
 
       },
       {
         userId: 3,
-        spotId: 4, 
+        spotId: 3, 
         startDate: new Date(new Date().setDate(new Date().getDate() + 20)),
         endDate: new Date(new Date().setDate(new Date().getDate() + 25)),
 

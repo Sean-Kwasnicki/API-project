@@ -13,19 +13,19 @@ module.exports = {
     await Review.bulkCreate([
       {
         userId: 1,
-        spotId: 4,
+        spotId: 1,
         review: 'Fantastic place! Highly recommend to anyone looking for a cozy stay.',
         stars: 5,
       },
       {
         userId: 2,
-        spotId: 4,
+        spotId: 2,
         review: 'Great location, but a bit noisy at night. Overall, pretty good.',
         stars: 4,
       },
       {
         userId: 3,
-        spotId: 4,
+        spotId: 3,
         review: 'Not as clean as I expected, but the host was very helpful.',
         stars: 3,
       }

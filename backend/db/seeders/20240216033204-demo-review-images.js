@@ -12,15 +12,15 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await ReviewImage.bulkCreate([
       {
-        reviewId: 4,
+        reviewId: 1,
         url: 'http://example.com/review1/image1.jpg',
       },
       {
-        reviewId: 4,
+        reviewId: 2,
         url: 'http://example.com/review2/image1.jpg',
       },
       {
-        reviewId: 4,
+        reviewId: 3,
         url: 'http://example.com/review3/image1.jpg',
       }
       // Add more images as needed
