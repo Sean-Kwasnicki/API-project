@@ -120,30 +120,30 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
     //   return res.status(403).json({ message: "You don't have permission to edit this booking" });
     // }
 
-    // 
-    
     const conflictingBookings = await Booking.findAll({
       where: {
-        id: { [Op.ne]: bookingId },
+        id: { [Op.ne]: bookingId }, // Exclude the current booking from the check
         spotId: booking.spotId,
         [Op.or]: [
           {
-            // New booking's start date is before an existing booking's end date
-            // and the new booking's end date is after the existing booking's start date
-            [Op.and]: [
-              { startDate: { [Op.lte]: endDate } },
-              { endDate: { [Op.gte]: startDate } },
-            ],
+            startDate: {
+              [Op.lt]: endDate,
+              [Op.gt]: startDate,
+            },
           },
           {
-            // New booking period completely encompasses an existing booking period
+            endDate: {
+              [Op.lt]: endDate,
+              [Op.gt]: startDate,
+            },
+          },
+          {
             [Op.and]: [
               { startDate: { [Op.lte]: startDate } },
               { endDate: { [Op.gte]: endDate } },
             ],
           },
           {
-            // Existing booking period completely encompasses the new booking period
             [Op.and]: [
               { startDate: { [Op.gte]: startDate } },
               { endDate: { [Op.lte]: endDate } },
@@ -152,6 +152,8 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
         ],
       },
     });
+
+    
 
     if (conflictingBookings.length > 0) {
       return res.status(403).json({
