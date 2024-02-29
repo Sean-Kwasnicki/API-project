@@ -13,24 +13,11 @@ const validateBooking = [
     .withMessage('startDate is required')
     .isISO8601()
     .withMessage('startDate must be a valid date')
-    .custom((async (value, {req}) => {
+    .custom((value) => {
       const startDate = new Date(value);
       const now = new Date();
       if (startDate < now) {
         throw new Error('startDate cannot be in the past');
-      }
-      
-      // Ensure startDate is not the same as any current booking's endDate
-      const spotId = req.params.spotId; 
-      const conflictingBooking = await Booking.findOne({
-        where: {
-          spotId: spotId,
-          endDate: startDate
-        }
-      });
-
-      if (conflictingBooking) {
-        throw new Error('startDate cannot be the same as any current end date');
       }
       return true;
     }),
@@ -141,24 +128,22 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
         spotId: booking.spotId,
         [Op.or]: [
           {
-            startDate: {
-              [Op.lt]: endDate,
-              [Op.gt]: startDate,
-            },
+            // New booking's start date is before an existing booking's end date
+            // and the new booking's end date is after the existing booking's start date
+            [Op.and]: [
+              { startDate: { [Op.lte]: endDate } },
+              { endDate: { [Op.gte]: startDate } },
+            ],
           },
           {
-            endDate: {
-              [Op.lt]: endDate,
-              [Op.gt]: startDate,
-            },
-          },
-          {
+            // New booking period completely encompasses an existing booking period
             [Op.and]: [
               { startDate: { [Op.lte]: startDate } },
               { endDate: { [Op.gte]: endDate } },
             ],
           },
           {
+            // Existing booking period completely encompasses the new booking period
             [Op.and]: [
               { startDate: { [Op.gte]: startDate } },
               { endDate: { [Op.lte]: endDate } },
@@ -167,7 +152,7 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
         ],
       },
     });
-        
+
     if (conflictingBookings.length > 0) {
       return res.status(403).json({
         message: "Sorry, this spot is already booked for the specified dates",
