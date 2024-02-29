@@ -131,8 +131,8 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
             // New booking's start date is before an existing booking's end date
             // and the new booking's end date is after the existing booking's start date
             [Op.and]: [
-              { startDate: { [Op.lt]: endDate } },
-              { endDate: { [Op.gt]: startDate } },
+              { startDate: { [Op.lte]: endDate } },
+              { endDate: { [Op.gte]: startDate } },
             ],
           },
           {
