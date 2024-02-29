@@ -47,7 +47,7 @@ const validateBooking = [
       return true;
     }),
   handleValidationErrors
-];
+)];
 
 function findPreviewImage(spotImages) {
   for (const image of spotImages) {
