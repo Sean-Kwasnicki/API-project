@@ -13,11 +13,24 @@ const validateBooking = [
     .withMessage('startDate is required')
     .isISO8601()
     .withMessage('startDate must be a valid date')
-    .custom((value) => {
+    .custom((async (value, {req}) => {
       const startDate = new Date(value);
       const now = new Date();
       if (startDate < now) {
         throw new Error('startDate cannot be in the past');
+      }
+      
+      // Ensure startDate is not the same as any current booking's endDate
+      const spotId = req.params.spotId; 
+      const conflictingBooking = await Booking.findOne({
+        where: {
+          spotId: spotId,
+          endDate: startDate
+        }
+      });
+
+      if (conflictingBooking) {
+        throw new Error('startDate cannot be the same as any current end date');
       }
       return true;
     }),
