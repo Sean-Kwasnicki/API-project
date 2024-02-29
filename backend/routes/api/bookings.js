@@ -107,7 +107,7 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
   const userId = req.user.id;
   const { bookingId } = req.params;
   const { startDate, endDate } = req.body;
-  const now = new Date();
+  //const now = new Date();
   try {
     const booking = await Booking.findByPk(bookingId);
     // if (!booking) {
@@ -128,35 +128,29 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
         spotId: booking.spotId,
             [Op.or]: [
               {
-                // New booking's start date is before or on an existing booking's end date
-                // and the new booking's end date is after or on the existing booking's start date
                 [Op.and]: [
-                  { startDate: { [Op.lt]: endDate } }, // Change this to strictly less than
-                  { endDate: { [Op.gt]: startDate } }, // Change this to strictly greater than
+                  { startDate: { [Op.lt]: endDate } },
+                  { endDate: { [Op.gt]: startDate } },
                 ],
               },
               {
-                // New booking period completely encompasses an existing booking period
+                [Op.or]: [
+                  { startDate: { [Op.eq]: Sequelize.col('endDate') } },
+                  { endDate: { [Op.eq]: Sequelize.col('startDate') } },
+                ],
+              },
+              {
                 [Op.and]: [
                   { startDate: { [Op.lte]: startDate } },
                   { endDate: { [Op.gte]: endDate } },
                 ],
               },
               {
-                // Existing booking period completely encompasses the new booking period
                 [Op.and]: [
                   { startDate: { [Op.gte]: startDate } },
                   { endDate: { [Op.lte]: endDate } },
                 ],
               },
-              {
-                // New start date is the same as an existing booking's end date
-                startDate: { [Op.eq]: endDate },
-              },
-              {
-                // New end date is the same as an existing booking's start date
-                endDate: { [Op.eq]: startDate },
-              }
             ],
           },
         });
