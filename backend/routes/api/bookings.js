@@ -127,14 +127,14 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
         [Op.or]: [
           {
             startDate: {
-              [Op.lte]: endDate,
-              [Op.gte]: startDate,
+              [Op.lt]: endDate,
+              [Op.gt]: startDate,
             },
           },
           {
             endDate: {
-              [Op.lte]: endDate,
-              [Op.gte]: startDate,
+              [Op.lt]: endDate,
+              [Op.gt]: startDate,
             },
           },
           {
