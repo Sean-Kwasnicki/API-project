@@ -475,7 +475,6 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, checkForSpot, asy
       return res.status(403).json({ message: "Forbidden" });
     }
 
-    
     const conflictingBookings = await Booking.findAll({
       where: {
         spotId,
@@ -483,17 +482,19 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, checkForSpot, asy
           {
             // The existing booking's start date is within the new booking period.
             startDate: {
-              [Op.between]: [startDate, endDate],
+              [Op.lte]: endDate,
+              [Op.gte]: startDate,
             },
           },
           {
             // The existing booking's end date is within the new booking period.
             endDate: {
-              [Op.between]: [startDate, endDate],
+              [Op.lte]: endDate,
+              [Op.gte]: startDate,
             },
           },
           {
-            // The existing booking completely overlaps the new booking period.
+            // The new booking period is within an existing booking period.
             [Op.and]: [
               { startDate: { [Op.lte]: startDate } },
               { endDate: { [Op.gte]: endDate } },
@@ -502,8 +503,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, checkForSpot, asy
         ],
       },
     });
-    
-
+   
     if (conflictingBookings.length > 0) {
       return res.status(403).json({
         message: "Sorry, this spot is already booked for the specified dates",

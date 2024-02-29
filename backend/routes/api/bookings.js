@@ -125,9 +125,27 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
         id: { [Op.ne]: bookingId }, // Exclude the current booking from the check
         spotId: booking.spotId,
         [Op.or]: [
-          { startDate: { [Op.between]: [startDate, endDate] } },
-          { endDate: { [Op.between]: [startDate, endDate] } },
-          { [Op.and]: [ { startDate: { [Op.lte]: startDate } }, { endDate: { [Op.gte]: endDate } } ] }
+          {
+            // The existing booking's start date is within the new booking period.
+            startDate: {
+              [Op.lte]: endDate,
+              [Op.gte]: startDate,
+            },
+          },
+          {
+            // The existing booking's end date is within the new booking period.
+            endDate: {
+              [Op.lte]: endDate,
+              [Op.gte]: startDate,
+            },
+          },
+          {
+            // The new booking period is within an existing booking period.
+            [Op.and]: [
+              { startDate: { [Op.lte]: startDate } },
+              { endDate: { [Op.gte]: endDate } },
+            ],
+          }
         ],
       },
     });
