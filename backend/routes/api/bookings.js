@@ -19,6 +19,19 @@ const validateBooking = [
       if (startDate < now) {
         throw new Error('startDate cannot be in the past');
       }
+      
+      // Ensure startDate is not the same as any current booking's endDate
+      const spotId = req.params.spotId; 
+      const conflictingBooking = await Booking.findOne({
+        where: {
+          spotId: spotId,
+          endDate: startDate
+        }
+      });
+
+      if (conflictingBooking) {
+        throw new Error('startDate cannot be the same as any current end date');
+      }
       return true;
     }),
 
@@ -34,7 +47,7 @@ const validateBooking = [
       return true;
     }),
   handleValidationErrors
-)];
+];
 
 function findPreviewImage(spotImages) {
   for (const image of spotImages) {
@@ -126,35 +139,34 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
       where: {
         id: { [Op.ne]: bookingId },
         spotId: booking.spotId,
-            [Op.or]: [
-              {
-                [Op.and]: [
-                  { startDate: { [Op.lt]: endDate } },
-                  { endDate: { [Op.gt]: startDate } },
-                ],
-              },
-              {
-                [Op.or]: [
-                  { startDate: { [Op.eq]: Sequelize.col('endDate') } },
-                  { endDate: { [Op.eq]: Sequelize.col('startDate') } },
-                ],
-              },
-              {
-                [Op.and]: [
-                  { startDate: { [Op.lte]: startDate } },
-                  { endDate: { [Op.gte]: endDate } },
-                ],
-              },
-              {
-                [Op.and]: [
-                  { startDate: { [Op.gte]: startDate } },
-                  { endDate: { [Op.lte]: endDate } },
-                ],
-              },
+        [Op.or]: [
+          {
+            startDate: {
+              [Op.lt]: endDate,
+              [Op.gt]: startDate,
+            },
+          },
+          {
+            endDate: {
+              [Op.lt]: endDate,
+              [Op.gt]: startDate,
+            },
+          },
+          {
+            [Op.and]: [
+              { startDate: { [Op.lte]: startDate } },
+              { endDate: { [Op.gte]: endDate } },
             ],
           },
-        });
-        
+          {
+            [Op.and]: [
+              { startDate: { [Op.gte]: startDate } },
+              { endDate: { [Op.lte]: endDate } },
+            ],
+          }
+        ],
+      },
+    });
         
     if (conflictingBookings.length > 0) {
       return res.status(403).json({
