@@ -127,14 +127,14 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
         [Op.or]: [
           {
             startDate: {
-              [Op.lt]: endDate,
-              [Op.gt]: startDate,
+              [Op.lte]: endDate,
+              [Op.gte]: startDate,
             },
           },
           {
             endDate: {
-              [Op.lt]: endDate,
-              [Op.gt]: startDate,
+              [Op.lte]: endDate,
+              [Op.gte]: startDate,
             },
           },
           {
@@ -164,14 +164,14 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
         },
       });
     }
-
+    
     await Booking.update(
       { startDate,
         endDate },
       { where: { id: bookingId } }
     );
 
-
+    
       // Fetch the updated booking details
       const updatedBooking = await Booking.findByPk(bookingId);
 
