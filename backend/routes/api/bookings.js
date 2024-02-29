@@ -128,20 +128,31 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
         spotId: booking.spotId,
         [Op.or]: [
           {
-            startDate: { [Op.between]: [startDate, endDate] },
-          },
-          {
-            endDate: { [Op.between]: [startDate, endDate] },
-          },
-          {
+            // New booking's start date is before an existing booking's end date
+            // and the new booking's end date is after the existing booking's start date
             [Op.and]: [
-              { startDate: { [Op.gte]: endDate } },
-              { endDate: { [Op.lte]: startDate } },
+              { startDate: { [Op.lt]: endDate } },
+              { endDate: { [Op.gt]: startDate } },
             ],
           },
+          {
+            // New booking period completely encompasses an existing booking period
+            [Op.and]: [
+              { startDate: { [Op.lte]: startDate } },
+              { endDate: { [Op.gte]: endDate } },
+            ],
+          },
+          {
+            // Existing booking period completely encompasses the new booking period
+            [Op.and]: [
+              { startDate: { [Op.gte]: startDate } },
+              { endDate: { [Op.lte]: endDate } },
+            ],
+          }
         ],
       },
     });
+        
 
     
 
