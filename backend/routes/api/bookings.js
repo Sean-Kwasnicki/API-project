@@ -143,13 +143,17 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
       });
     }
 
-    const updatedBooking = await Booking.update(
+    await Booking.update(
       { startDate,
         endDate },
       { where: { id: bookingId } }
     );
 
 
+      // Fetch the updated booking details
+      const updatedBooking = await Booking.findByPk(bookingId);
+
+    // Return the updated booking details
     res.json(updatedBooking);
   } catch (error) {
     console.error('Failed to update booking:', error);
