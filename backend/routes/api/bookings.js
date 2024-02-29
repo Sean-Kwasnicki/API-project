@@ -120,35 +120,25 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
     //   return res.status(403).json({ message: "You don't have permission to edit this booking" });
     // }
 
+    // 
+    
     const conflictingBookings = await Booking.findAll({
       where: {
-        id: { [Op.ne]: bookingId }, // Exclude the current booking from the check
+        id: { [Op.ne]: bookingId },
         spotId: booking.spotId,
         [Op.or]: [
           {
-            startDate: {
-              [Op.lt]: endDate,
-              [Op.gt]: startDate,
-            },
+            startDate: { [Op.between]: [startDate, endDate] },
           },
           {
-            endDate: {
-              [Op.lt]: endDate,
-              [Op.gt]: startDate,
-            },
+            endDate: { [Op.between]: [startDate, endDate] },
           },
           {
             [Op.and]: [
-              { startDate: { [Op.lte]: startDate } },
-              { endDate: { [Op.gte]: endDate } },
+              { startDate: { [Op.gte]: endDate } },
+              { endDate: { [Op.lte]: startDate } },
             ],
           },
-          {
-            [Op.and]: [
-              { startDate: { [Op.gte]: startDate } },
-              { endDate: { [Op.lte]: endDate } },
-            ],
-          }
         ],
       },
     });
