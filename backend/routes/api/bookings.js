@@ -113,9 +113,9 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     if (!booking) {
       return res.status(404).json({ message: "Booking couldn't be found" });
     }
-    if (new Date(booking.endDate) < now) {
-      return res.status(403).json({ message: "Past bookings can't be modified" });
-    }
+    // if (new Date(booking.endDate) < now) {
+    //   return res.status(403).json({ message: "Past bookings can't be modified" });
+    // }
     if (booking.userId !== userId) {
       return res.status(403).json({ message: "You don't have permission to edit this booking" });
     }
