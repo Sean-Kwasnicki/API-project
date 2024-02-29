@@ -122,7 +122,7 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
 
     const conflictingBookings = await Booking.findAll({
       where: {
-        //id: { [Op.ne]: bookingId }, // Exclude the current booking from the check
+        id: { [Op.ne]: bookingId }, // Exclude the current booking from the check
         spotId: booking.spotId,
         [Op.or]: [
           {
