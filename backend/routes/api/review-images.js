@@ -7,8 +7,6 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
-// Delete an existing image for a Review.
-// DELETE /api/review-images/:imageId
 router.delete('/:imageId', requireAuth, async (req, res) => {
   const { imageId } = req.params;
   const userId = req.user.id;

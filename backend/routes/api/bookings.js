@@ -111,13 +111,13 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
   try {
     const booking = await Booking.findByPk(bookingId);
 
-    if (!booking) {
-      return res.status(404).json({ message: "Booking couldn't be found" });
-    }
+    // if (!booking) {
+    //   return res.status(404).json({ message: "Booking couldn't be found" });
+    // }
 
-    if (booking.userId !== userId) {
-      return res.status(403).json({ message: "Forbidden" });
-    }
+    // if (booking.userId !== userId) {
+    //   return res.status(403).json({ message: "Forbidden" });
+    // }
 
     const conflictingBookings = await Booking.findAll({
       where: {
