@@ -90,13 +90,6 @@ router.post('/:reviewId/images', requireAuth, checkReview, async (req, res) => {
   const userId = req.user.id;
 
   try {
-    // const review = await Review.findByPk(reviewId);
-    // if (!review) {
-    //   return res.status(404).json({ message: "Review couldn't be found" });
-    // }
-    // if (review.userId !== userId) {
-    //   return res.status(403).json({ message: "Forbidden" });
-    // }
 
     const imagesCount = await ReviewImage.count({ where: { reviewId } });
     if (imagesCount >= 10) {
@@ -125,14 +118,6 @@ router.put('/:reviewId', requireAuth, validateReview, checkReview, async (req, r
   const userId = req.user.id;
 
   try {
-    // const existingReview = await Review.findByPk(reviewId);
-    // if (!existingReview) {
-    //   return res.status(404).json({ message: "Review couldn't be found" });
-    // }
-    // if (existingReview.userId !== userId) {
-    //   return res.status(403).json({ message: "Forbidden" });
-    // }
-
 
     await Review.update(
       { review, stars },
@@ -155,14 +140,6 @@ router.delete('/:reviewId', requireAuth, checkReview, async (req, res) => {
 
   try {
     const review = await Review.findByPk(reviewId);
-
-    // if (!review) {
-    //   return res.status(404).json({ message: "Review couldn't be found" });
-    // }
-
-    // if (review.userId !== userId) {
-    //   return res.status(403).json({ message: "Forbidden" });
-    // }
 
     await review.destroy();
 

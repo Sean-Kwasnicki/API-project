@@ -246,10 +246,6 @@ router.get('/:spotId', checkForSpot, async (req, res) => {
       ]
     });
 
-    // if (!spot) {
-    //   return res.status(404).json({ message: "Spot couldn't be found" });
-    // }
-
     const avgStarRating = calculateAvgRating(spot.Reviews);
 
     const spotData = spot.toJSON();
@@ -313,13 +309,6 @@ router.post('/:spotId/images', requireAuth, checkAuthenSpot, async (req, res, ne
   const userId = req.user.id;
 
   try {
-    // const spot = await Spot.findByPk(spotId);
-    // if (!spot) {
-    //   return res.status(404).json({ message: "Spot couldn't be found" });
-    // }
-    // if (spot.ownerId !== userId) {
-    //   return res.status(403).json({ message: "Forbidden"});
-    // }
    if (preview) {
     await SpotImage.update(
       { preview: false },
@@ -351,12 +340,6 @@ router.put('/:spotId', requireAuth, validateSpot, checkAuthenSpot, async (req, r
 
   try {
     const spot = await Spot.findByPk(spotId);
-    // if (!spot) {
-    //   return res.status(404).json({ message: "Spot couldn't be found" });
-    // }
-    // if (spot.ownerId !== userId) {
-    //   return res.status(403).json({ message: "Forbidden" });
-    // }
 
     await spot.update({
       address,
@@ -383,12 +366,6 @@ router.delete('/:spotId', requireAuth, checkAuthenSpot, async (req, res, next) =
 
   try {
     const spot = await Spot.findByPk(spotId);
-    // if (!spot) {
-    //   return res.status(404).json({ message: "Spot couldn't be found" });
-    // }
-    // if (spot.ownerId !== userId) {
-    //   return res.status(403).json({ message: "Forbidden" });
-    // }
 
     await spot.destroy();
 
@@ -403,10 +380,6 @@ router.get('/:spotId/reviews', checkForSpot, async (req, res) => {
   const spotId = parseInt(req.params.spotId);
 
   try {
-    // const spotExists = await Spot.findByPk(spotId);
-    // if (!spotExists) {
-    //   return res.status(404).json({ message: "Spot couldn't be found" });
-    // }
     const reviews = await Review.findAll({
       where: { spotId },
       include: [
@@ -432,11 +405,6 @@ router.post('/:spotId/reviews', requireAuth, validateReview, checkForSpot, async
   const spotId = parseInt(req.params.spotId);
   const { review, stars } = req.body;
   const userId = req.user.id;
-
-    // const spotExists = await Spot.findByPk(spotId);
-    // if (!spotExists) {
-    //   return res.status(404).json({ message: "Spot couldn't be found" });
-    // }
 
   const existingReview = await Review.findOne({
     where: {
@@ -466,9 +434,6 @@ router.get('/:spotId/bookings', requireAuth, checkForSpot ,async (req, res) => {
     const userId = req.user.id;
 
     const spot = await Spot.findByPk(spotId);
-    // if (!spot) {
-    //   return res.status(404).json({ message: "Spot couldn't be found" });
-    // }
 
     let bookings;
 
@@ -521,9 +486,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, checkForSpot, asy
 
   try {
     const spot = await Spot.findByPk(spotId);
-    // if (!spot) {
-    //   return res.status(404).json({ message: "Spot couldn't be found" });
-    // }
+
     if (spot.ownerId === userId) {
       return res.status(403).json({ message: "Forbidden" });
     }
@@ -533,6 +496,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, checkForSpot, asy
         spotId
       },
     });
+    
     const startDateConflict = conflictingBookings.some(booking => {
       const format = date => date.toISOString().slice(0, 10)
 

@@ -111,14 +111,6 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
   try {
     const booking = await Booking.findByPk(bookingId);
 
-    // if (!booking) {
-    //   return res.status(404).json({ message: "Booking couldn't be found" });
-    // }
-
-    // if (booking.userId !== userId) {
-    //   return res.status(403).json({ message: "Forbidden" });
-    // }
-
     const conflictingBookings = await Booking.findAll({
       where: {
         spotId: booking.spotId,
@@ -151,7 +143,6 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
       });
     }
 
-    // Update the booking
     await booking.update({
       startDate,
       endDate,
