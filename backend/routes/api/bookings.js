@@ -103,59 +103,45 @@ router.get('/current', requireAuth, async (req, res) => {
   }
 });
 
-router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
-  const userId = req.user.id;
+router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req, res, next) => {
+  const userId = req.user.id; 
   const { bookingId } = req.params;
   const { startDate, endDate } = req.body;
-  //const now = new Date();
+
   try {
     const booking = await Booking.findByPk(bookingId);
-    // if (!booking) {
-    //   return res.status(404).json({ message: "Booking couldn't be found" });
-    // }
-    // if (new Date(booking.endDate) < now) {
-    //   return res.status(403).json({ message: "Past bookings can't be modified" });
-    // }
-    // if (booking.userId !== userId) {
-    //   return res.status(403).json({ message: "You don't have permission to edit this booking" });
-    // }
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking couldn't be found" });
+    }
+
+    if (booking.userId !== userId) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
 
     const conflictingBookings = await Booking.findAll({
       where: {
-        id: { [Op.ne]: bookingId }, // Exclude the current booking from the check
         spotId: booking.spotId,
-        [Op.or]: [
-          {
-            startDate: {
-              [Op.lt]: endDate,
-              [Op.gt]: startDate,
-            },
-          },
-          {
-            endDate: {
-              [Op.lt]: endDate,
-              [Op.gt]: startDate,
-            },
-          },
-          {
-            [Op.and]: [
-              { startDate: { [Op.lte]: startDate } },
-              { endDate: { [Op.gte]: endDate } },
-            ],
-          },
-          {
-            [Op.and]: [
-              { startDate: { [Op.gte]: startDate } },
-              { endDate: { [Op.lte]: endDate } },
-            ],
-          }
-        ],
+        id: { [Op.ne]: bookingId }, 
       },
     });
 
-    
+    const startDateConflict = conflictingBookings.some(booking => {
+      const format = date => date.toISOString().slice(0, 10)
 
-    if (conflictingBookings.length > 0) {
+      const existingStartDate = format(new Date(booking.startDate));
+      const existingEndDate = format(new Date(booking.endDate));
+      const newStartDate = format(new Date(startDate));
+      const newEndDate = format(new Date(endDate));
+    
+      return (
+        newStartDate >= existingStartDate && newStartDate <= existingEndDate ||
+        newEndDate >= existingStartDate && newEndDate <= existingEndDate ||
+        existingStartDate >= newStartDate && existingEndDate <= newEndDate
+      );
+    });
+
+    if (startDateConflict) {
       return res.status(403).json({
         message: "Sorry, this spot is already booked for the specified dates",
         errors: {
@@ -164,43 +150,25 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
         },
       });
     }
-    
-    await Booking.update(
-      { startDate,
-        endDate },
-      { where: { id: bookingId } }
-    );
 
-    
-      // Fetch the updated booking details
-      const updatedBooking = await Booking.findByPk(bookingId);
+    // Update the booking
+    await booking.update({
+      startDate,
+      endDate,
+    });
 
-    // Return the updated booking details
-    res.json(updatedBooking);
+    return res.json(booking);
   } catch (error) {
     console.error('Failed to update booking:', error);
-    res.status(500).json({ message: 'An unexpected error occurred' });
+    return res.status(500).json({ message: 'An unexpected error occurred' });
   }
 });
 
 router.delete('/:bookingId', requireAuth, checkBooking, async (req, res) => {
   const { bookingId } = req.params;
-  const userId = req.user.id;
-  const { startDate, endDate } = req.body;
 
-  //const now = new Date();
   try {
     const booking = await Booking.findByPk(bookingId);
-
-    // if (!booking) {
-    //   return res.status(404).json({ message: "Booking couldn't be found" });
-    // }
-    // if (booking.userId !== userId) {
-    //   return res.status(403).json({ message: "You do not have permission to delete this booking." });
-    // }
-    // if (new Date(booking.startDate) < now) {
-    //   return res.status(403).json({ message: "Past bookings can't be modified" });
-    // }
 
     await booking.destroy();
 

@@ -144,7 +144,6 @@ const checkBooking = async (req, res, next) => {
       return res.status(403).json({ message: "Past bookings can't be modified" });
     }
 
-    // If all checks pass, add booking to the request object and call next middleware
     req.booking = booking;
     next();
   } catch (error) {

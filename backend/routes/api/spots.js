@@ -2,7 +2,7 @@ const express = require('express');
 const { Spot, Review, SpotImage, User, ReviewImage, Booking } = require('../../db/models');
 const { Op } = require('sequelize');
 const { requireAuth, checkForSpot, checkAuthenSpot } = require('../../utils/auth');
-const { check} = require('express-validator');
+const { check, query} = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
@@ -77,6 +77,46 @@ const validateBooking = [
   handleValidationErrors
 ];
 
+const validatePagination = [
+  query('page')
+    .optional()
+    .isInt({min: 1})
+    .withMessage("Page must be greater than or equal to 1")
+    .isInt({max: 10})
+    .withMessage("Page must be less than or equal to 10"),
+  query('size')
+    .optional()
+    .isInt({min:1})
+    .withMessage("Size must be greater than or equal to 1")
+    .isInt({max: 20})
+    .withMessage("Size must be less than or equal to 20"),
+  query('minLat')
+    .optional()
+    .isFloat({ min: -90, max: 90 })
+    .withMessage("Minimum latitude is invalid"),
+  query('maxLat')
+    .optional()
+    .isFloat({ min: -90, max: 90 })
+    .withMessage("Maximum latitude is invalid"),
+  query('minLng')
+    .optional()
+    .isFloat({ min: -180, max: 180 })
+    .withMessage("Minimum longitude is invalid"),
+  query('maxLng')
+    .optional()
+    .isFloat({ min: -180, max: 180 })
+    .withMessage("Maximum longitude is invalid"),
+  query('minPrice')
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage("Minimum price must be greater than or equal to 0"),
+  query('maxPrice')
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage("Maximum price must be greater than or equal to 0"),
+  handleValidationErrors
+];
+
 function calculateAvgRating(reviews) {
   if (reviews.length === 0) {
     return 'Be the first to Review this Spot';
@@ -121,9 +161,18 @@ function formatSpots(spots) {
   return processedSpots;
 }
 
-router.get('/', async (req, res) => {
+router.get('/', validatePagination, async (req, res) => {
+  let {page, size} = req.query;
+
+  page = parseInt(page) || 1;
+  size = parseInt(size) || 20;
+
+  const offset = (page -1) * size;
+  
   try {
     const spots = await Spot.findAll({
+      limit: size,
+      offset: offset,
       include: [
         {
           model: SpotImage,
@@ -136,7 +185,11 @@ router.get('/', async (req, res) => {
       ]
     });
     const processedSpots = formatSpots(spots);
-    res.status(200).json({ Spots: processedSpots });
+    res.status(200).json({ 
+      Spots: processedSpots,
+      page,
+      size,
+     });
   }
 
   catch (error) {
@@ -474,47 +527,77 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, checkForSpot, asy
     if (spot.ownerId === userId) {
       return res.status(403).json({ message: "Forbidden" });
     }
+
     const conflictingBookings = await Booking.findAll({
       where: {
-        spotId,
-        [Op.or]: [
-          {
-            startDate: {
-              [Op.lt]: endDate,
-              [Op.gt]: startDate,
-            },
-          },
-          {
-            endDate: {
-              [Op.lt]: endDate,
-              [Op.gt]: startDate,
-            },
-          },
-          {
-            [Op.and]: [
-              { startDate: { [Op.lte]: startDate } },
-              { endDate: { [Op.gte]: endDate } },
-            ],
-          },
-          {
-            [Op.and]: [
-              { startDate: { [Op.gte]: startDate } },
-              { endDate: { [Op.lte]: endDate } },
-            ],
-          }
-        ],
+        spotId
       },
     });
+    const startDateConflict = conflictingBookings.some(booking => {
+      const format = date => date.toISOString().slice(0, 10)
 
-    if (conflictingBookings.length > 0) {
+      const existingStartDate = format(new Date(booking.startDate));
+      const existingEndDate = format(new Date(booking.endDate));
+      const newStartDate = format(new Date(startDate));
+      const newEndDate = format(new Date(endDate));
+    
+      return (
+        newStartDate >= existingStartDate && newStartDate <= existingEndDate ||
+        newEndDate >= existingStartDate && newEndDate <= existingEndDate ||
+        existingStartDate >= newStartDate && existingEndDate <= newEndDate
+      );
+    });
+
+    if (startDateConflict) {
       return res.status(403).json({
         message: "Sorry, this spot is already booked for the specified dates",
         errors: {
           startDate: "Start date conflicts with an existing booking",
-          endDate: "End date conflicts with an existing booking"
-        }
+          endDate: "End date conflicts with an existing booking",
+        },
       });
     }
+    // const conflictingBookings = await Booking.findAll({
+    //   where: {
+    //     spotId,
+    //     [Op.or]: [
+    //       {
+    //         startDate: {
+    //           [Op.lte]: endDate,
+    //           [Op.gte]: startDate,
+    //         },
+    //       },
+    //       {
+    //         endDate: {
+    //           [Op.lte]: endDate,
+    //           [Op.gte]: startDate,
+    //         },
+    //       },
+    //       {
+    //         [Op.and]: [
+    //           { startDate: { [Op.lte]: startDate } },
+    //           { endDate: { [Op.gte]: endDate } },
+    //         ],
+    //       },
+    //       {
+    //         [Op.and]: [
+    //           { startDate: { [Op.gte]: startDate } },
+    //           { endDate: { [Op.lte]: endDate } },
+    //         ],
+    //       }
+    //     ],
+    //   },
+    // });
+
+    // if (conflictingBookings.length > 0) {
+    //   return res.status(403).json({
+    //     message: "Sorry, this spot is already booked for the specified dates",
+    //     errors: {
+    //       startDate: "Start date conflicts with an existing booking",
+    //       endDate: "End date conflicts with an existing booking"
+    //     }
+    //   });
+    // }
 
     const booking = await Booking.create({
       spotId,
