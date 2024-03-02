@@ -167,19 +167,6 @@ router.get('/', validatePagination, async (req, res) => {
   page = parseInt(page) || 1;
   size = parseInt(size) || 20;
 
-  // let where = {};
-  // if (minLat && maxLat) where.lat = { [Op.between]: [parseFloat(minLat), parseFloat(maxLat)] };
-  // else if (minLat) where.lat = { [Op.gte]: parseFloat(minLat) };
-  // else if (maxLat) where.lat = { [Op.lte]: parseFloat(maxLat) };
-
-  // if (minLng && maxLng) where.lng = { [Op.between]: [parseFloat(minLng), parseFloat(maxLng)] };
-  // else if (minLng) where.lng = { [Op.gte]: parseFloat(minLng) };
-  // else if (maxLng) where.lng = { [Op.lte]: parseFloat(maxLng) };
-
-  // if (minPrice && maxPrice) where.price = { [Op.between]: [parseFloat(minPrice), parseFloat(maxPrice)] };
-  // else if (minPrice) where.price = { [Op.gte]: parseFloat(minPrice) };
-  // else if (maxPrice) where.price = { [Op.lte]: parseFloat(maxPrice) };
-
    // Initialize an empty object for the 'where' conditions
   let where = {};
 
