@@ -119,7 +119,7 @@ const validatePagination = [
 
 function calculateAvgRating(reviews) {
   if (reviews.length === 0) {
-    return 'Be the first to Review this Spot';
+    return 'Be the first to review this spot';
   }
 
   let totalRating = 0;
@@ -139,7 +139,7 @@ function findPreviewImage(spotImages) {
       return image.url;
     }
   }
-  return 'Currently no preview Image';
+  return 'Currently no preview image';
 }
 
 function formatSpots(spots) {
@@ -185,9 +185,9 @@ router.get('/', validatePagination, async (req, res) => {
         }
       ]
     });
-    const processedSpots = formatSpots(spots);
+    const formattedSpots = formatSpots(spots);
     res.status(200).json({ 
-      Spots: processedSpots,
+      Spots: formattedSpots,
       page,
       size,
      });
@@ -218,8 +218,8 @@ router.get('/current', requireAuth, async (req, res) => {
         }
       ]
     });
-    const processedSpots = formatSpots(spots);
-    res.status(200).json({ Spots: processedSpots });
+    const formattedSpots = formatSpots(spots);
+    res.status(200).json({ Spots: formattedSpots });
   } catch (error) {
     console.error('Error fetching spots for current user:', error);
     res.status(500).json({ error: 'An error occurred while fetching spots.' });
@@ -253,7 +253,7 @@ router.get('/:spotId', checkForSpot, async (req, res) => {
 
     const spotData = spot.toJSON();
 
-    const response = {
+    const formattedSpots = {
       id: spotData.id,
       ownerId: spotData.Owner.id,
       address: spotData.address,
@@ -273,7 +273,7 @@ router.get('/:spotId', checkForSpot, async (req, res) => {
       Owner: spot.Owner
     };
 
-    res.json(response);
+    res.json(formattedSpots);
   } catch (error) {
     console.error('Failed to get spot details:', error);
     res.status(500).json({ message: 'An error occurred while fetching spot details.' });
