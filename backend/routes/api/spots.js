@@ -334,7 +334,7 @@ router.post('/:spotId/images', requireAuth, checkAuthenSpot, async (req, res, ne
     });
   } catch (error) {
     console.error('Failed to add image to spot:', error);
-    next(error); // Pass errors to the error handler
+    next(error); 
   }
 });
 
