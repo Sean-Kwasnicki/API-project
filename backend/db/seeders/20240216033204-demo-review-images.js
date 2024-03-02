@@ -5,22 +5,22 @@ const bcrypt = require("bcryptjs");
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
-  options.schema = process.env.SCHEMA;  // define your schema in options object
+  options.schema = process.env.SCHEMA;  
 }
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await ReviewImage.bulkCreate([
       {
-        reviewId: 4, // Adjust to match an actual review ID from your Reviews table
+        reviewId: 1,
         url: 'http://example.com/review1/image1.jpg',
       },
       {
-        reviewId: 4, // Ensure this review exists
+        reviewId: 2,
         url: 'http://example.com/review2/image1.jpg',
       },
       {
-        reviewId: 4, // Adjust based on your Reviews seed data
+        reviewId: 3,
         url: 'http://example.com/review3/image1.jpg',
       }
       // Add more images as needed

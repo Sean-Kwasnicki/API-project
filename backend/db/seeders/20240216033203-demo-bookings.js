@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
-  options.schema = process.env.SCHEMA;  // define your schema in options object
+  options.schema = process.env.SCHEMA;
 }
 
 
@@ -13,24 +13,24 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await Booking.bulkCreate([
       {
-        userId: 1, // Adjust to match an actual user ID
-        spotId: 4, // Adjust to match an actual spot ID
+        userId: 1,
+        spotId: 1,
         startDate: new Date(),
-        endDate: new Date(new Date().setDate(new Date().getDate() + 7)), // One week later
+        endDate: new Date(new Date().setDate(new Date().getDate() + 7)),
 
       },
       {
         userId: 2, // Adjust as necessary
-        spotId: 4, // This and other spotIds should match actual spots
-        startDate: new Date(new Date().setDate(new Date().getDate() + 10)), // 10 days from now
-        endDate: new Date(new Date().setDate(new Date().getDate() + 14)), // 14 days from now
+        spotId: 2, // This and other spotIds should match actual spots
+        startDate: new Date(new Date().setDate(new Date().getDate() + 10)),
+        endDate: new Date(new Date().setDate(new Date().getDate() + 14)),
 
       },
       {
-        userId: 3, // Repeat userIds if necessary to match your Users seed data
-        spotId: 4, // Ensure spotId exists in your Spots table
-        startDate: new Date(new Date().setDate(new Date().getDate() + 20)), // 20 days from now
-        endDate: new Date(new Date().setDate(new Date().getDate() + 25)), // 25 days from now
+        userId: 3,
+        spotId: 3, 
+        startDate: new Date(new Date().setDate(new Date().getDate() + 20)),
+        endDate: new Date(new Date().setDate(new Date().getDate() + 25)),
 
       }
       // Add more bookings as needed

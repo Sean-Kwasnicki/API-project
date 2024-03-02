@@ -5,29 +5,28 @@ const bcrypt = require("bcryptjs");
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
-  options.schema = process.env.SCHEMA;  // define your schema in options object
+  options.schema = process.env.SCHEMA;
 }
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await SpotImage.bulkCreate([
       {
-        spotId: 4, // Adjust to match an actual spot ID from your Spots table
+        spotId: 1,
         url: 'http://example.com/spot1/image1.jpg',
         preview: true,
 
       },
       {
-        spotId: 4,
+        spotId: 2,
         url: 'http://example.com/spot1/image2.jpg',
         preview: false,
       },
       {
-        spotId: 4, // Ensure this spot exists
+        spotId: 3,
         url: 'http://example.com/spot2/image1.jpg',
         preview: true,
       }
-      // Add more images as needed
     ], {});
   },
 

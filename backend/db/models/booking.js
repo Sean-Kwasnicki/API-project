@@ -4,16 +4,9 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Booking extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
 
     toJSON() {
-      // Creates a shallow copy of the object returned by this.get() and assigns it to the variable attributes
       let attributes = Object.assign({}, this.get());
-      // Check if createdAt and updatedAt exist before formatting
       if (attributes.createdAt) {
         attributes.createdAt = attributes.createdAt.toISOString()
           .replace('T', ' ')
@@ -24,12 +17,21 @@ module.exports = (sequelize, DataTypes) => {
           .replace('T', ' ')
           .slice(0, 19);
       }
+      if (attributes.startDate) {
+        attributes.startDate = attributes.startDate.toISOString()
+          .replace('T', ' ')
+          .slice(0, 10);
+      }
+      if (attributes.endDate) {
+        attributes.endDate = attributes.endDate.toISOString()
+          .replace('T', ' ')
+          .slice(0, 10);
+      }
       return attributes;
     }
 
     static associate(models) {
-      // define association here
-      Booking.belongsTo(models.User, { foreignKey: 'userId', as: 'Guest' });
+      Booking.belongsTo(models.User, { foreignKey: 'userId' });
       Booking.belongsTo(models.Spot, { foreignKey: 'spotId' });
     }
   }

@@ -5,14 +5,14 @@ const bcrypt = require("bcryptjs");
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
-  options.schema = process.env.SCHEMA;  // define your schema in options object
+  options.schema = process.env.SCHEMA;
 }
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await Spot.bulkCreate([
       {
-        ownerId: 1, // Make sure this matches an actual user's ID
+        ownerId: 1, 
         address: "12345 Disney Lane",
         city: "San Francisco",
         state: "California",
