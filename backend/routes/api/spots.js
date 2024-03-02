@@ -166,8 +166,6 @@ router.get('/', validatePagination, async (req, res) => {
   let { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
   page = parseInt(page) || 1;
   size = parseInt(size) || 20;
-
-   // Initialize an empty object for the 'where' conditions
   let where = {};
 
   // Latitude filtering
