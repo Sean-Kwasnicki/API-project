@@ -42,6 +42,7 @@ function formatSpots(spots) {
   return processedSpots;
 }
 
+// Get all Reviews of the Current User
 router.get('/current', requireAuth, async (req, res) => {
   try {
     const reviews = await Review.findAll({
@@ -84,6 +85,7 @@ router.get('/current', requireAuth, async (req, res) => {
   }
 });
 
+// Add an Image to a Review based on the Review's id
 router.post('/:reviewId/images', requireAuth, checkReview, async (req, res) => {
   const { reviewId } = req.params;
   const { url, preview } = req.body;
@@ -112,6 +114,7 @@ router.post('/:reviewId/images', requireAuth, checkReview, async (req, res) => {
   }
 });
 
+// Edit a review
 router.put('/:reviewId', requireAuth, validateReview, checkReview, async (req, res) => {
   const { reviewId } = req.params;
   const { review, stars } = req.body;
@@ -134,6 +137,7 @@ router.put('/:reviewId', requireAuth, validateReview, checkReview, async (req, r
   }
 });
 
+// Delete a Review
 router.delete('/:reviewId', requireAuth, checkReview, async (req, res) => {
   const { reviewId } = req.params;
   const userId = req.user.id;

@@ -62,6 +62,7 @@ function formatSpots(spots) {
   return processedSpots;
 }
 
+// Get all of the Current User's Bookings
 router.get('/current', requireAuth, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -103,6 +104,7 @@ router.get('/current', requireAuth, async (req, res) => {
   }
 });
 
+// Edit a Booking
 router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req, res, next) => {
   const userId = req.user.id; 
   const { bookingId } = req.params;
@@ -155,6 +157,7 @@ router.put('/:bookingId', requireAuth, validateBooking, checkBooking, async (req
   }
 });
 
+// Delete a Booking
 router.delete('/:bookingId', requireAuth, checkBooking, async (req, res) => {
   const { bookingId } = req.params;
 

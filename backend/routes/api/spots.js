@@ -161,6 +161,7 @@ function formatSpots(spots) {
   return processedSpots;
 }
 
+// Get all Spots with Query Filters
 router.get('/', validatePagination, async (req, res) => {
   let {page, size} = req.query;
 
@@ -198,6 +199,7 @@ router.get('/', validatePagination, async (req, res) => {
   }
 });
 
+// Get all spots owned by current user
 router.get('/current', requireAuth, async (req, res) => {
   try {
     const ownerId = req.user.id;
@@ -224,6 +226,7 @@ router.get('/current', requireAuth, async (req, res) => {
   }
 });
 
+// Get details of a Spot from an id
 router.get('/:spotId', checkForSpot, async (req, res) => {
   const { spotId } = req.params;
   try {
@@ -277,6 +280,7 @@ router.get('/:spotId', checkForSpot, async (req, res) => {
   }
 });
 
+// Create a Spot
 router.post('/', requireAuth, validateSpot, async (req, res) => {
 
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
@@ -303,6 +307,7 @@ router.post('/', requireAuth, validateSpot, async (req, res) => {
   }
 });
 
+// Add an Image to a Spot based on the Spots id
 router.post('/:spotId/images', requireAuth, checkAuthenSpot, async (req, res, next) => {
   const { spotId } = req.params;
   const { url, preview } = req.body;
@@ -333,6 +338,7 @@ router.post('/:spotId/images', requireAuth, checkAuthenSpot, async (req, res, ne
   }
 });
 
+// Edit a Spot
 router.put('/:spotId', requireAuth, validateSpot, checkAuthenSpot, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
@@ -360,6 +366,7 @@ router.put('/:spotId', requireAuth, validateSpot, checkAuthenSpot, async (req, r
   }
 });
 
+// Delete a Spot 
 router.delete('/:spotId', requireAuth, checkAuthenSpot, async (req, res, next) => {
   const { spotId } = req.params;
   const userId = req.user.id;
@@ -376,6 +383,7 @@ router.delete('/:spotId', requireAuth, checkAuthenSpot, async (req, res, next) =
   }
 });
 
+// Get all Reviews by a Spot's id
 router.get('/:spotId/reviews', checkForSpot, async (req, res) => {
   const spotId = parseInt(req.params.spotId);
 
@@ -401,6 +409,7 @@ router.get('/:spotId/reviews', checkForSpot, async (req, res) => {
   }
 });
 
+// Create a Review for a Spot based on the Spots id
 router.post('/:spotId/reviews', requireAuth, validateReview, checkForSpot, async (req, res) => {
   const spotId = parseInt(req.params.spotId);
   const { review, stars } = req.body;
@@ -427,7 +436,7 @@ router.post('/:spotId/reviews', requireAuth, validateReview, checkForSpot, async
   res.status(201).json(newReview);
 });
 
-
+// Get all Bookings for a Spot based on the Spot's id
 router.get('/:spotId/bookings', requireAuth, checkForSpot ,async (req, res) => {
   try {
     const spotId = parseInt(req.params.spotId);
@@ -478,6 +487,7 @@ router.get('/:spotId/bookings', requireAuth, checkForSpot ,async (req, res) => {
   }
 });
 
+// Create a Booking from a Spot based on the Spots id
 router.post('/:spotId/bookings', requireAuth, validateBooking, checkForSpot, async (req, res) => {
 
   const spotId = parseInt(req.params.spotId);
@@ -496,7 +506,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, checkForSpot, asy
         spotId
       },
     });
-    
+
     const startDateConflict = conflictingBookings.some(booking => {
       const format = date => date.toISOString().slice(0, 10)
 
