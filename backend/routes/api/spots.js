@@ -170,17 +170,14 @@ router.get('/', validatePagination, async (req, res) => {
 
   // Latitude filtering
   if (minLat && maxLat) {
-    // If both minLat and maxLat are provided, filter spots within the range
     where.lat = { 
       [Op.between]: [parseFloat(minLat), parseFloat(maxLat)] 
     };
   } else if (minLat) {
-    // If only minLat is provided, filter spots with latitude greater than or equal to minLat
     where.lat = { 
       [Op.gte]: parseFloat(minLat) 
     };
   } else if (maxLat) {
-    // If only maxLat is provided, filter spots with latitude less than or equal to maxLat
     where.lat = { 
       [Op.lte]: parseFloat(maxLat) 
     };
@@ -188,17 +185,14 @@ router.get('/', validatePagination, async (req, res) => {
 
   // Longitude filtering
   if (minLng && maxLng) {
-    // If both minLng and maxLng are provided, filter spots within the range
     where.lng = { 
       [Op.between]: [parseFloat(minLng), parseFloat(maxLng)] 
     };
   } else if (minLng) {
-    // If only minLng is provided, filter spots with longitude greater than or equal to minLng
     where.lng = { 
       [Op.gte]: parseFloat(minLng) 
     };
   } else if (maxLng) {
-    // If only maxLng is provided, filter spots with longitude less than or equal to maxLng
     where.lng = { 
       [Op.lte]: parseFloat(maxLng) 
     };
@@ -206,17 +200,14 @@ router.get('/', validatePagination, async (req, res) => {
 
   // Price filtering
   if (minPrice && maxPrice) {
-    // If both minPrice and maxPrice are provided, filter spots within the price range
     where.price = { 
       [Op.between]: [parseFloat(minPrice), parseFloat(maxPrice)] 
     };
   } else if (minPrice) {
-    // If only minPrice is provided, filter spots with price greater than or equal to minPrice
     where.price = { 
       [Op.gte]: parseFloat(minPrice) 
     };
   } else if (maxPrice) {
-    // If only maxPrice is provided, filter spots with price less than or equal to maxPrice
     where.price = { 
       [Op.lte]: parseFloat(maxPrice) 
     };
