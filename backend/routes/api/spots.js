@@ -79,39 +79,39 @@ const validateBooking = [
 
 const validatePagination = [
   query('page')
-    .optional()
+    .optional({ checkFalsy: true })
     .isInt({min: 1})
     .withMessage("Page must be greater than or equal to 1")
     .isInt({max: 10})
     .withMessage("Page must be less than or equal to 10"),
   query('size')
-    .optional()
+    .optional({ checkFalsy: true })
     .isInt({min:1})
     .withMessage("Size must be greater than or equal to 1")
     .isInt({max: 20})
     .withMessage("Size must be less than or equal to 20"),
   query('minLat')
-    .optional()
+    .optional({ checkFalsy: true })
     .isFloat({ min: -90, max: 90 })
     .withMessage("Minimum latitude is invalid"),
   query('maxLat')
-    .optional()
+    .optional({ checkFalsy: true })
     .isFloat({ min: -90, max: 90 })
     .withMessage("Maximum latitude is invalid"),
   query('minLng')
-    .optional()
+    .optional({ checkFalsy: true })
     .isFloat({ min: -180, max: 180 })
     .withMessage("Minimum longitude is invalid"),
   query('maxLng')
-    .optional()
+    .optional({ checkFalsy: true })
     .isFloat({ min: -180, max: 180 })
     .withMessage("Maximum longitude is invalid"),
   query('minPrice')
-    .optional()
+    .optional({ checkFalsy: true })
     .isFloat({ min: 0 })
     .withMessage("Minimum price must be greater than or equal to 0"),
   query('maxPrice')
-    .optional()
+    .optional({ checkFalsy: true })
     .isFloat({ min: 0 })
     .withMessage("Maximum price must be greater than or equal to 0"),
   handleValidationErrors
@@ -161,19 +161,62 @@ function formatSpots(spots) {
   return processedSpots;
 }
 
-// Get all Spots with Query Filters
+// Get all Spots with Query Filters route
 router.get('/', validatePagination, async (req, res) => {
-  let {page, size} = req.query;
-
+  let { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
   page = parseInt(page) || 1;
   size = parseInt(size) || 20;
+  let where = {};
 
-  const offset = (page -1) * size;
-  
+  // Latitude filtering
+  if (minLat && maxLat) {
+    where.lat = { 
+      [Op.between]: [parseFloat(minLat), parseFloat(maxLat)] 
+    };
+  } else if (minLat) {
+    where.lat = { 
+      [Op.gte]: parseFloat(minLat) 
+    };
+  } else if (maxLat) {
+    where.lat = { 
+      [Op.lte]: parseFloat(maxLat) 
+    };
+  }
+
+  // Longitude filtering
+  if (minLng && maxLng) {
+    where.lng = { 
+      [Op.between]: [parseFloat(minLng), parseFloat(maxLng)] 
+    };
+  } else if (minLng) {
+    where.lng = { 
+      [Op.gte]: parseFloat(minLng) 
+    };
+  } else if (maxLng) {
+    where.lng = { 
+      [Op.lte]: parseFloat(maxLng) 
+    };
+  }
+
+  // Price filtering
+  if (minPrice && maxPrice) {
+    where.price = { 
+      [Op.between]: [parseFloat(minPrice), parseFloat(maxPrice)] 
+    };
+  } else if (minPrice) {
+    where.price = { 
+      [Op.gte]: parseFloat(minPrice) 
+    };
+  } else if (maxPrice) {
+    where.price = { 
+      [Op.lte]: parseFloat(maxPrice) 
+    };
+  }
   try {
     const spots = await Spot.findAll({
+      where,
       limit: size,
-      offset: offset,
+      offset: (page - 1) * size,
       include: [
         {
           model: SpotImage,
@@ -185,17 +228,15 @@ router.get('/', validatePagination, async (req, res) => {
         }
       ]
     });
-    const formattedSpots = formatSpots(spots);
+    const formattedSpots = formatSpots(spots); 
     res.status(200).json({ 
       Spots: formattedSpots,
-      page,
-      size,
-     });
-  }
-
-  catch (error) {
+      page, 
+      size 
+    });
+  } catch (error) {
     console.error('Error fetching spots:', error);
-    res.status(500).send({ error: 'An error occurred while fetching spots.' });
+    res.status(500).json({ message: 'An error occurred while fetching spots.' });
   }
 });
 
