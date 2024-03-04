@@ -80,16 +80,16 @@ const validateBooking = [
 const validatePagination = [
   query('page')
     .optional({ checkFalsy: true })
-    .isInt({min: 1})
-    .withMessage("Page must be greater than or equal to 1")
     .isInt({max: 10})
-    .withMessage("Page must be less than or equal to 10"),
+    .withMessage("Page must be less than or equal to 10")
+    .isInt({min: 1})
+    .withMessage("Page must be greater than or equal to 1"),
   query('size')
     .optional({ checkFalsy: true })
-    .isInt({min:1})
-    .withMessage("Size must be greater than or equal to 1")
     .isInt({max: 20})
-    .withMessage("Size must be less than or equal to 20"),
+    .withMessage("Size must be less than or equal to 20")
+    .isInt({min:1})
+    .withMessage("Size must be greater than or equal to 1"),
   query('minLat')
     .optional({ checkFalsy: true })
     .isFloat({ min: -90, max: 90 })
