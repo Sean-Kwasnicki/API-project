@@ -1,0 +1,73 @@
+/* Container for the entire page to center the form */
+.login-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #F7F7F7;
+}
+
+/* Styling for the form container */
+.form-container {
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  width: 400px;
+}
+
+/* Styling for the form title */
+.form-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #FF5A5F; /* Airbnb's signature coral color */
+  text-align: center;
+}
+
+/* Styling for labels and inputs */
+.form-label,
+.form-input {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.form-label {
+  margin-bottom: 5px;
+  font-size: 16px;
+  color: #484848;
+}
+
+.form-input {
+  padding: 15px;
+  font-size: 16px;
+  border: 1px solid #DDDDDD;
+  border-radius: 8px;
+}
+
+/* Styling for the submit button */
+.submit-button {
+  background-color: #FF5A5F;
+  color: #ffffff;
+  padding: 15px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+}
+
+.submit-button:hover {
+  background-color: #f53d4a; /* Slightly darker shade for hover effect */
+}
+
+/* Styling for error messages */
+.error-message {
+  color: #D8000C;
+  background-color: #FFD2D2;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
