@@ -57,6 +57,7 @@
   cursor: pointer;
   display: block;
   width: 100%;
+  margin: 10px;
 }
 
 .submit-button:hover {
