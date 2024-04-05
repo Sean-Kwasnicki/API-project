@@ -4,11 +4,16 @@ import { Provider } from 'react-redux';
 import App from './App';
 import './index.css';
 import configureStore from './store';
+// ... other imports
+import { restoreCSRF, csrfFetch } from './store/csrf';
 
 const store = configureStore();
 
 // Expose the store to the window object, but only in development mode.
-if (process.env.NODE_ENV !== 'production') {
+if (import.meta.env.MODE !== 'production') {
+  restoreCSRF();
+
+  window.csrfFetch = csrfFetch;
   window.store = store;
 }
 
