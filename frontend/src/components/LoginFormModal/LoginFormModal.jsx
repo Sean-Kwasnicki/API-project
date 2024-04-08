@@ -52,6 +52,10 @@ function LoginFormModal() {
           <p>{errors.credential}</p>
         )}
         <button type="submit">Log In</button>
+        <button type="submit" className="demoButton" onClick={() => {
+                setCredential("Demo-lition");
+                setPassword("password");
+            }}>Log in as demo user</button>
       </form>
     </>
   );
