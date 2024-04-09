@@ -1,55 +1,79 @@
-// frontend/src/components/Navigation/ProfileButton.jsx
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { FaUserAlt } from 'react-icons/fa'; // Assuming you're using react-icons for the profile icon
+import { FaUserCircle } from 'react-icons/fa';
 import * as sessionActions from '../../store/session';
+import OpenModalMenuItem from './OpenModalMenuItem';
+import LoginFormModal from '../LoginFormModal/LoginFormModal';
+import SignupFormModal from '../SignupFormModal/SignupFormModal';
 
 function ProfileButton({ user }) {
-  const [showMenu, setShowMenu] = useState(false);
-  const dropdownRef = useRef(null); // Ref to the dropdown for detecting outside clicks
   const dispatch = useDispatch();
+  const [showMenu, setShowMenu] = useState(false);
+  const ulRef = useRef();
 
-  const openMenu = () => {
-    if (!showMenu) {
-      setShowMenu(true);
-    }
+  const toggleMenu = (e) => {
+    e.stopPropagation(); // Prevent event from propagating to the document
+    setShowMenu(prevShowMenu => !prevShowMenu);
   };
 
   useEffect(() => {
-    // Function to detect click outside the dropdown and close it
-    const closeMenu = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowMenu(false);
+    const pageClickEvent = (e) => {
+      // Check if the click is outside `ulRef.current`
+      if (ulRef.current && !ulRef.current.contains(e.target)) {
+        setShowMenu(false); // Close the dropdown
       }
     };
 
+    // Add event listener only if the dropdown is shown
     if (showMenu) {
-      document.addEventListener('click', closeMenu);
+      document.addEventListener('click', pageClickEvent);
     }
 
-    // Cleanup event listener on component unmount or when dropdown closes
-    return () => document.removeEventListener('click', closeMenu);
+    // Cleanup event listener
+    return () => {
+      document.removeEventListener('click', pageClickEvent);
+    };
   }, [showMenu]);
 
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logout());
+    setShowMenu(false); // Close the dropdown menu
   };
 
   return (
-    <div ref={dropdownRef} style={{ position: 'relative' }}>
-      <button onClick={openMenu}>
-        <FaUserAlt /> {/* Profile Icon */}
+    <>
+      <button onClick={toggleMenu}>
+        <FaUserCircle />
       </button>
       {showMenu && (
-        <ul>
-          <li>{user.username}</li>
-            <li>{user.firstName} {user.lastName}</li>
-            <li>{user.email}</li>
-            <button onClick={logout}>Logout</button>
+        <ul className="profile-dropdown" ref={ulRef}>
+          {user ? (
+            <>
+              <li>{user.username}</li>
+              <li>{user.firstName} {user.lastName}</li>
+              <li>{user.email}</li>
+              <li>
+                <button onClick={logout}>Log Out</button>
+              </li>
+            </>
+          ) : (
+            <>
+              <OpenModalMenuItem
+                itemText="Log In"
+                onItemClick={() => setShowMenu(false)}
+                modalComponent={<LoginFormModal />}
+              />
+              <OpenModalMenuItem
+                itemText="Sign Up"
+                onItemClick={() => setShowMenu(false)}
+                modalComponent={<SignupFormModal />}
+              />
+            </>
+          )}
         </ul>
       )}
-    </div>
+    </>
   );
 }
 
