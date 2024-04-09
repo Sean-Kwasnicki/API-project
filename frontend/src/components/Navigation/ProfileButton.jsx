@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { FaUserCircle } from 'react-icons/fa';
+import { FaUserCircle, FaBars } from 'react-icons/fa';
 import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal/LoginFormModal';
 import SignupFormModal from '../SignupFormModal/SignupFormModal';
+import './ProfileButton.css'; // Import the CSS file here
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
@@ -12,24 +13,23 @@ function ProfileButton({ user }) {
   const ulRef = useRef();
 
   const toggleMenu = (e) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     setShowMenu(!showMenu);
   };
 
   useEffect(() => {
-
     if (!showMenu) return;
 
     const closeMenu = (e) => {
-      if (!ulRef.current.contains(e.target)) {
+      if (ulRef.current && !ulRef.current.contains(e.target)) {
         setShowMenu(false);
-      }
-    };
+    }
+  };
 
-      document.addEventListener('click', closeMenu);
+  document.addEventListener('click', closeMenu);
 
-    return () => {
-      document.removeEventListener('click', closeMenu);
+  return () => {
+    document.removeEventListener('click', closeMenu);
     };
   }, [showMenu]);
 
@@ -38,26 +38,25 @@ function ProfileButton({ user }) {
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logout());
-    closeMenu();
+    setShowMenu(false); 
   };
-
-  const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
-
 
   return (
     <>
-      <button onClick={toggleMenu}>
-        <FaUserCircle />
-      </button>
-      {showMenu && (
-        <ul className={ulClassName} ref={ulRef}>
+      <div className="profile-button-container">
+        <button onClick={toggleMenu} className="profile-button">
+          <FaBars className="icon hamburger-icon" />
+          <FaUserCircle className="icon fa-user-circle" />
+        </button>
+        {showMenu && (
+        <ul className={`profile-dropdown ${showMenu ? 'show' : ''}`} ref={ulRef}>
           {user ? (
             <>
               <li>{user.username}</li>
               <li>{user.firstName} {user.lastName}</li>
               <li>{user.email}</li>
               <li>
-                <button onClick={logout}>Log Out</button>
+              <button onClick={logout}>Log Out</button>
               </li>
             </>
           ) : (
@@ -75,7 +74,8 @@ function ProfileButton({ user }) {
             </>
           )}
         </ul>
-      )}
+        )}
+      </div>
     </>
   );
 }

@@ -1,5 +1,4 @@
 // frontend/src/components/LoginFormModal/LoginFormModal.jsx
-
 import { useState } from 'react';
 import * as sessionActions from '../../store/session';
 import { useDispatch } from 'react-redux';
@@ -26,38 +25,56 @@ function LoginFormModal() {
       });
   };
 
+  const handleDemoLogin = async (e) => {
+    e.preventDefault();
+    return dispatch(sessionActions.login({ credential: "Demo-lition", password: "password" }))
+    .then(closeModal)
+      .catch(async (res) => {
+        const data = await res.json();
+        if (data && data.errors) {
+          setErrors(data.errors);
+        }
+      });
+  };
+
+
   return (
-    <>
-      <h1>Log In</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username or Email
-          <input
-            type="text"
-            value={credential}
-            onChange={(e) => setCredential(e.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
-        {errors.credential && (
-          <p>{errors.credential}</p>
-        )}
-        <button type="submit">Log In</button>
-        <button type="submit" className="demoButton" onClick={() => {
-                setCredential("Demo-lition");
-                setPassword("password");
-            }}>Log in as demo user</button>
-      </form>
-    </>
+    <div className="login-page-container">
+      <div className="form-container">
+        <h1 className="form-title">Log In</h1>
+        <form onSubmit={handleSubmit}>
+          <label className="form-label">
+            Username or Email
+            <input
+              type="text"
+              value={credential}
+              onChange={(e) => setCredential(e.target.value)}
+              required
+              className="form-input"
+            />
+          </label>
+          <label className="form-label">
+            Password
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="form-input"
+            />
+          </label>
+          {Object.keys(errors).length > 0 && (
+            <div className="error-message">
+              {Object.values(errors).map((error, idx) => <p key={idx}>{error}</p>)}
+            </div>
+          )}
+          <button type="submit" className="submit-button">
+            Log In
+          </button>
+          <a href="#" onClick={handleDemoLogin} className="demo-login-link">Demo user</a>
+        </form>
+      </div>
+    </div>
   );
 }
 
