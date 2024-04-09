@@ -1,0 +1,66 @@
+/* Container for the entire signup form, providing margin, padding, and styling for background and borders */
+.signup-form {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Styling for the form title with Airbnb's signature color */
+.signup-form h1 {
+  color: #FF385C;
+  margin-bottom: 1.5rem;
+}
+
+/* Margin for each form field for spacing */
+.form-field {
+  margin-bottom: 1rem;
+}
+
+/* Label styling for form fields */
+.form-label {
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: bold;
+  color: #222;
+}
+
+/* Input fields styling, including border and focus effects */
+.form-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+.form-input:focus {
+  border-color: #FF385C;
+  outline: none;
+}
+
+/* Error message styling below input fields */
+.error-message {
+  color: #D8000C;
+  font-size: .875rem;
+  margin-top: .25rem;
+}
+
+/* Submit button styling with hover effect */
+.signup-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #FF385C;
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+.signup-button:hover {
+  background-color: #e33e52;
+}

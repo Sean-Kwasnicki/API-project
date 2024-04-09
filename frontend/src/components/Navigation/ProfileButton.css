@@ -1,0 +1,15 @@
+
+
+.button {
+       position: 'absolute',
+       top: '100%',
+       right: 0,
+       backgroundColor: 'white',
+       border: '1px solid #ccc',
+       borderRadius: '4px',
+       padding: '10px',
+       display: 'flex',
+       flexDirection: 'column',
+       gap: '10px',
+       zIndex: 1000, // Ensure the dropdown is above other content
+}
