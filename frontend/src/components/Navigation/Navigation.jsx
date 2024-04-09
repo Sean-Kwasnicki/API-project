@@ -3,8 +3,8 @@
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
-import airbnbLogo from '../images/airbnb-logo.png';
-import './Navigation.css'; 
+import heartBNBLogo from '../images/heartbnb.png';
+import './Navigation.css';
 
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector(state => state.session.user);
@@ -12,7 +12,7 @@ function Navigation({ isLoaded }) {
   return (
     <nav>
       <NavLink to="/">
-          <img src={airbnbLogo} alt="Airbnb" />
+          <img src={heartBNBLogo} alt="Airbnb" />
       </NavLink>
       {isLoaded && <ProfileButton user={sessionUser} />}
     </nav>

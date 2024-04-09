@@ -17,13 +17,32 @@ function LoginFormModal() {
     setErrors({});
     return dispatch(sessionActions.login({ credential, password }))
       .then(closeModal)
-      .catch(async (res) => {
-        const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
-        }
+      .catch(errorResponse => {
+        // Parse the JSON from the response body
+        errorResponse.json().then(errorData => {
+          // Log the error data or messages received
+          console.log("Error Data:", errorData);
+          if (errorData && errorData.errors) {
+            // The array of errors, log the first one or map through them as needed
+            console.log("Error Message:", errorData.errors[0]);
+            setErrors([errorData.errors[0]]); // Set the first error message to state
+            // If your errors are not in an array or structured differently, adjust accordingly
+          } else if (errorData && errorData.message) {
+            // If a single error message is sent back
+            console.log("Error Message:", errorData.message);
+            setErrors([errorData.message]); // Set the error message to state
+          } else {
+            // Fallback error message
+            setErrors(["An unknown error occurred."]);
+          }
+        }).catch(() => {
+          // Handle any errors that occur during the parsing of the JSON
+          console.log("Error parsing error response.");
+          setErrors(["An error occurred while processing your request."]);
+        });
       });
   };
+
 
   const handleDemoLogin = async (e) => {
     e.preventDefault();
@@ -42,6 +61,12 @@ function LoginFormModal() {
     <div className="login-page-container">
       <div className="form-container">
         <h1 className="form-title">Log In</h1>
+
+
+        {errors.length > 0 &&
+        <p className="error-message">{errors.map((error, idx) => <div key={idx}>{error}</div>)}</p>}
+
+
         <form onSubmit={handleSubmit}>
           <label className="form-label">
             Username or Email
@@ -53,6 +78,7 @@ function LoginFormModal() {
               className="form-input"
             />
           </label>
+
           <label className="form-label">
             Password
             <input
@@ -63,11 +89,6 @@ function LoginFormModal() {
               className="form-input"
             />
           </label>
-          {Object.keys(errors).length > 0 && (
-            <div className="error-message">
-              {Object.values(errors).map((error, idx) => <p key={idx}>{error}</p>)}
-            </div>
-          )}
           <button type="submit" className="submit-button">
             Log In
           </button>

@@ -1,33 +1,26 @@
-/* Container for the entire signup form, providing margin, padding, and styling for background and borders */
+/* Container for the entire signup form */
 .signup-form {
-  max-width: 400px;
-  margin: 2rem auto;
+  width: 500px;
   padding: 2rem;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Styling for the form title with Airbnb's signature color */
+/* Styling for the form title */
 .signup-form h1 {
   color: #FF385C;
-  margin-bottom: 1.5rem;
-}
-
-/* Margin for each form field for spacing */
-.form-field {
-  margin-bottom: 1rem;
+  text-align: center;
 }
 
 /* Label styling for form fields */
 .form-label {
   display: block;
-  margin-bottom: .5rem;
   font-weight: bold;
   color: #222;
 }
 
-/* Input fields styling, including border and focus effects */
+/* Input fields styling*/
 .form-input {
   width: 100%;
   padding: 10px;
@@ -59,7 +52,6 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  margin-top: 1rem;
 }
 .signup-button:hover {
   background-color: #e33e52;

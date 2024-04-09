@@ -5,6 +5,7 @@
        justify-content: flex-end;
        align-items: center;
        margin: 5px;
+       padding-right: 20px;
    }
 
    .profile-button {
@@ -60,7 +61,7 @@
        padding: 0;
        cursor: pointer;
    }
-   
+
    .open-modal-menu-item {
        display: flex;
        align-items: center;
