@@ -23,10 +23,9 @@ function LoginFormModal() {
           // Log the error data or messages received
           console.log("Error Data:", errorData);
           if (errorData && errorData.errors) {
-            // The array of errors, log the first one or map through them as needed
+            // log the first one 
             console.log("Error Message:", errorData.errors[0]);
             setErrors([errorData.errors[0]]); // Set the first error message to state
-            // If your errors are not in an array or structured differently, adjust accordingly
           } else if (errorData && errorData.message) {
             // If a single error message is sent back
             console.log("Error Message:", errorData.message);

@@ -5,7 +5,7 @@ import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal/LoginFormModal';
 import SignupFormModal from '../SignupFormModal/SignupFormModal';
-import './ProfileButton.css'; // Import the CSS file here
+import './ProfileButton.css'; 
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ function ProfileButton({ user }) {
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logout());
-    setShowMenu(false); 
+    setShowMenu(false);
   };
 
   return (
@@ -61,15 +61,15 @@ function ProfileButton({ user }) {
             </>
           ) : (
             <>
+             <OpenModalMenuItem
+                itemText="Sign Up"
+                onItemClick={closeMenu}
+                modalComponent={<SignupFormModal />}
+              />
               <OpenModalMenuItem
                 itemText="Log In"
                 onItemClick={closeMenu}
                 modalComponent={<LoginFormModal />}
-              />
-              <OpenModalMenuItem
-                itemText="Sign Up"
-                onItemClick={closeMenu}
-                modalComponent={<SignupFormModal />}
               />
             </>
           )}
