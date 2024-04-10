@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useModal } from '../../context/Modal';
 import * as sessionActions from '../../store/session';
-import './SignupForm.css'; 
+import './SignupForm.css';
 
 function SignupFormModal() {
   const dispatch = useDispatch();
@@ -15,23 +15,67 @@ function SignupFormModal() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
 
+  const invalidSignup =
+    username.length < 4 ||
+    !email ||
+    !firstName ||
+    !lastName ||
+    password.length < 6 ||
+    !confirmPassword;
+
+    // Determine the button class based on whether it is disabled
+    const buttonClass = `submit-button ${invalidSignup ? 'disabled' : ''}`;
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (password !== confirmPassword) {
+  //     setErrors({ ...errors, confirmPassword: "Confirm Password must match Password" });
+  //     return;
+  //   }
+  //   setErrors({});
+  //   try {
+  //     await dispatch(sessionActions.signup({ email, username, firstName, lastName, password }));
+  //     closeModal();
+  //   } catch (res) {
+  //     const data = await res.json();
+  //     if (data && data.errors) {
+  //       setErrors(data.errors);
+  //     }
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Initialize an object to collect errors
+    let newErrors = {};
+
+    // Check confirm password match
     if (password !== confirmPassword) {
-      setErrors({ ...errors, confirmPassword: "Confirm Password must match Password" });
-      return;
+      newErrors.confirmPassword = "Confirm Password must match Password.";
     }
-    setErrors({});
+
     try {
       await dispatch(sessionActions.signup({ email, username, firstName, lastName, password }));
       closeModal();
-    } catch (res) {
-      const data = await res.json();
+    } catch (error) {
+      const data = await error.json();
       if (data && data.errors) {
-        setErrors(data.errors);
+        // Combine backend errors with any existing errors
+        newErrors = { ...newErrors, ...data.errors };
       }
     }
+
+    // If there are any accumulated errors, update the state
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return; // Prevent form submission if there are errors
+    }
+
+    // If no errors, reset errors in the state
+    setErrors({});
   };
+
 
   return (
     <div className="signup-form">
@@ -104,7 +148,7 @@ function SignupFormModal() {
           {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
         </div>
 
-        <button type="submit" className="signup-button">Sign Up</button>
+        <button type="submit" className={buttonClass} disabled={invalidSignup}>Sign Up</button>
       </form>
     </div>
   );

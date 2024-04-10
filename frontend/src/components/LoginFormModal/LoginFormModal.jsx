@@ -23,7 +23,7 @@ function LoginFormModal() {
           // Log the error data or messages received
           console.log("Error Data:", errorData);
           if (errorData && errorData.errors) {
-            // log the first one 
+            // log the first one
             console.log("Error Message:", errorData.errors[0]);
             setErrors([errorData.errors[0]]); // Set the first error message to state
           } else if (errorData && errorData.message) {
@@ -55,6 +55,11 @@ function LoginFormModal() {
       });
   };
 
+   // Determine if the "Log in" button should be disabled
+    const loginDisabled = credential.length < 4 || password.length < 6;
+
+    // Determine the button class based on whether it is disabled
+    const buttonClass = `submit-button ${loginDisabled ? 'disabled' : ''}`;
 
   return (
     <div className="login-page-container">
@@ -88,7 +93,7 @@ function LoginFormModal() {
               className="form-input"
             />
           </label>
-          <button type="submit" className="submit-button">
+          <button type="submit" className={buttonClass} disabled={loginDisabled}>
             Log In
           </button>
           <a href="#" onClick={handleDemoLogin} className="demo-login-link">Demo user</a>

@@ -17,3 +17,22 @@ img {
   display: flex;
   align-items: center;
 }
+
+
+.navigation-links {
+  display: flex;
+  align-items: center;
+}
+
+.create-new-spot-link {
+  color: purple;
+  text-decoration: none;
+  padding: 10px 0px;
+  margin-right: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.create-new-spot-link:hover {
+  color: #573ee3;
+}

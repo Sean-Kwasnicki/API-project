@@ -2,15 +2,17 @@ import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { FaUserCircle, FaBars } from 'react-icons/fa';
 import * as sessionActions from '../../store/session';
+import { useNavigate } from 'react-router-dom';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal/LoginFormModal';
 import SignupFormModal from '../SignupFormModal/SignupFormModal';
-import './ProfileButton.css'; 
+import './ProfileButton.css';
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
+  const navigate = useNavigate()
 
   const toggleMenu = (e) => {
     e.stopPropagation();
@@ -38,7 +40,8 @@ function ProfileButton({ user }) {
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logout());
-    setShowMenu(false);
+    setShowMenu(false); // Hide the drop down menu
+    navigate('/'); // Navigate back to the home page
   };
 
   return (
@@ -53,7 +56,7 @@ function ProfileButton({ user }) {
           {user ? (
             <>
               <li>{user.username}</li>
-              <li>{user.firstName} {user.lastName}</li>
+              <li>Hello, {user.firstName} {user.lastName}</li>
               <li>{user.email}</li>
               <li>
               <button onClick={logout}>Log Out</button>

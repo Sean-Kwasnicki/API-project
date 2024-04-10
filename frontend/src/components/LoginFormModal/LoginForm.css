@@ -57,10 +57,18 @@
   display: block;
   width: 100%;
   margin: 10px;
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
 }
 
 .submit-button:hover {
-  background-color: #f53d4a;
+  background-color: #fb0011;
+}
+
+/* Disabled state of the button */
+.submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  color: #666666;
 }
 
 /* Styling for error messages */

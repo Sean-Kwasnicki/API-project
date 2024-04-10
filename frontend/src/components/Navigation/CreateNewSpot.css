@@ -1,0 +1,94 @@
+/* CreateNewSpot.css */
+.create-new-spot-form {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #FFF;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.create-new-spot-form h1 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.label-create-new {
+  display: block;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+  margin-left: 3px;
+}
+
+/* Targeting specific text within labels */
+.label-highlight {
+  margin-bottom: 100px;
+}
+
+.form-section {
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+.form-section h2 {
+  margin-bottom: 10px;
+  color: #666;
+}
+
+.form-section p {
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  color: #999;
+}
+
+.form-section input,
+.form-section textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #DDD;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-section textarea {
+  height: 100px;
+}
+
+.create-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #FF5A60;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #E04E5A;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.error-message-inline {
+  display: inline-block;
+  color: red;
+  font-weight: bold;
+  margin-left: 10px;
+  margin-bottom: 4px;
+
+}
+
+/* New class for the label and error message container */
+.form-field-inline {
+  display: flex;
+  align-items: center;
+}
