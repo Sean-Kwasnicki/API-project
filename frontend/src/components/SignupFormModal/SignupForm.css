@@ -1,26 +1,33 @@
-/* Container for the entire signup form */
+/* Container for the entire signup form, providing margin, padding, and styling for background and borders */
 .signup-form {
   width: 500px;
+  margin: 2rem auto;
   padding: 2rem;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Styling for the form title */
+/* Styling for the form titler */
 .signup-form h1 {
   color: #FF385C;
-  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Margin for each form field for spacing */
+.form-field {
+  margin-bottom: 1rem;
 }
 
 /* Label styling for form fields */
 .form-label {
   display: block;
+  margin-bottom: .5rem;
   font-weight: bold;
   color: #222;
 }
 
-/* Input fields styling*/
+/* Input fields styling, including border and focus effects */
 .form-input {
   width: 100%;
   padding: 10px;
@@ -52,15 +59,5 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s; /* Smooth transition for hover effect */
-}
-.signup-button:hover {
-  background-color: #fb0011;
-}
-
-/* Disabled state of the button */
-.submit-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-  color: #666666;
+  margin-top: 1rem;
 }

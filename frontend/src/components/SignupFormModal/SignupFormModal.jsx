@@ -26,24 +26,6 @@ function SignupFormModal() {
     // Determine the button class based on whether it is disabled
     const buttonClass = `submit-button ${invalidSignup ? 'disabled' : ''}`;
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (password !== confirmPassword) {
-  //     setErrors({ ...errors, confirmPassword: "Confirm Password must match Password" });
-  //     return;
-  //   }
-  //   setErrors({});
-  //   try {
-  //     await dispatch(sessionActions.signup({ email, username, firstName, lastName, password }));
-  //     closeModal();
-  //   } catch (res) {
-  //     const data = await res.json();
-  //     if (data && data.errors) {
-  //       setErrors(data.errors);
-  //     }
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 

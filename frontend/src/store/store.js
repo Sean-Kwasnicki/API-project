@@ -6,6 +6,7 @@ import sessionReducer from './session';
 const rootReducer = combineReducers({
   // ADD REDUCERS HERE
   session: sessionReducer
+  // Need to create a spotreducer 
 });
 
 let enhancer;

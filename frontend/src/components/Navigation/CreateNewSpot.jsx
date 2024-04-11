@@ -12,7 +12,7 @@ function CreateNewSpot() {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [previewImage, setPreviewImage] = useState("");
-  const [imageURLs, setImageURLs] = useState(["", "", "", ""]); // Assuming 4 additional images
+  const [imageURLs, setImageURLs] = useState(["", "", "", ""]);
 
   const [errors, setErrors] = useState({});
 
@@ -41,6 +41,9 @@ function CreateNewSpot() {
     if (!previewImage) newErrors.previewImage = 'Preview image is required';
 
     setErrors(newErrors);
+
+    // we need to dispasthc the thunk we created and have imported
+    // 
   };
 
   return (
@@ -64,26 +67,34 @@ function CreateNewSpot() {
         />
 
         <input
-          type="text"
-          placeholder="Street Address"
-          value={street}
-          onChange={(e) => setStreet(e.target.value)}
-          required
+            type="text"
+            placeholder="Street Address"
+            value={street}
+            onChange={(e) => setStreet(e.target.value)}
+            required
         />
-        <input
-          type="text"
-          placeholder="City"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="State"
-          value={state}
-          onChange={(e) => setState(e.target.value)}
-          required
-        />
+
+        <div className="address-container">
+            <input
+            type="text"
+            placeholder="City"
+            id="City"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            required
+            />
+
+        <div className="input-with-comma">,</div>
+
+            <input
+            type="text"
+            placeholder="State"
+            id="State"
+            value={state}
+            onChange={(e) => setState(e.target.value)}
+            required
+            />
+        </div>
       </div>
 
       {/* Description Section */}
@@ -91,7 +102,7 @@ function CreateNewSpot() {
         <h2>Describe your place to guests</h2>
         <p>Mention the best features of your space, any special amenities like fast wifi or parking, and what you love about the neighborhood.</p>
         <textarea
-          placeholder="Please write at least 30 characters"
+          placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
@@ -146,7 +157,7 @@ function CreateNewSpot() {
               newImageURLs[index] = e.target.value;
               setImageURLs(newImageURLs);
             }}
-            required={index === 0} // Only the first image URL is required
+            required={index === 0}
           />
         ))}
       </div>

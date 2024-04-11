@@ -8,8 +8,8 @@
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.create-new-spot-form h1 {
-  color: #333;
+ .create-new-spot-form h1 {
+  color: #000000;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -23,9 +23,10 @@
 }
 
 /* Targeting specific text within labels */
-.label-highlight {
+  .label-highlight {
   margin-bottom: 100px;
 }
+
 
 .form-section {
   margin-bottom: 20px;
@@ -69,10 +70,6 @@
   transition: background-color 0.3s;
 }
 
-button:hover {
-  background-color: #E04E5A;
-}
-
 button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
@@ -84,11 +81,30 @@ button:disabled {
   font-weight: bold;
   margin-left: 10px;
   margin-bottom: 4px;
-
 }
 
 /* New class for the label and error message container */
 .form-field-inline {
   display: flex;
   align-items: center;
+}
+
+.address-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-with-comma {
+  position: relative;
+  margin: 5px;
+  margin-right: 10px;
+}
+
+#City {
+  width: 70%;
+}
+
+#State {
+  width: 30%;
 }
