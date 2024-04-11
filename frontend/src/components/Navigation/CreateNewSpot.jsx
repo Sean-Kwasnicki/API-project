@@ -1,6 +1,9 @@
-// Import React and useState hook
+// Import
 import { useState } from 'react';
 import './CreateNewSpot.css';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { createSpot } from '../../store/spot';
 
 function CreateNewSpot() {
   // State for each input field
@@ -16,16 +19,19 @@ function CreateNewSpot() {
 
   const [errors, setErrors] = useState({});
 
-  // Function to check if form is valid
-  const isFormValid = () => {
-    return (
-      country.trim() && street.trim() && city.trim() && state.trim() &&
-      description.length >= 30 && title.trim() && price.trim() &&
-      previewImage.trim() && imageURLs.every(url => url.trim())
-    );
-  };
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  // Function to check if form is valid
+  // const isFormValid = () => {
+  //   return (
+  //     country.trim() && street.trim() && city.trim() && state.trim() &&
+  //     description.length >= 30 && title.trim() && price.trim() &&
+  //     previewImage.trim() && imageURLs.every(url => url.trim())
+  //   );
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     let newErrors = {};
@@ -42,8 +48,17 @@ function CreateNewSpot() {
 
     setErrors(newErrors);
 
-    // we need to dispasthc the thunk we created and have imported
-    // 
+    // we need to dispastch the thunk we created and have imported
+    if (Object.keys(errors).length === 0) {
+      const spotDetails = { country, street, city, state, description, title, price, previewImage, images: imageURLs };
+      const createdSpot = await dispatch(createSpot(spotDetails));
+
+      
+      // Navigate to the spot details page using the spot ID
+      if (createdSpot) {
+        navigate(`/spots/${createdSpot.id}`); 
+      }
+    }
   };
 
   return (
