@@ -54,6 +54,7 @@ function CreateNewSpot() {
       <div className="form-section">
         <h2>Where is your place located?</h2>
         <p>Guests will only get your exact address once they have booked a reservation.</p>
+
         <div className="form-field-inline">
         <label className="label-create-new">Country</label>
         {errors.country && <div className="error-message-inline">{errors.country}</div>}
@@ -66,15 +67,23 @@ function CreateNewSpot() {
           required
         />
 
+        <div className="form-field-inline">
+        <label className="label-create-new">Street Address</label>
+        {errors.street && <div className="error-message-inline">{errors.street}</div>}
+         </div>
         <input
             type="text"
-            placeholder="Street Address"
+            placeholder="Address"
             value={street}
             onChange={(e) => setStreet(e.target.value)}
             required
         />
 
         <div className="address-container">
+          <div className="form-field-inline">
+          <label className="label-create-new">City</label>
+          {errors.city && <div className="error-message-inline">{errors.city}</div>}
+          </div>
             <input
             type="text"
             placeholder="City"
@@ -85,7 +94,11 @@ function CreateNewSpot() {
             />
 
         <div className="input-with-comma">,</div>
-
+            
+          <div className="form-field-inline">
+          <label className="label-create-new">State</label>
+          {errors.state && <div className="error-message-inline">{errors.state}</div>}
+          </div>
             <input
             type="text"
             placeholder="State"
