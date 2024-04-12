@@ -170,46 +170,46 @@ router.get('/', validatePagination, async (req, res) => {
 
   // Latitude filtering
   if (minLat && maxLat) {
-    where.lat = { 
-      [Op.between]: [parseFloat(minLat), parseFloat(maxLat)] 
+    where.lat = {
+      [Op.between]: [parseFloat(minLat), parseFloat(maxLat)]
     };
   } else if (minLat) {
-    where.lat = { 
-      [Op.gte]: parseFloat(minLat) 
+    where.lat = {
+      [Op.gte]: parseFloat(minLat)
     };
   } else if (maxLat) {
-    where.lat = { 
-      [Op.lte]: parseFloat(maxLat) 
+    where.lat = {
+      [Op.lte]: parseFloat(maxLat)
     };
   }
 
   // Longitude filtering
   if (minLng && maxLng) {
-    where.lng = { 
-      [Op.between]: [parseFloat(minLng), parseFloat(maxLng)] 
+    where.lng = {
+      [Op.between]: [parseFloat(minLng), parseFloat(maxLng)]
     };
   } else if (minLng) {
-    where.lng = { 
-      [Op.gte]: parseFloat(minLng) 
+    where.lng = {
+      [Op.gte]: parseFloat(minLng)
     };
   } else if (maxLng) {
-    where.lng = { 
-      [Op.lte]: parseFloat(maxLng) 
+    where.lng = {
+      [Op.lte]: parseFloat(maxLng)
     };
   }
 
   // Price filtering
   if (minPrice && maxPrice) {
-    where.price = { 
-      [Op.between]: [parseFloat(minPrice), parseFloat(maxPrice)] 
+    where.price = {
+      [Op.between]: [parseFloat(minPrice), parseFloat(maxPrice)]
     };
   } else if (minPrice) {
-    where.price = { 
-      [Op.gte]: parseFloat(minPrice) 
+    where.price = {
+      [Op.gte]: parseFloat(minPrice)
     };
   } else if (maxPrice) {
-    where.price = { 
-      [Op.lte]: parseFloat(maxPrice) 
+    where.price = {
+      [Op.lte]: parseFloat(maxPrice)
     };
   }
   try {
@@ -228,11 +228,11 @@ router.get('/', validatePagination, async (req, res) => {
         }
       ]
     });
-    const formattedSpots = formatSpots(spots); 
-    res.status(200).json({ 
+    const formattedSpots = formatSpots(spots);
+    res.status(200).json({
       Spots: formattedSpots,
-      page, 
-      size 
+      page,
+      size
     });
   } catch (error) {
     console.error('Error fetching spots:', error);
@@ -407,7 +407,7 @@ router.put('/:spotId', requireAuth, validateSpot, checkAuthenSpot, async (req, r
   }
 });
 
-// Delete a Spot 
+// Delete a Spot
 router.delete('/:spotId', requireAuth, checkAuthenSpot, async (req, res, next) => {
   const { spotId } = req.params;
   const userId = req.user.id;
@@ -555,7 +555,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, checkForSpot, asy
       const existingEndDate = format(new Date(booking.endDate));
       const newStartDate = format(new Date(startDate));
       const newEndDate = format(new Date(endDate));
-    
+
       return (
         newStartDate >= existingStartDate && newStartDate <= existingEndDate ||
         newEndDate >= existingStartDate && newEndDate <= existingEndDate ||
