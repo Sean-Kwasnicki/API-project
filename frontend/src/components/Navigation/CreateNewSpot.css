@@ -3,24 +3,28 @@
   max-width: 600px;
   margin: 40px auto;
   padding: 20px;
-  background: #FFF;
+  background: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 15px rgba(4, 0, 0, 0.1);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
  .create-new-spot-form h1 {
   color: #000000;
   text-align: center;
   margin-bottom: 20px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .label-create-new {
   display: block;
   font-weight: bold;
-  color: #333;
+  color: #3e3e3e;
   margin-bottom: 5px;
   margin-left: 3px;
+  font-family: Arial, Helvetica, sans-serif;
 }
+
 
 /* Targeting specific text within labels */
   .label-highlight {
@@ -35,7 +39,7 @@
 
 .form-section h2 {
   margin-bottom: 10px;
-  color: #666;
+  color: #000000;
 }
 
 .form-section p {
@@ -52,6 +56,7 @@
   border: 1px solid #DDD;
   border-radius: 4px;
   box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .form-section textarea {
@@ -70,6 +75,10 @@
   transition: background-color 0.3s;
 }
 
+.create-button:hover {
+  background-color: #fc0008;
+}
+
 button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
@@ -81,6 +90,7 @@ button:disabled {
   font-weight: bold;
   margin-left: 10px;
   margin-bottom: 4px;
+  font-size: 13px;
 }
 
 /* New class for the label and error message container */
@@ -90,21 +100,42 @@ button:disabled {
 }
 
 .address-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 2fr auto 1fr;
+  gap: 5px;
   align-items: center;
-  gap: 10px;
+  margin: 11px;
+  margin-top: -25px;
+}
+
+.label-create-new {
+  grid-row: 1; /* All labels on the first row */
+
 }
 
 .input-with-comma {
-  position: relative;
+  justify-self: bottom; /* Center the comma horizontally in its cell */
+  grid-row: 2; /* Comma on the second row */
   margin: 5px;
-  margin-right: 10px;
 }
 
-#City {
-  width: 70%;
+.form-input {
+  grid-row: 2; /* All inputs on the second row */
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-#State {
-  width: 30%;
+#text {
+  margin-bottom: -1px;
+  margin-left: 4px;
+}
+
+.lng-lat-container {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 5px;
+  align-items: center;
+  margin: 11px;
+  margin-top: -25px;
 }

@@ -13,7 +13,7 @@ const addSpot = (spot) => {
 
 // Thunk Action Creator for creating a new spot
 export const createSpot = (spotDetails) => async (dispatch) => {
-    const response = await csrfFetch('/api/spots/new', {
+    const response = await csrfFetch('/api/spots', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
