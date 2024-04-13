@@ -1,0 +1,17 @@
+.star-rating {
+  font-size: 24px;
+  color: #ccc; /* Light gray for empty stars */
+}
+
+.star {
+  display: inline-block;
+  position: relative;
+}
+
+.full-star, .half-star {
+  color: #FFA700; /* Gold color for full stars and half stars */
+}
+
+.empty-star {
+  color: #ccc;
+}
