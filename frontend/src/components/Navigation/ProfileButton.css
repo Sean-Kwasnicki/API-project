@@ -6,6 +6,7 @@
        align-items: center;
        margin: 5px;
        padding-right: 8px;
+       
    }
 
    .profile-button {
@@ -34,12 +35,14 @@
        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
        border-radius: 4px;
        width: 200px;
-       z-index: 100;
+       z-index: 1000;
        display: none; /* Initially hidden */
    }
 
    .profile-dropdown.show {
        display: block;
+       z-index: 1000;
+       position: absolute;
    }
 
    .profile-dropdown li {
@@ -47,10 +50,13 @@
        padding: 10px 10px;
        border-bottom: 1px solid #f0f0f0;
        cursor: pointer;
+       z-index: 1000;
+       
    }
 
    .profile-dropdown li:last-child {
        border-bottom: none;
+       z-index: 1000;
    }
 
    .profile-dropdown li button {
@@ -60,10 +66,12 @@
        border: none;
        padding: 0;
        cursor: pointer;
+       z-index: 1000;
    }
 
    .open-modal-menu-item {
        display: flex;
        align-items: center;
        justify-content: space-between;
+       z-index: 1000;
    }
