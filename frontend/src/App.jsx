@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Navigation from './components/Navigation/Navigation';
 import CreateNewSpot from './components/Navigation/CreateNewSpot';
 import SpotDetails from './components/SpotDetails/SpotDetails';
-import Spots from './components/Spots/Spots';
+import Spots from './components/AllSpots/Spots';
 import * as sessionActions from './store/session';
 
 function Layout() {

@@ -7,6 +7,15 @@ function StarRating({ rating }) {
   const fullStars = Math.floor(rating); // Number of full stars
   const fractionalPart = rating - fullStars; // Fractional part of the rating
 
+  // Handle the case where there is no rating (rating is 0)
+  if (!fullStars) {
+    return (
+      <div className="new-rating">
+        <span>New</span> <FaStar className="new-star" />
+      </div>
+    );
+  }
+
   for (let i = 1; i <= totalStars; i++) {
     if (i <= fullStars) {
       stars.push(<span className="star full-star" key={i}><FaStar /></span>);
@@ -29,6 +38,5 @@ function StarRating({ rating }) {
     </div>
   );
 }
-
 
 export default StarRating;

@@ -41,18 +41,13 @@ function SpotDetails() {
         <div className="pricing-box">
           <p className="spot-price">${spot.price} <span className="per-night">per night</span></p>
           <StarRating rating={spot.avgStarRating} /> 
-          <p className="spot-rating">Average Star Rating: {spot.avgStarRating} </p>
+          {/* <p className="spot-rating">Average Star Rating: {spot.avgStarRating} </p> */}
           <p className="spot-rating">{spot.numReviews} Total reviews</p>
           <button className="reserve-button" onClick={() => alert('Feature coming soon')}>Reserve</button>
         </div>
       </div>
     </div>
-
-
-
   );
-
-
 }
 
 export default SpotDetails;

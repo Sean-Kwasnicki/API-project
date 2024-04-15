@@ -23,3 +23,22 @@
   position: relative;
 }
 
+.new-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: red; 
+  font-weight: bold;
+  position: relative;
+  font-size: 24px;
+}
+
+.new-rating span {
+  margin-right: 4px; 
+}
+
+
+.new-rating .new-star {
+  color: #FFA700;
+}
+
