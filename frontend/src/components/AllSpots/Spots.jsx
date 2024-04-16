@@ -17,7 +17,7 @@ function Spots() {
           {spots.map(spot => (
             <div className="spot-tile" key={spot.id}>
               <NavLink to={`/spots/${spot.id}`} className="spot-link">
-                <img src={spot.previewImage} alt={spot.name} className="spot-thumbnail"/>
+                <img src={`/public/SpotImages/${spot.name}.jpeg`} alt={spot.name} className="spot-thumbnail"/>
                 <div className="spot-info">
                   <p className="spot-location">{spot.city}, {spot.state}</p>
                   <p className="spot-price">${spot.price} per night</p>

@@ -8,6 +8,7 @@
   position: sticky; /* Stick Nav Bar to the top as you scroll down */
   top: 0; /* This sets the point at which the navbar sticks */
   background-color: white; /* Optional: background color for better visibility */
+  z-index: 50;
 }
 
 

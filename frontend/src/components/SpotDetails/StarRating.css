@@ -1,11 +1,11 @@
 .star-rating {
   font-size: 24px;
   color: #ccc; /* Light gray for empty stars */
-  z-index: 1;
+  z-index: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-
+  position: relative;
 }
 
 .star {
@@ -54,12 +54,12 @@
 /* New class for the fractional star overlay */
 .half-star-overlay {
   position: absolute;  /* Position it over the empty star */
-  top: -3px;              /* Align top edges */
-  left: 0px;             /* Align left edges */
-  width: 100%;         /* Ensure it covers the entire star beneath */
-  height: 100%;        /* Match the height of the star */
-  clip-path: none;     /* This will be dynamically set in the component */
-  z-index: 2;          /* Ensure it sits on top of the empty star */
+  top: -3px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  clip-path: none;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;

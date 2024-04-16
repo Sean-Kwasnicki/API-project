@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { getSpotDetails } from '../../store/spotDetails';
 import StarRating from './StarRating';
+import Reviews from '../Reviews/Reviews';
 import './SpotDetails.css';
 
 function SpotDetails() {
@@ -13,6 +14,7 @@ function SpotDetails() {
   useEffect(() => {
     dispatch(getSpotDetails(spotId));
   }, [dispatch, spotId]);
+
 
   if (!spot) {
     return <div>Loading...</div>;
@@ -25,7 +27,7 @@ function SpotDetails() {
         <h1 className="spot-name">{spot.name}</h1>
         <p className="spot-location">{spot.city}, {spot.state}, {spot.country}</p>
         <div className="spot-images-large">
-          <img src={spot.previewImage} alt="Main Spot" className="main-image" />
+        <img src={`/public/SpotImages/${spot.name}.jpeg`} alt={spot.name} className="main-image"/>
         </div>
         <div className="spot-images-small">
           {spot.SpotImages.slice(0, 4).map((image, index) => (
@@ -45,6 +47,7 @@ function SpotDetails() {
           <p className="spot-rating">{spot.numReviews} Total reviews</p>
           <button className="reserve-button" onClick={() => alert('Feature coming soon')}>Reserve</button>
         </div>
+            <Reviews reviews={spot.Reviews}/>
       </div>
     </div>
   );

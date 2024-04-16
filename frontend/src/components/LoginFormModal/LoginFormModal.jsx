@@ -62,6 +62,7 @@ function LoginFormModal() {
     const buttonClass = `submit-button ${loginDisabled ? 'disabled' : ''}`;
 
   return (
+    <div className='modal-container'>
     <div className="login-page-container">
       <div className="form-container">
         <h1 className="form-title">Log In</h1>
@@ -99,6 +100,7 @@ function LoginFormModal() {
           <a href="#" onClick={handleDemoLogin} className="demo-login-link">Demo user</a>
         </form>
       </div>
+    </div>
     </div>
   );
 }
