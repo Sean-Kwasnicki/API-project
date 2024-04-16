@@ -11,7 +11,7 @@ function StarRating({ rating }) {
   if (!fullStars) {
     return (
       <div className="new-rating">
-        <span>New</span> <FaStar className="new-star" />
+        <FaStar className="new-star" /> <span> New</span>
       </div>
     );
   }
@@ -23,9 +23,12 @@ function StarRating({ rating }) {
       // Calculate width for the fractional star
       const widthPercentage = `${fractionalPart * 100}%`;
       stars.push(
-        <span className="star half-star" key={i} style={{
-          clipPath: `polygon(0 0, ${widthPercentage} 0, ${widthPercentage} 100%, 0 100%)`
-        }}><FaStar /></span>
+        <span className="star empty-star" key={i} style={{position: 'relative'}}>
+          <FaStar /> {/* This is the empty star */}
+          <FaStar className="half-star-overlay" style={{
+            clipPath: `polygon(0 0, ${widthPercentage} 0, ${widthPercentage} 100%, 0 100%)`
+          }} /> {/* This is the fractional star overlay */}
+        </span>
       );
     } else {
       stars.push(<span className="star empty-star" key={i}><FaStar /></span>);
@@ -35,6 +38,7 @@ function StarRating({ rating }) {
   return (
     <div className="star-rating">
       {stars}
+      <span className="avg-rating">{rating.toFixed(1)}</span> {/* Display the average rating */}
     </div>
   );
 }

@@ -54,7 +54,6 @@ function CreateNewSpot() {
 
     setErrors(newErrors);
 
-    // we need to dispatch the thunk we created and have imported
     if (Object.keys(errors).length === 0) {
       const spotDetails = {
         country,
@@ -252,7 +251,7 @@ function CreateNewSpot() {
             }}
             required={index === 0}
           />
-
+            
         ))}
       </div>
       {errors.imageURLs && <div className="error-message-inline">{errors.imageURLs}</div>}

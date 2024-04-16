@@ -5,12 +5,15 @@
   background: #FFF;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   z-index: 1;
-  
+
 }
 
 .spot-details-main {
   flex: 3;
   padding: 20px;
+}
+.spot-location {
+  font-size: 18px;
 }
 
 .spot-details-sidebar {
@@ -21,7 +24,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  
   width: 500px;
 }
 
@@ -70,7 +72,7 @@
 }
 
 .spot-price {
-  font-size: 24px;
+  font-size: 20px;
   color: #FF385C;
   margin-bottom: 15px;
 }

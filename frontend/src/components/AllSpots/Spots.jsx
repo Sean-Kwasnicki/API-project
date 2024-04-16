@@ -8,7 +8,7 @@ import './Spots.css';
 function Spots() {
     const dispatch = useDispatch();
     const spots = useSelector(state => Object.values(state.spot));
-  
+
     useEffect(() => {
       dispatch(getAllSpots());
     }, [dispatch]);
@@ -21,8 +21,8 @@ function Spots() {
                 <div className="spot-info">
                   <p className="spot-location">{spot.city}, {spot.state}</p>
                   <p className="spot-price">${spot.price} per night</p>
-                  <StarRating rating={spot.avgRating} /> 
-                  <span className="tooltip">{spot.name}</span> 
+                  <StarRating rating={spot.avgRating} />
+                  <span className="tooltip">{spot.name}</span>
                 </div>
               </NavLink>
             </div>
@@ -30,5 +30,5 @@ function Spots() {
         </div>
       );
   }
-  
+
   export default Spots;

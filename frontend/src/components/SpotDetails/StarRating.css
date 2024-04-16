@@ -2,7 +2,10 @@
   font-size: 24px;
   color: #ccc; /* Light gray for empty stars */
   z-index: 1;
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
 }
 
 .star {
@@ -12,7 +15,7 @@
 }
 
 .full-star, .half-star {
-  color: #FFA700; /* Gold color for full stars and half stars */
+  color: gold; /* Gold color for full stars and half stars */
   z-index: 1;
   position: relative;
 }
@@ -27,18 +30,39 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: red; 
-  font-weight: bold;
   position: relative;
   font-size: 24px;
+  margin-bottom: 5px;
 }
 
 .new-rating span {
-  margin-right: 4px; 
+  margin-left: 4px;
+  font-size: 18px;
 }
 
 
 .new-rating .new-star {
-  color: #FFA700;
+  color: gold;
 }
 
+.avg-rating {
+  margin-left: 8px;
+  font-size: 18px;
+  color: black;
+}
+
+/* New class for the fractional star overlay */
+.half-star-overlay {
+  position: absolute;  /* Position it over the empty star */
+  top: -3px;              /* Align top edges */
+  left: 0px;             /* Align left edges */
+  width: 100%;         /* Ensure it covers the entire star beneath */
+  height: 100%;        /* Match the height of the star */
+  clip-path: none;     /* This will be dynamically set in the component */
+  z-index: 2;          /* Ensure it sits on top of the empty star */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: gold; /* Gold color for full stars and half stars */
+
+}
