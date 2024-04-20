@@ -1,5 +1,5 @@
 // Import
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './CreateNewSpot.css';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +14,7 @@ function CreateNewSpot() {
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [previewImage, setPreviewImage] = useState("");
+  //const [previewImage, setPreviewImage] = useState("");
   const [imageURLs, setImageURLs] = useState(["", "", "", "", ""]);
   const [lng, setLongitude] = useState("");
   const [lat, setLatitude] = useState("");
@@ -23,16 +23,6 @@ function CreateNewSpot() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate()
-
-
-  // Function to check if form is valid
-  // const isFormValid = () => {
-  //   return (
-  //     country.trim() && street.trim() && city.trim() && state.trim() &&
-  //     description.length >= 30 && title.trim() && price.trim() &&
-  //     previewImage.trim() && imageURLs.every(url => url.trim())
-  //   );
-  // };
 
 
   const handleSubmit = async (e) => {
@@ -55,27 +45,15 @@ function CreateNewSpot() {
 
     setErrors(newErrors);
 
-  //   if (Object.keys(errors).length === 0) {
-  //     const spotDetails = {
-  //       country,
-  //       address,
-  //       city,
-  //       state,
-  //       description,
-  //       name,
-  //       price,
-  //       previewImage,
-  //       images: imageURLs,
-  //       lat,
-  //       lng
-  //     };
-  //     const createdSpot = await dispatch(createSpot(spotDetails));
-  //     navigate(`/spots/${createdSpot.id}`);
-  //   }
-  // };
 
-  if (Object.keys(errors).length === 0) {
-    const images = [previewImage, ...imageURLs].filter(url => url.trim() !== ""); // Filter out empty strings
+  if (Object.keys(newErrors).length === 0) {
+    const images = imageURLs.filter(url => url.trim() !== ""); // Filter out empty strings
+    if (images.length === 0) {
+      newErrors.previewImage = 'At least one image is required';
+      setErrors(newErrors);
+      return;
+    }
+
     const spotDetails = {
         country,
         address,

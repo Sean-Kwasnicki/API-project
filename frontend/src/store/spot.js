@@ -38,12 +38,12 @@ export const editSpot = (spot) => ({
 });
 
 // Action Creator
-const getSpotID = (spotDetails) => {
-    return {
-      type: GET_SPOT_DETAILS,
-      payload: spotDetails,
-    };
-  };
+// const getSpotID = (spotDetails) => {
+//     return {
+//       type: GET_SPOT_DETAILS,
+//       payload: spotDetails,
+//     };
+//   };
 
   const getSpotDetailsSuccess = (spotDetails) => ({
     type: GET_SPOT_DETAILS,
@@ -207,10 +207,11 @@ const spotReducer = (state = initialState, action) => {
                     SpotImages: action.payload.SpotImages || []
                 }
             };
-        case DELETE_SPOT:
+        case DELETE_SPOT: {
             const newState = { ...state };
             delete newState[action.payload];
             return newState;
+        }
         case GET_USER_SPOTS:
             return {
                 ...state,
