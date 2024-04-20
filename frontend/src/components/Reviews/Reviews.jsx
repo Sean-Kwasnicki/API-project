@@ -13,6 +13,7 @@ function Reviews() {
   const reviews = useSelector(state => state.reviews[spotId] || []);
   const sessionUser = useSelector(state => state.session.user);
   const spotDetails = useSelector(state => state.spotDetails[spotId]);
+  console.log('Session User:',sessionUser)
 
   const { setModalContent, closeModal } = useModal();
 
@@ -20,8 +21,8 @@ function Reviews() {
     dispatch(getAllReviews(spotId));
   }, [dispatch, spotId]);
 
-
-  const userHasReviewed = reviews.some(review => review.userId === sessionUser.id);
+  console.log('Session User:',sessionUser)
+  const userHasReviewed = reviews.some(review => review.userId === sessionUser?.id);
 
   const showModalButton = sessionUser && sessionUser.id !== spotDetails.ownerId && !userHasReviewed;
 
