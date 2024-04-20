@@ -1,8 +1,10 @@
 import { csrfFetch } from "./csrf";
+import { getAllSpots } from "./spot";
 
 // Action Type
 const GET_ALL_REVIEWS = 'reviews/GET_ALL_REVIEWS'
 const ADD_REVIEW = 'spot/ADD_REVIEW'
+const DELETE_REVIEW = 'reviews/DELETE_REVIEW';
 
 // Action Creator
 const getReviews = (reviews, spotId) => {
@@ -13,12 +15,16 @@ return {
   };
 };
 
-const addReview = (review) => {
-  return {
-    type: ADD_REVIEW,
-    payload: review
-  };
-};
+const addReview = (review) => ({
+  type: ADD_REVIEW,
+  payload: review,
+});
+
+// Action Creator
+const deleteReviewAction = (reviewId) => ({
+  type: DELETE_REVIEW,
+  payload: reviewId,
+});
 
 // Thunk Action Creator
 
@@ -30,20 +36,44 @@ export const getAllReviews = (spotId) => async (dispatch) => {
   }
 };
 
-export const createReview = (spotId, review) => async (dispatch) => {
+export const createReview = (spotId, reviewData) => async (dispatch) => {
   const response = await csrfFetch(`/api/spots/${spotId}/reviews`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(review),
+    body: JSON.stringify(reviewData),
   });
-  if (response.ok) {
+  if (response) {
     const review = await response.json();
-    dispatch(addReview(review));
-    return review;
+    dispatch(addReview(review, spotId));
+    dispatch(getAllSpots());
+    return true;
+  }
+  return false;
+};
+
+// Thunk Action
+export const deleteReview = (reviews) => async (dispatch) => {
+  try {
+      const response = await csrfFetch(`/api/reviews/${reviews.id}`, {
+          method: 'DELETE',
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      });
+      if (response.ok) {
+          dispatch(deleteReviewAction(reviews.id));
+      } else {
+          const errorData = await response.json();
+          throw new Error(errorData.message);
+      }
+  } catch (error) {
+      console.error('Failed to delete review:', error);
+      alert(error.message);
   }
 };
+
 
 // Initial State
 
@@ -54,7 +84,14 @@ const reviewsReducer = (state = initialState, action) => {
     case GET_ALL_REVIEWS:
       return { ...state, [action.spotId]: action.payload };
     case ADD_REVIEW:
-      return {...state, [action.payload.id]: action.payload};
+      return {
+        ...state,
+        [action.payload.spotId]: [action.payload, ...state[action.payload.spotId]]
+      };
+    case DELETE_REVIEW:
+      const newState = { ...state };
+      delete newState[action.payload];
+      return newState;
     default:
       return state;
   }

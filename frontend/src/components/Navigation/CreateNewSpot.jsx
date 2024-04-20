@@ -1,9 +1,9 @@
 // Import
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './CreateNewSpot.css';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { createSpot } from '../../store/spot';
+import { createSpot, getAllSpots } from '../../store/spot';
 
 function CreateNewSpot() {
   // State for each input field
@@ -15,7 +15,7 @@ function CreateNewSpot() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [previewImage, setPreviewImage] = useState("");
-  const [imageURLs, setImageURLs] = useState(["", "", "", ""]);
+  const [imageURLs, setImageURLs] = useState(["", "", "", "", ""]);
   const [lng, setLongitude] = useState("");
   const [lat, setLatitude] = useState("");
 
@@ -34,6 +34,7 @@ function CreateNewSpot() {
   //   );
   // };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -47,15 +48,35 @@ function CreateNewSpot() {
     if (description.length < 30) newErrors.description = 'Description must be at least 30 characters';
     if (!name) newErrors.name = 'Name is required';
     if (!price) newErrors.price = 'Price is required';
-    if (!previewImage) newErrors.previewImage = 'Preview image is required';
+    if (!imageURLs[0]) newErrors.previewImage = 'Preview image is required';
     if (!imageURLs === 0) newErrors.imageURLs = 'Image URL must end in .png .jpg or .jpeg';
     if (!lng) newErrors.longitude = 'Longitude is required';
     if (!lat) newErrors.latitude = 'Latitude is required';
 
     setErrors(newErrors);
 
-    if (Object.keys(errors).length === 0) {
-      const spotDetails = {
+  //   if (Object.keys(errors).length === 0) {
+  //     const spotDetails = {
+  //       country,
+  //       address,
+  //       city,
+  //       state,
+  //       description,
+  //       name,
+  //       price,
+  //       previewImage,
+  //       images: imageURLs,
+  //       lat,
+  //       lng
+  //     };
+  //     const createdSpot = await dispatch(createSpot(spotDetails));
+  //     navigate(`/spots/${createdSpot.id}`);
+  //   }
+  // };
+
+  if (Object.keys(errors).length === 0) {
+    const images = [previewImage, ...imageURLs].filter(url => url.trim() !== ""); // Filter out empty strings
+    const spotDetails = {
         country,
         address,
         city,
@@ -63,19 +84,30 @@ function CreateNewSpot() {
         description,
         name,
         price,
-        previewImage,
-        images: imageURLs,
+        images,
         lat,
         lng
     };
-      const createdSpot = await dispatch(createSpot(spotDetails));
 
-
-    // Navigate to the spot details page using the spot ID
-      //if (createdSpot) {
+    const createdSpot = await dispatch(createSpot(spotDetails));
+    if (createdSpot) {
         navigate(`/spots/${createdSpot.id}`);
-      //}
+        getAllSpots(spotDetails)
     }
+}
+};
+
+ // Handle changes to the main preview image
+ const handlePreviewImageChange = (value) => {
+  let newImageURLs = [...imageURLs];
+  newImageURLs[0] = value;  // Always update the first index for the preview image
+  setImageURLs(newImageURLs);
+};
+
+const handleImageChange = (index, value) => {
+    let newImageURLs = [...imageURLs];
+    newImageURLs[index] = value;
+    setImageURLs(newImageURLs);
   };
 
   return (
@@ -226,34 +258,34 @@ function CreateNewSpot() {
          {errors.price && <div className="error-message-inline">{errors.price}</div>}
       </div>
 
-      {/* Photos Section */}
-      <div className="form-section">
+     {/* Photos Section */}
+
+     <div className="form-section">
         <h2>Liven up your spot with photos</h2>
         <p>Submit a link to at least one photo to publish your spot.</p>
+
         <input
           type="text"
           placeholder="Preview Image URL"
-          value={previewImage}
-          onChange={(e) => setPreviewImage(e.target.value)}
+          value={imageURLs[0]}
+          onChange={(e) => handlePreviewImageChange(e.target.value)}
           required
         />
-         {errors.previewImage && <div className="error-message-inline">{errors.previewImage}</div>}
-        {imageURLs.map((url, index) => (
+        {errors.previewImage && <div className="error-message-inline">{errors.previewImage}</div>}
+
+        {imageURLs.slice(1).map((url, index) => (
           <input
-            key={index}
+            key={index + 1}
             type="text"
-            placeholder={`Image URL ${index + 1}`}
+            placeholder={`Image URL ${index + 2}`}
             value={url}
-            onChange={(e) => {
-              const newImageURLs = [...imageURLs];
-              newImageURLs[index] = e.target.value;
-              setImageURLs(newImageURLs);
-            }}
-            required={index === 0}
+            onChange={(e) => handleImageChange(index + 1, e.target.value)} // Adjust index to update correct position in array
+            required={index === 0}  // Only the first image is required
           />
-            
         ))}
       </div>
+
+
       {errors.imageURLs && <div className="error-message-inline">{errors.imageURLs}</div>}
       <button className="create-button" type="submit" >Create Spot</button>
     </form>

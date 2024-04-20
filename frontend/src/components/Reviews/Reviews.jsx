@@ -2,45 +2,64 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getAllReviews } from '../../store/reviews';
+import { getSpotDetails } from '../../store/spotDetails';
+import OpenModalButton from '../OpenModalButton/OpenModalButton';
+import ReviewFormModal from './ReviewFormModal';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
+import { useModal } from '../../context/Modal';
 
 function Reviews({ spot }) {
-    const dispatch = useDispatch();
-    const { spotId } = useParams();
-    const reviews = useSelector(state => state.reviews[spotId] || []); // Ensure it defaults to an empty array if undefined
-    const sessionUser = useSelector(state => state.session.user);
-    const spotDetails = useSelector(state => state.spotDetails[spotId]);
+  const dispatch = useDispatch();
+  const { spotId } = useParams();
+  const reviews = useSelector(state => state.reviews[spotId] || []);
+  const sessionUser = useSelector(state => state.session.user);
+  const spotDetails = useSelector(state => state.spotDetails[spotId]);
 
-    useEffect(() => {
-        dispatch(getAllReviews(spotId)); // Fetch reviews when component mounts
-    }, [dispatch, spotId]);
+  const { setModalContent, closeModal } = useModal();
 
-  //    Lets check what's in your reviews state
-  //    useEffect(() => {
-  //    console.log("Reviews:", reviews);
-  // }, [reviews]);
-
-  if (!reviews.length) {
-    if (sessionUser && sessionUser.id !== spotDetails.ownerId) {
-        return <p>Be the first to post a review!</p>;
-    }
-    return <p>No reviews yet.</p>; // This text shows if no reviews and user is the owner or not logged in
-}
+  useEffect(() => {
+    dispatch(getAllReviews(spotId));
+  }, [dispatch, spotId]);
 
 
-    return (
-        <div>
-            <h3>Reviews</h3>
-            {reviews.map(review => (
-                <div key={review.id}>
-                    <p className='created'>{review.User.firstName} - {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</p>
-                    <p>{review.review}</p>
-                    {/* <p>2 - {review.id}</p>
-                    <p>3- {review.userId}</p>
-                    <p> {spotDetails.ownerId} -{spotDetails.Owner.firstName}</p> */}
-                </div>
-            ))}
+  const userHasReviewed = reviews.some(review => review.userId === sessionUser.id);
+
+  const showModalButton = sessionUser && sessionUser.id !== spotDetails.ownerId && !userHasReviewed;
+
+  const isOwner = sessionUser && sessionUser.id === spotDetails.ownerId;
+
+  return (
+    <div className="reviews-container">
+      <h3>Reviews</h3>
+      {showModalButton && (
+        <OpenModalButton
+          modalComponent={<ReviewFormModal spotId={spotId} />}
+          buttonText="Post Your Review"
+        />
+      )}
+      {reviews.length === 0 && (
+        <p>{isOwner ? "No reviews yet." : "Be the first to review this spot!"}</p>
+      )}
+      {reviews.map(review => (
+        <div key={review.id} className="review-item">
+          <p className='created-review'> {review.User?.username || review.User?.firstName} - {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</p>
+          <p className="review-text">{review.review}</p>
+          {sessionUser && sessionUser.id === review.userId && (
+            <button onClick={() => {
+              const confirmModal = (
+                <ConfirmDeleteModal
+                  reviewId={review}
+                  spotId={spotId}
+                  onClick={closeModal}
+                />
+              );
+              setModalContent(confirmModal);
+            }}>Delete</button>
+          )}
         </div>
-    );
+      ))}
+    </div>
+  );
 }
 
 export default Reviews;

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal/LoginFormModal';
 import SignupFormModal from '../SignupFormModal/SignupFormModal';
+
 import './ProfileButton.css';
 
 function ProfileButton({ user }) {
@@ -44,6 +45,11 @@ function ProfileButton({ user }) {
     navigate('/'); // Navigate back to the home page
   };
 
+  const navigateToManageSpots = () => {
+    navigate('/spots/current');
+    setShowMenu(false);
+  };
+
   return (
     <>
       <div className="profile-button-container">
@@ -58,6 +64,9 @@ function ProfileButton({ user }) {
               <li>{user.username}</li>
               <li>Hello, {user.firstName} {user.lastName}</li>
               <li>{user.email}</li>
+              <li>
+              <button onClick={navigateToManageSpots}>Manage Spots</button>
+              </li>
               <li>
               <button onClick={logout}>Log Out</button>
               </li>

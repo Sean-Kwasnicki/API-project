@@ -64,3 +64,15 @@
   .tooltip:hover::after {
     opacity: 0;
   }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.pagination button {
+    padding: 10px;
+    margin: 0 5px;
+    cursor: pointer;
+}

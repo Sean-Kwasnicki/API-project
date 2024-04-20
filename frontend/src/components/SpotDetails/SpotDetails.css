@@ -3,12 +3,15 @@
   max-width: 1200px;
   margin: 20px auto;
   background: #FFF;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  border: 0.5px solid #e5e5e5;
 }
 
 .spot-details-main {
   flex: 3;
   padding: 20px;
+
 }
 .spot-location {
   font-size: 18px;
@@ -32,6 +35,7 @@
 .spot-images-large {
   width: 100%;
   margin-bottom: 20px;
+
 }
 
 .main-image {
@@ -39,6 +43,7 @@
   height: auto;
   border-radius: 8px;
   object-fit: cover;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.1);
 }
 
 .spot-images-small {
@@ -99,3 +104,28 @@
 .reserve-button:hover {
   background-color: #E04141;
 }
+
+      /* <div className="spot-images-large">
+          <img src={`/public/SpotImages/${spot.name}.jpeg`} alt={spot.name} className="main-image"/>
+        </div>
+        <div className="spot-images-small">
+          {spot.SpotImages.slice(0, 4).map((image, index) => (
+            <img key={index} src={image.url} alt={`Spot ${index + 1}`} />
+          ))}
+        </div> */
+
+        /* <div className="spot-details-main">
+        {previewImage ? (
+                    <img src={previewImage.url} alt="Preview" className="main-image"/>
+                ) : (
+                    <p>No preview image available.</p>
+                )}
+            {spot.SpotImages && spot.SpotImages.map((url, index) => (
+                <img key={index} src={spot.SpotImages[index].url} alt={`Spot ${index + 1}`} />
+            ))}
+        </div> */
+
+/* <img src={previewImage?.url} alt="Preview" className="main-image"/>
+                {spot.SpotImages.slice(1).map((image, index) => ( // Start from index 1 to skip preview
+                    <img key={index} src={image.url} alt={`Spot ${index + 1}`} />
+                ))} */

@@ -1,0 +1,46 @@
+.reviews-container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #FFFFFF;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+h3 {
+  color: #333333;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.review-item {
+  padding: 15px;
+  border-bottom: 1px solid #EAEAEA;
+  color: #555555;
+  line-height: 1.5;
+}
+
+.review-item:last-child {
+  border-bottom: none;
+}
+
+.created-review {
+  font-size: 55px;
+  color: #f01111b4;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.created-review {
+  text-decoration: underline;
+  color: #333;
+  font-size: 16px; 
+}
+
+
+.review-text {
+  font-size: 55px;
+  margin-bottom: 10px;
+}
