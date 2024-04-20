@@ -133,14 +133,23 @@ function calculateAvgRating(reviews) {
   return parseFloat(averageRating.toFixed(1));
 }
 
-function findPreviewImage(spotImages) {
-  for (const image of spotImages) {
-    if (image.preview === true) {
-      return image.url;
-    }
-  }
+// function findPreviewImage(spotImages) {
+//   for (const image of spotImages) {
+//     if (image.preview === true) {
+//       return image.url;
+//     }
+//   }
+//   return 'Currently no preview image';
+// }
+
+function findPreviewImage(spot) {
+if (spot.SpotImages) {
+    // Always return the first image as the preview image
+    return spot.SpotImages[0].url;
+}
   return 'Currently no preview image';
 }
+
 
 function formatSpots(spots) {
   let processedSpots = [];
@@ -170,46 +179,46 @@ router.get('/', validatePagination, async (req, res) => {
 
   // Latitude filtering
   if (minLat && maxLat) {
-    where.lat = { 
-      [Op.between]: [parseFloat(minLat), parseFloat(maxLat)] 
+    where.lat = {
+      [Op.between]: [parseFloat(minLat), parseFloat(maxLat)]
     };
   } else if (minLat) {
-    where.lat = { 
-      [Op.gte]: parseFloat(minLat) 
+    where.lat = {
+      [Op.gte]: parseFloat(minLat)
     };
   } else if (maxLat) {
-    where.lat = { 
-      [Op.lte]: parseFloat(maxLat) 
+    where.lat = {
+      [Op.lte]: parseFloat(maxLat)
     };
   }
 
   // Longitude filtering
   if (minLng && maxLng) {
-    where.lng = { 
-      [Op.between]: [parseFloat(minLng), parseFloat(maxLng)] 
+    where.lng = {
+      [Op.between]: [parseFloat(minLng), parseFloat(maxLng)]
     };
   } else if (minLng) {
-    where.lng = { 
-      [Op.gte]: parseFloat(minLng) 
+    where.lng = {
+      [Op.gte]: parseFloat(minLng)
     };
   } else if (maxLng) {
-    where.lng = { 
-      [Op.lte]: parseFloat(maxLng) 
+    where.lng = {
+      [Op.lte]: parseFloat(maxLng)
     };
   }
 
   // Price filtering
   if (minPrice && maxPrice) {
-    where.price = { 
-      [Op.between]: [parseFloat(minPrice), parseFloat(maxPrice)] 
+    where.price = {
+      [Op.between]: [parseFloat(minPrice), parseFloat(maxPrice)]
     };
   } else if (minPrice) {
-    where.price = { 
-      [Op.gte]: parseFloat(minPrice) 
+    where.price = {
+      [Op.gte]: parseFloat(minPrice)
     };
   } else if (maxPrice) {
-    where.price = { 
-      [Op.lte]: parseFloat(maxPrice) 
+    where.price = {
+      [Op.lte]: parseFloat(maxPrice)
     };
   }
   try {
@@ -220,7 +229,8 @@ router.get('/', validatePagination, async (req, res) => {
       include: [
         {
           model: SpotImage,
-          as: 'SpotImages'
+          as: 'SpotImages',
+          attributes: ['id', 'url', 'preview']
         },
         {
           model: Review,
@@ -228,11 +238,11 @@ router.get('/', validatePagination, async (req, res) => {
         }
       ]
     });
-    const formattedSpots = formatSpots(spots); 
-    res.status(200).json({ 
+    const formattedSpots = formatSpots(spots);
+    res.status(200).json({
       Spots: formattedSpots,
-      page, 
-      size 
+      page,
+      size
     });
   } catch (error) {
     console.error('Error fetching spots:', error);
@@ -281,7 +291,7 @@ router.get('/:spotId', checkForSpot, async (req, res) => {
         {
           model: User,
           as: 'Owner',
-          attributes: ['id', 'firstName', 'lastName']
+          attributes: ['id', 'firstName', 'lastName', 'username']
       },
         {
           model: Review,
@@ -355,12 +365,12 @@ router.post('/:spotId/images', requireAuth, checkAuthenSpot, async (req, res, ne
   const userId = req.user.id;
 
   try {
-   if (preview) {
-    await SpotImage.update(
-      { preview: false },
-      { where: { spotId, preview: true } }
-    );
-  }
+  //  if (preview) {
+  //   await SpotImage.update(
+  //     { preview: false },
+  //     { where: { spotId, preview: true } }
+  //   );
+  // }
 
     const newImage = await SpotImage.create({
       spotId,
@@ -378,6 +388,28 @@ router.post('/:spotId/images', requireAuth, checkAuthenSpot, async (req, res, ne
     next(error); 
   }
 });
+
+// router.post('/:spotId/images', requireAuth, checkAuthenSpot, async (req, res) => {
+//   const { spotId } = req.params;
+//   const images = req.body.images;
+
+//   try {
+//       // Reset existing preview image
+//       await SpotImage.update({ preview: false }, { where: { spotId, preview: true } });
+
+//       images.forEach(async (image, index) => {
+//           const { url } = image;
+//           const preview = index === 0; // First image is always the preview
+//           await SpotImage.create({ spotId, url, preview });
+//       });
+
+//       res.status(200).json({ message: 'Images added successfully' });
+//   } catch (error) {
+//       console.error('Failed to add images:', error);
+//       res.status(500).send('Error adding images to spot');
+//   }
+// });
+
 
 // Edit a Spot
 router.put('/:spotId', requireAuth, validateSpot, checkAuthenSpot, async (req, res) => {
@@ -407,7 +439,7 @@ router.put('/:spotId', requireAuth, validateSpot, checkAuthenSpot, async (req, r
   }
 });
 
-// Delete a Spot 
+// Delete a Spot
 router.delete('/:spotId', requireAuth, checkAuthenSpot, async (req, res, next) => {
   const { spotId } = req.params;
   const userId = req.user.id;
@@ -434,13 +466,14 @@ router.get('/:spotId/reviews', checkForSpot, async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ['id', 'firstName', 'lastName'],
+          attributes: ['id', 'firstName', 'lastName', 'username'],
         },
         {
           model: ReviewImage,
           attributes: ['id', 'url'],
         },
       ],
+      order: [['createdAt', 'DESC']] // Order reviews by createdAt in descending order
     });
 
     res.status(200).json({ Reviews: reviews });
@@ -474,7 +507,15 @@ router.post('/:spotId/reviews', requireAuth, validateReview, checkForSpot, async
     stars,
   });
 
-  res.status(201).json(newReview);
+  // Fetch again with User data to include in the response
+  const reviewWithUser = await Review.findByPk(newReview.id, {
+  include: [{
+    model: User,
+    attributes: ['id','firstName', 'lastName', 'username']
+  }]
+});
+
+  res.status(201).json(reviewWithUser);
 });
 
 // Get all Bookings for a Spot based on the Spot's id
@@ -555,7 +596,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, checkForSpot, asy
       const existingEndDate = format(new Date(booking.endDate));
       const newStartDate = format(new Date(startDate));
       const newEndDate = format(new Date(endDate));
-    
+
       return (
         newStartDate >= existingStartDate && newStartDate <= existingEndDate ||
         newEndDate >= existingStartDate && newEndDate <= existingEndDate ||

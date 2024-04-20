@@ -1,15 +1,78 @@
+/* ProfileButton.css */
+.profile-button-container {
+       position: relative;
+       z-index: 5100; /* Ensure this is high enough */
+       display: flex;
+       justify-content: flex-end;
+       align-items: center;
+       margin: 5px;
+       padding-right: 8px;
+   }
 
+   .profile-button {
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       background-color: #FFF;
+       border: 2px solid rgb(222,222,222);
+       cursor: pointer;
+       padding: 8px;
+       border-radius: 47%;
+       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+   }
 
-.button {
-       position: 'absolute',
-       top: '100%',
-       right: 0,
-       backgroundColor: 'white',
-       border: '1px solid #ccc',
-       borderRadius: '4px',
-       padding: '10px',
-       display: 'flex',
-       flexDirection: 'column',
-       gap: '10px',
-       zIndex: 1000, // Ensure the dropdown is above other content
-}
+   .fa-user-circle, .hamburger-icon {
+       font-size: 24px;
+       color: rgb(113,113,113);
+       margin: 5px;
+   }
+
+   .profile-dropdown {
+       position: absolute;
+       top: 100%;
+       right: 0;
+       background-color: white;
+       box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+       border-radius: 4px;
+       width: 200px;
+       z-index: 50000;
+       display: none; /* Initially hidden */
+   }
+
+   .profile-dropdown.show {
+       display: block;
+       z-index: 5100;
+       position: absolute;
+   }
+
+   .profile-dropdown li {
+       list-style: none;
+       padding: 10px 10px;
+       border-bottom: 1px solid #f0f0f0;
+       cursor: pointer;
+       z-index: 5000;
+       position: relative;
+
+   }
+
+   .profile-dropdown li:last-child {
+       border-bottom: none;
+       z-index: 1000;
+   }
+
+   .profile-dropdown li button {
+       width: 100%;
+       text-align: left;
+       background: none;
+       border: none;
+       padding: 0;
+       cursor: pointer;
+       z-index: 1000;
+   }
+
+   .open-modal-menu-item {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       z-index: 1000;
+   }

@@ -3,8 +3,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   background-color: #F7F7F7;
+  position: relative;
 }
 
 /* Styling for the form container */
@@ -21,7 +21,7 @@
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 20px;
-  color: #FF5A5F; /* Airbnb's signature coral color */
+  color: #FF5A5F;
   text-align: center;
 }
 
@@ -58,10 +58,18 @@
   display: block;
   width: 100%;
   margin: 10px;
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
 }
 
 .submit-button:hover {
-  background-color: #f53d4a; /* Slightly darker shade for hover effect */
+  background-color: #fb0011;
+}
+
+/* Disabled state of the button */
+.submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  color: #666666;
 }
 
 /* Styling for error messages */
@@ -71,4 +79,18 @@
   padding: 10px;
   margin-bottom: 20px;
   border-radius: 8px;
+}
+
+.demo-login-link {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+  color: #4697ed;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.demo-login-link:hover {
+  color: #0056b3;
 }

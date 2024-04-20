@@ -13,18 +13,18 @@ module.exports = {
     await SpotImage.bulkCreate([
       {
         spotId: 1,
-        url: 'http://example.com/spot1/image1.jpg',
+        url: 'https://res.klook.com/image/upload/c_fill,w_1265,h_712/q_80/activities/xvj3ajrf7rgb882pr7hj.jpeg',
         preview: true,
 
       },
       {
         spotId: 2,
-        url: 'http://example.com/spot1/image2.jpg',
-        preview: false,
+        url: 'https://media.architecturaldigest.com/photos/621e2b8a0dfcde70e6b201e0/1:1/w_1707,h_1707,c_limit/SB_2614-HDR-scaled.jpeg',
+        preview: true,
       },
       {
         spotId: 3,
-        url: 'http://example.com/spot2/image1.jpg',
+        url: 'https://www.desertpalmshotel.com/resourcefiles/blogsmallimages/new-attractions-at-disneyland-2020-beyond.jpg',
         preview: true,
       }
     ], {});

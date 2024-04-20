@@ -1,0 +1,78 @@
+.spots-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px;
+    justify-content: center;
+  }
+
+  .spot-tile {
+    width: 250px; /* Fixed width for each tile */
+    border: 0.5px solid #e5e5e5;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s; /* Smooth scaling on hover */
+  }
+
+  .spot-tile:hover {
+    transform: scale(1.05); /* Slightly enlarge tiles on hover */
+  }
+
+  .spot-link {
+    color: inherit; /* Prevent default link color */
+    text-decoration: none; /* Remove underline */
+  }
+
+  .spot-thumbnail {
+    width: 100%; /* Make thumbnail cover the width of the tile */
+    height: 150px; /* Fixed height for images */
+    object-fit: cover; /* Cover the area without breaking aspect ratio */
+  }
+
+  .spot-info {
+    padding: 8px;
+    background: white;
+    text-align: center;
+  }
+
+  .spot-location, .spot-price {
+    margin: 4px 0;
+  }
+
+  .tooltip {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 100%;
+    white-space: nowrap;
+    background-color: black;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  .tooltip:hover::after {
+    opacity: 0;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.pagination button {
+    padding: 10px;
+    margin: 0 5px;
+    cursor: pointer;
+}
