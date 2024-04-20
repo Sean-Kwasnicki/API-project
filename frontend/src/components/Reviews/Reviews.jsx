@@ -24,9 +24,9 @@ function Reviews() {
   console.log('Session User:',sessionUser)
   const userHasReviewed = reviews.some(review => review.userId === sessionUser?.id);
 
-  const showModalButton = sessionUser && sessionUser.id !== spotDetails.ownerId && !userHasReviewed;
+  const showModalButton = sessionUser && sessionUser?.id !== spotDetails.ownerId && !userHasReviewed;
 
-  const isOwner = sessionUser && sessionUser.id === spotDetails.ownerId;
+  const isOwner = sessionUser && sessionUser?.id === spotDetails.ownerId;
 
   return (
     <div className="reviews-container">
