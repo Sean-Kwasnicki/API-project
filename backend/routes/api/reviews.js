@@ -141,12 +141,12 @@ router.put('/:reviewId', requireAuth, validateReview, checkReview, async (req, r
 router.delete('/:reviewId', requireAuth, checkReview, async (req, res) => {
   const { reviewId } = req.params;
   const userId = req.user.id;
-
+  console.log(`Attempting to delete review with ID: ${reviewId}`);
   try {
     const review = await Review.findByPk(reviewId);
 
     await review.destroy();
-
+    console.log("Review deleted successfully");
     res.json({ message: "Successfully deleted" });
   } catch (error) {
     console.error('Error deleting review:', error);
