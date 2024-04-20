@@ -2,13 +2,12 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getAllReviews } from '../../store/reviews';
-import { getSpotDetails } from '../../store/spotDetails';
 import OpenModalButton from '../OpenModalButton/OpenModalButton';
 import ReviewFormModal from './ReviewFormModal';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
 import { useModal } from '../../context/Modal';
 
-function Reviews({ spot }) {
+function Reviews() {
   const dispatch = useDispatch();
   const { spotId } = useParams();
   const reviews = useSelector(state => state.reviews[spotId] || []);

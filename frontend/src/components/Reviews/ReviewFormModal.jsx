@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState, } from 'react';
+import { useDispatch } from 'react-redux';
 import { createReview } from '../../store/reviews';
 import { getSpotDetails } from '../../store/spotDetails';
-import { getAllSpots } from '../../store/spot';
+//import { getAllSpots } from '../../store/spot';
 import { FaStar } from 'react-icons/fa';
 import { useModal } from '../../context/Modal';
 import './ReviewFormModal.css'
