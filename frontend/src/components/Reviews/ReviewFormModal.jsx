@@ -12,7 +12,7 @@ function ReviewFormModal({ spotId}) {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState('');
   const [errors, setErrors] = useState([]);
-  const [hover, setHover] = useState(0); // For hover state of stars
+  const [hover, setHover] = useState(0);
   const { closeModal } = useModal();
 
 
@@ -24,7 +24,7 @@ function ReviewFormModal({ spotId}) {
 
                 dispatch(getSpotDetails(spotId));
                 //dispatch(getAllSpots(spotId))
-                closeModal(); // Close modal only if the submission is successful
+                closeModal(); 
           } else {
               setErrors(['Could not post your review. Please try again.']);
           }

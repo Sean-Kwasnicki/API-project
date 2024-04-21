@@ -47,7 +47,7 @@ function CreateNewSpot() {
 
 
   if (Object.keys(newErrors).length === 0) {
-    const images = imageURLs.filter(url => url.trim() !== ""); // Filter out empty strings
+    const images = imageURLs.filter(url => url.trim() !== ""); 
     if (images.length === 0) {
       newErrors.previewImage = 'At least one image is required';
       setErrors(newErrors);
@@ -257,8 +257,8 @@ const handleImageChange = (index, value) => {
             type="text"
             placeholder={`Image URL ${index + 2}`}
             value={url}
-            onChange={(e) => handleImageChange(index + 1, e.target.value)} // Adjust index to update correct position in array
-            required={index === 0}  // Only the first image is required
+            onChange={(e) => handleImageChange(index + 1, e.target.value)}
+            required={index === 0}
           />
         ))}
       </div>

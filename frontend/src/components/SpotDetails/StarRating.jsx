@@ -4,10 +4,9 @@ import { FaStar } from 'react-icons/fa';
 function StarRating({ rating }) {
   const totalStars = 5;
   let stars = [];
-  const fullStars = Math.floor(rating); // Number of full stars
-  const fractionalPart = rating - fullStars; // Fractional part of the rating
+  const fullStars = Math.floor(rating);
+  const fractionalPart = rating - fullStars;
 
-  // Handle the case where there is no rating (rating is 0)
   if (!fullStars) {
     return (
       <div className="new-rating">
@@ -20,14 +19,13 @@ function StarRating({ rating }) {
     if (i <= fullStars) {
       stars.push(<span className="star full-star" key={i}><FaStar /></span>);
     } else if (i === fullStars + 1 && fractionalPart > 0) {
-      // Calculate width for the fractional star
       const widthPercentage = `${fractionalPart * 100}%`;
       stars.push(
         <span className="star empty-star" key={i} style={{position: 'relative'}}>
-          <FaStar /> {/* This is the empty star */}
+          <FaStar />
           <FaStar className="half-star-overlay" style={{
             clipPath: `polygon(0 0, ${widthPercentage} 0, ${widthPercentage} 100%, 0 100%)`
-          }} /> {/* This is the fractional star overlay */}
+          }} />
         </span>
       );
     } else {
@@ -38,7 +36,7 @@ function StarRating({ rating }) {
   return (
     <div className="star-rating">
       {stars}
-      <span className="avg-rating">{rating.toFixed(1)}</span> {/* Display the average rating */}
+      <span className="avg-rating">{rating.toFixed(1)}</span>
     </div>
   );
 }

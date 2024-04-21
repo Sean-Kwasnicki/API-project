@@ -23,16 +23,13 @@ function SignupFormModal() {
     password.length < 6 ||
     !confirmPassword;
 
-    // Determine the button class based on whether it is disabled
-    const buttonClass = `submit-button ${invalidSignup ? 'disabled' : ''}`;
+
+  const buttonClass = `submit-button ${invalidSignup ? 'disabled' : ''}`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Initialize an object to collect errors
     let newErrors = {};
 
-    // Check confirm password match
     if (password !== confirmPassword) {
       newErrors.confirmPassword = "Confirm Password must match Password.";
     }
@@ -48,13 +45,10 @@ function SignupFormModal() {
       }
     }
 
-    // If there are any accumulated errors, update the state
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      return; // Prevent form submission if there are errors
+      return;
     }
-
-    // If no errors, reset errors in the state
     setErrors({});
   };
 

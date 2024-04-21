@@ -41,8 +41,8 @@ function ProfileButton({ user }) {
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logout());
-    setShowMenu(false); // Hide the drop down menu
-    navigate('/'); // Navigate back to the home page
+    setShowMenu(false);
+    navigate('/'); 
   };
 
   const navigateToManageSpots = () => {

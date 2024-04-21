@@ -37,18 +37,11 @@ export const editSpot = (spot) => ({
     payload: spot
 });
 
-// Action Creator
-// const getSpotID = (spotDetails) => {
-//     return {
-//       type: GET_SPOT_DETAILS,
-//       payload: spotDetails,
-//     };
-//   };
 
-  const getSpotDetailsSuccess = (spotDetails) => ({
+const getSpotDetailsSuccess = (spotDetails) => ({
     type: GET_SPOT_DETAILS,
     payload: spotDetails,
-  });
+});
 
 
 // Action Creator for updating a spot
@@ -184,7 +177,6 @@ const spotReducer = (state = initialState, action) => {
                 }, {})
             };
         case GET_SPOT_DETAILS:
-            // Merge details into existing spot data if needed
             if (state[action.payload.id]) {
                 return {
                     ...state,

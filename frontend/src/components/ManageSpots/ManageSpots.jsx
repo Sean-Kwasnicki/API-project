@@ -22,7 +22,7 @@ function ManageSpots() {
       const images = details && details.SpotImages.length > 0 ? details.SpotImages : spot.SpotImages;
       return {
           ...spot,
-          SpotImages: images.length > 0 ? images : [{ url: `/public/SpotImages/${spot.name}.jpeg` }] // Default image if no images available
+          SpotImages: images.length > 0 ? images : [{ url: `/public/SpotImages/${spot.name}.jpeg` }] 
       };
   });
 
