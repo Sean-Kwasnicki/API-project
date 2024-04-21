@@ -22,7 +22,7 @@ function SignupFormModal() {
     !lastName ||
     password.length < 6 ||
     !confirmPassword;
-
+    password !== confirmPassword;  // Ensure passwords match
 
   const buttonClass = `submit-button ${invalidSignup ? 'disabled' : ''}`;
 
@@ -30,8 +30,11 @@ function SignupFormModal() {
     e.preventDefault();
     let newErrors = {};
 
+    // Only proceed if passwords match
     if (password !== confirmPassword) {
       newErrors.confirmPassword = "Confirm Password must match Password.";
+      setErrors(newErrors);
+      return; // Stop the form submission here
     }
 
     try {
