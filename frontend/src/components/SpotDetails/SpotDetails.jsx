@@ -30,7 +30,7 @@ function SpotDetails() {
           <div className="spot-details-main">
             <div className='header'>
               <h1 className="spot-name">{spot.name}</h1>
-              <p className="location-header">{spot.city}, {spot.state} {spot.country}</p>
+              <p className="location-header">{spot.city}, {spot.state}, {spot.country}</p>
             </div>
               <div className="image-section">
                   <img src={previewImage} alt="Preview" className="main-image"/>
