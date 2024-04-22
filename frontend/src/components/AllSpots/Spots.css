@@ -1,78 +1,117 @@
 .spots-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    padding: 16px;
-    justify-content: center;
-  }
+  display: grid;
+  grid-template-columns: repeat(4, minmax(50px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  margin: 40px;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-  .spot-tile {
-    width: 250px; /* Fixed width for each tile */
-    border: 0.5px solid #e5e5e5;
-    box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.2s; /* Smooth scaling on hover */
-  }
+.spot-tile {
+  min-width: 300px;
+  box-shadow: 4px 4px 20px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  border: 1px solid #ccc;
+  padding: 10px;
+  cursor: pointer;
+  word-wrap: break-word;
 
-  .spot-tile:hover {
-    transform: scale(1.05); /* Slightly enlarge tiles on hover */
-  }
+}
 
-  .spot-link {
-    color: inherit; /* Prevent default link color */
-    text-decoration: none; /* Remove underline */
-  }
+.spot-tile:hover {
+  transform: scale(1.05);
+}
 
-  .spot-thumbnail {
-    width: 100%; /* Make thumbnail cover the width of the tile */
-    height: 150px; /* Fixed height for images */
-    object-fit: cover; /* Cover the area without breaking aspect ratio */
-  }
+.spot-link {
+  color: inherit;
+  text-decoration: none;
+}
 
-  .spot-info {
-    padding: 8px;
-    background: white;
-    text-align: center;
-  }
+.spot-thumbnail {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
 
-  .spot-location, .spot-price {
-    margin: 4px 0;
-  }
+.spot-info {
+  padding: 8px;
+  background: white;
+  text-align: center;
+}
 
-  .tooltip {
-    position: relative;
-    cursor: pointer;
-  }
+.spot-location, .spot-price {
+  margin: 4px 0;
+  font-size: 18px;
+}
 
-  .tooltip::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 100%;
-    white-space: nowrap;
-    background-color: black;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-  }
+.spot-tile {
+  margin: 10px;
+  padding: 10px;
+  width: 300px;
+}
 
-  .tooltip:hover::after {
-    opacity: 0;
-  }
+.spot-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
 
-  .pagination {
-    display: flex;
-    justify-content: center;
-    padding: 20px;
+.spot-thumbnail {
+  width: 100%;
+  height: auto;
+}
+
+.location-and-rating {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+}
+
+.spot-price {
+  text-align: left;
+  margin-top: 10px;
+}
+
+.tooltip {
+  display: none;
+  position: absolute;
+  background-color: black;
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  white-space: nowrap;
+  z-index: 100;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+}
+
+.spot-tile:hover .tooltip {
+  display: block;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
 }
 
 .pagination button {
-    padding: 10px;
-    margin: 0 5px;
-    cursor: pointer;
+  padding: 10px;
+  margin: 0 5px;
+  cursor: pointer;
 }

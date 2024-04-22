@@ -30,11 +30,12 @@ function Reviews() {
 
   return (
     <div className="reviews-container">
-      <h3>Reviews</h3>
+      {/* <h3>Reviews</h3> */}
       {showModalButton && (
         <OpenModalButton
           modalComponent={<ReviewFormModal spotId={spotId} />}
           buttonText="Post Your Review"
+          className="post-review-btn"
         />
       )}
       {reviews.length === 0 && (
@@ -42,10 +43,13 @@ function Reviews() {
       )}
       {reviews.map(review => (
         <div key={review.id} className="review-item">
-          <p className='created-review'> {review.User?.username || review.User?.firstName} - {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</p>
+          <p className='created-review'> {review.User.firstName}</p>
+          <p className='created-review-month'> {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</p>
           <p className="review-text">{review.review}</p>
           {sessionUser && sessionUser.id === review.userId && (
-            <button onClick={() => {
+            <button
+            className="delete-review-btn"
+            onClick={() => {
               const confirmModal = (
                 <ConfirmDeleteModal
                   reviewId={review}

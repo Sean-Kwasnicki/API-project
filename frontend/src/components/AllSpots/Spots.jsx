@@ -26,7 +26,7 @@ function Spots() {
     const images = details && details.SpotImages.length > 0 ? details.SpotImages : spot.SpotImages;
     return {
         ...spot,
-        SpotImages: images  
+        SpotImages: images
     };
   });
 
@@ -51,16 +51,25 @@ function Spots() {
             <div className="spots-grid">
               {currentSpots.map(spot => (
                 <div className="spot-tile" key={spot.id}>
-          <NavLink to={`/spots/${spot.id}`} className="spot-link">
-                {renderImage(spot)}
+                <NavLink to={`/spots/${spot.id}`} className="spot-link">
+                    {renderImage(spot)}
                     <div className="spot-info">
-                      <p className="spot-location">{spot.city}, {spot.state}</p>
-                      <p className="spot-price">${spot.price} per night</p>
-                      <StarRating rating={spot.avgRating} />
-                      <span className="tooltip">{spot.name}</span>
+                        <div className="info-and-rating">
+                            <div className="location-and-price">
+                              <div className="location-and-rating">
+                                <p className="spot-location">{spot.city}, {spot.state}</p>
+                                <div className="rating">
+                                <StarRating rating={spot.avgRating} />
+                                </div>
+                              </div>
+                                <p className="spot-price">${spot.price} per night</p>
+                            </div>
+                        </div>
                     </div>
-                  </NavLink>
-                </div>
+                    <span className="tooltip">{spot.name}</span>
+                </NavLink>
+            </div>
+
               ))}
             </div>
             <div className="pagination">

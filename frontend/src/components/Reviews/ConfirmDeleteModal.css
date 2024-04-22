@@ -18,10 +18,17 @@
 }
 
 .modal-buttons {
-  display: flex;
-  justify-content: space-around;
+  display: flex; /* Using flexbox for alignment */
+  flex-direction: column; /* Stacks child elements vertically */
+  align-items: center; /* Centers the buttons horizontally */
+  width: 100%; /* Ensures the container takes full width of its parent */
+  padding: 10px; /* Adds padding around the buttons for spacing */
 }
 
+.modal-buttons button {
+  width: 90%; /* Sets all buttons to the same width relative to their container */
+  margin-bottom: 10px; /* Adds space between stacked buttons */
+}
 .modal-button-delete {
   background-color: red;
   color: white;

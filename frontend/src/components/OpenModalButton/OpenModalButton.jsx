@@ -1,12 +1,13 @@
 // frontend/src/components/OpenModalButton/OpenModalButton.jsx
 
 import { useModal } from '../../context/Modal';
+import './OpenModalButton.css'
 
 function OpenModalButton({
   modalComponent,
   buttonText,
   onButtonClick,
-  onModalClose 
+  onModalClose
 }) {
   const { setModalContent, setOnModalClose } = useModal();
 
@@ -16,7 +17,7 @@ function OpenModalButton({
     if (typeof onButtonClick === "function") onButtonClick();
   };
 
-  return <button onClick={onClick}>{buttonText}</button>;
+  return <button className='post-review-btn' onClick={onClick}>{buttonText}</button>;
 }
 
 export default OpenModalButton;

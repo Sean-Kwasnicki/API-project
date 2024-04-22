@@ -9,6 +9,7 @@
   top: 0; /* This sets the point at which the navbar sticks */
   background-color: white; /* Optional: background color for better visibility */
   z-index: 50;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 

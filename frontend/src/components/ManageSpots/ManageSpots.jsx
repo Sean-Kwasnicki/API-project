@@ -37,14 +37,27 @@ function ManageSpots() {
   return (
     <div>
       <h1>Manage Spots</h1>
+      <div className="spots-grid">
       {userSpots.length > 0 ? (
         <div className="spot-tile-container">
           {userSpots.map(spot => (
             <div key={spot.id} className="spot-tile" onClick={() => navigate(`/spots/${spot.id}`)}>
              <img src={spot.SpotImages && spot.SpotImages.length > 0 ? spot.SpotImages[0].url :`/public/SpotImages/${spot.name}.jpeg`} alt={spot.name} className="spot-thumbnail"/>
-              <p>{spot.location}</p>
-              <StarRating rating={spot.avgRating} />
-              <p>${spot.price} per night</p>
+             <div className="spot-info">
+                        <div className="info-and-rating">
+                            <div className="location-and-price">
+                              <div className="location-and-rating">
+                                <p className="spot-location">{spot.city}, {spot.state}</p>
+                                <div className="rating">
+                                <StarRating rating={spot.avgRating} />
+                                </div>
+                              </div>
+                                <p className="spot-price">${spot.price} per night</p>
+                            </div>
+                        </div>
+                    </div>
+                    <span className="tooltip">{spot.name}</span>
+              <div className='manage-buttons'>
               <button onClick={(e) => { e.stopPropagation(); navigate(`/spots/${spot.id}/edit`); }}>Update</button>
               <button onClick={(e) => {
                 e.stopPropagation();
@@ -61,6 +74,8 @@ function ManageSpots() {
               );
               setModalContent(confirmModal);
             }}>Delete</button>
+              </div>
+
             </div>
           ))}
         </div>
@@ -70,6 +85,7 @@ function ManageSpots() {
           <button onClick={() => navigate('/spots/new')}>Create a New Spot</button>
         </div>
       )}
+      </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { updateSpot } from '../../store/spot';
 import { getSpotDetails } from '../../store/spotDetails';
 import { getAllSpots } from '../../store/spot';
+import './UpdateSpotForm.css'
 
 
 function UpdateSpotForm() {
@@ -47,7 +48,7 @@ function UpdateSpotForm() {
         try {
             const updated = await dispatch(updateSpot(spotDetails, spotId));
             if (updated) {
-              dispatch(getAllSpots(spotId));  
+              dispatch(getAllSpots(spotId));
                 navigate(`/spots/${spotId}`);
             }
         } catch (error) {

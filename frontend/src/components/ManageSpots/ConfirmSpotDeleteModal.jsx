@@ -16,7 +16,7 @@ function ConfirmSpotDeleteModal({ spotId }) {
   return (
     <div className="confirm-delete-modal">
       <h2 className="modal-title">Confirm Delete</h2>
-      <p className="modal-message">Are you sure you want to delete this review?</p>
+      <p className="modal-message">Are you sure you want to delete this spot?</p>
       <div className="modal-buttons">
         <button onClick={handleConfirmDelete} className="modal-button-delete">Yes (Delete Spot)</button>
         <button onClick={closeModal} className="modal-button-cancel">No (Keep Spot)</button>

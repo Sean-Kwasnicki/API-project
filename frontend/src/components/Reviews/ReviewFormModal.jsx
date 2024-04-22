@@ -6,6 +6,7 @@ import { getSpotDetails } from '../../store/spotDetails';
 import { FaStar } from 'react-icons/fa';
 import { useModal } from '../../context/Modal';
 import './ReviewFormModal.css'
+import { useSelector } from 'react-redux';
 
 function ReviewFormModal({ spotId}) {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ function ReviewFormModal({ spotId}) {
   const [hover, setHover] = useState(0);
   const { closeModal } = useModal();
 
+  const spotName = useSelector(state => state.spotDetails[spotId]?.name);  // Adjust based on your state structure
 
   const handleSubmit = async (e) => {
       e.preventDefault();
@@ -24,7 +26,7 @@ function ReviewFormModal({ spotId}) {
 
                 dispatch(getSpotDetails(spotId));
                 //dispatch(getAllSpots(spotId))
-                closeModal(); 
+                closeModal();
           } else {
               setErrors(['Could not post your review. Please try again.']);
           }
@@ -35,7 +37,15 @@ function ReviewFormModal({ spotId}) {
 
   return (
       <form onSubmit={handleSubmit} className="review-form">
-          <h2>How was your stay?</h2>
+           <h2>How was your stay {spotName}?</h2>
+          <textarea
+              placeholder="Leave your review here..."
+              required
+              minLength="10"
+              value={review}
+              onChange={e => setReview(e.target.value)}
+              style={{ width: "100%", height: "100px" }}
+          ></textarea>
           <div className="star-rating">
               {[...Array(5)].map((star, index) => {
                   index += 1;
@@ -53,14 +63,7 @@ function ReviewFormModal({ spotId}) {
                   );
               })}
           </div>
-          <textarea
-              placeholder="Leave your review here..."
-              required
-              minLength="10"
-              value={review}
-              onChange={e => setReview(e.target.value)}
-              style={{ width: "100%", height: "100px" }}
-          ></textarea>
+
           <button type="submit" disabled={review.length < 10 || rating === 0}>
               Submit Your Review
           </button>
