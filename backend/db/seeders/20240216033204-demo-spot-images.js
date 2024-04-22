@@ -18,7 +18,7 @@ module.exports = {
       { spotId: 1, url: 'https://drupal8-prod.visitcalifornia.com/sites/drupal8-prod.visitcalifornia.com/files/styles/fluid_1200/public/2021-04/VC-Disneyland-Reopen-Mickey-SUPPLIED-1280x640.jpg.webp?itok=26Felejl', preview: false },
       { spotId: 1, url: 'https://insidethemagic.net/wp-content/uploads/2022/10/Disneyland-vs-disney-world-wmickey-800x400.png', preview: false },
 
-      { spotId: 2, url: 'https://cache.undercovertourist.com/blog/2024/01/0224-pixar-place-hotel-lobby-entrance.jpg', preview: true,},
+      { spotId: 2, url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgSF_UqbSk51uBhQhVg36bgHRy2EwMGjo2gn1JJdQAgg&s', preview: true,},
       { spotId: 2, url: 'https://thepointsguy.global.ssl.fastly.net/us/originals/2024/02/Lobby-colors-1-copy.jpg', preview: false },
       { spotId: 2, url: 'https://www.micechat.com/wp-content/uploads/2023/07/Pixar-Place-Hotel-Pool-Area.jpg', preview: false },
       { spotId: 2, url: 'https://ktla.com/wp-content/uploads/sites/4/2023/05/20221004_Pixar-Place-Exterior.jpg?w=2202&h=1440&crop=1', preview: false },
