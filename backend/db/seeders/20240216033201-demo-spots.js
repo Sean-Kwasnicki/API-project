@@ -14,7 +14,7 @@ module.exports = {
       {
         ownerId: 1,
         address: "12345 Disney Lane",
-        city: "San Francisco",
+        city: "Anaheim",
         state: "CA",
         country: "USA",
         lat: 37.7749,
@@ -38,8 +38,8 @@ module.exports = {
       {
         ownerId: 3,
         address: "789 Marvel Ave",
-        city: "Los Angeles",
-        state: "CA",
+        city: "Orlando",
+        state: "FL",
         country: "USA",
         lat: 34.0522,
         lng: -118.2437,
