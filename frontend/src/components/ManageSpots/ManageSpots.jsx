@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { deleteSpot, getAllSpots } from '../../store/spot';
 import StarRating from '../SpotDetails/StarRating';
+import ConfirmSpotDeleteModal from './ConfirmSpotDeleteModal';
+import { useModal } from '../../context/Modal';
 import './ManageSpots.css'
 
 function ManageSpots() {
@@ -11,6 +13,8 @@ function ManageSpots() {
   const allSpots = useSelector(state => Object.values(state.spot));
   const spotDetails = useSelector(state => Object.values(state.spotDetails))
   const userId = useSelector(state => state.session.user.id);
+
+  const { setModalContent, closeModal } = useModal();
 
   useEffect(() => {
     dispatch(getAllSpots());
@@ -22,7 +26,7 @@ function ManageSpots() {
       const images = details && details.SpotImages.length > 0 ? details.SpotImages : spot.SpotImages;
       return {
           ...spot,
-          SpotImages: images.length > 0 ? images : [{ url: `/public/SpotImages/${spot.name}.jpeg` }] 
+          SpotImages: images.length > 0 ? images : [{ url: `/public/SpotImages/${spot.name}.jpeg` }]
       };
   });
 
@@ -42,7 +46,21 @@ function ManageSpots() {
               <StarRating rating={spot.avgRating} />
               <p>${spot.price} per night</p>
               <button onClick={(e) => { e.stopPropagation(); navigate(`/spots/${spot.id}/edit`); }}>Update</button>
-              <button onClick={(e) => { e.stopPropagation(); dispatch(deleteSpot(spot.id)); }}>Delete</button>
+              <button onClick={(e) => {
+                e.stopPropagation();
+              const confirmModal = (
+                <ConfirmSpotDeleteModal
+                  spotId={spot.id}
+                  onClose={closeModal}
+                  onConfirm={() => {
+                    dispatch(deleteSpot(spot.id));
+                    closeModal();
+                    dispatch(getAllSpots());
+                  }}
+                />
+              );
+              setModalContent(confirmModal);
+            }}>Delete</button>
             </div>
           ))}
         </div>
