@@ -42,7 +42,7 @@ function ProfileButton({ user }) {
     e.preventDefault();
     dispatch(sessionActions.logout());
     setShowMenu(false);
-    navigate('/'); 
+    navigate('/');
   };
 
   const navigateToManageSpots = () => {

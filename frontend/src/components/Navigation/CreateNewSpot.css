@@ -29,7 +29,6 @@
 }
 
 
-/* Targeting specific text within labels */
   .label-highlight {
   margin-bottom: 100px;
 }
@@ -96,7 +95,6 @@ button:disabled {
   font-size: 13px;
 }
 
-/* New class for the label and error message container */
 .form-field-inline {
   display: flex;
   align-items: center;
@@ -112,18 +110,18 @@ button:disabled {
 }
 
 .label-create-new {
-  grid-row: 1; /* All labels on the first row */
+  grid-row: 1;
 
 }
 
 .input-with-comma {
-  justify-self: bottom; /* Center the comma horizontally in its cell */
-  grid-row: 2; /* Comma on the second row */
+  justify-self: bottom;
+  grid-row: 2;
   margin: 5px;
 }
 
 .form-input {
-  grid-row: 2; /* All inputs on the second row */
+  grid-row: 2; 
   border-radius: 4px;
   font-size: 14px;
   font-family: Arial, Helvetica, sans-serif;

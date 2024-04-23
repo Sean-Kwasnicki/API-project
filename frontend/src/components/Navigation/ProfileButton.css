@@ -1,7 +1,7 @@
 /* ProfileButton.css */
 .profile-button-container {
        position: relative;
-       z-index: 5100; /* Ensure this is high enough */
+       z-index: 5100;
        display: flex;
        justify-content: flex-end;
        align-items: center;
@@ -36,7 +36,7 @@
        border-radius: 4px;
        width: 200px;
        z-index: 50000;
-       display: none; /* Initially hidden */
+       display: none; 
    }
 
    .profile-dropdown.show {
